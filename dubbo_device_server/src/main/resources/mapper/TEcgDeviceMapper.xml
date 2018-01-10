@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.mlnx.device.server.mybatis.mapper.TEcgDeviceMapper" >
+  <resultMap id="BaseResultMap" type="com.mlnx.device.server.mybatis.entity.TEcgDevice" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="ecg_device_run_mode" property="ecgDeviceRunMode" jdbcType="VARCHAR" />
+    <result column="ecg_channel_type" property="ecgChannelType" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <resultMap id="EcgDeviceInfoMap" type="com.mlnx.device.ecg.EcgDeviceInfo" >
+    <result column="patient_id" property="patientId" jdbcType="INTEGER" />
+    <result column="ecg_device_run_mode" property="ecgDeviceRunMode"
+            typeHandler="com.mlnx.device.server.mybatis.type_handle.ECGDeviceRunModeHandler"/>
+    <result column="ecg_channel_type" property="ecgChannelType"
+            typeHandler="com.mlnx.device.server.mybatis.type_handle.ECGChannelTypeHandler"/>
+  </resultMap>
+
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from t_ecg_device
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.mlnx.device.server.mybatis.entity.TEcgDevice" >
+    insert into t_ecg_device (id, ecg_device_run_mode, ecg_channel_type
+      )
+    values (#{id,jdbcType=INTEGER}, #{ecgDeviceRunMode,jdbcType=VARCHAR}, #{ecgChannelType,jdbcType=VARCHAR}
+      )
+  </insert>
+  <update id="updateByPrimaryKey" parameterType="com.mlnx.device.server.mybatis.entity.TEcgDevice" >
+    update t_ecg_device
+    set ecg_device_run_mode = #{ecgDeviceRunMode,jdbcType=VARCHAR},
+      ecg_channel_type = #{ecgChannelType,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select id, ecg_device_run_mode, ecg_channel_type
+    from t_ecg_device
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <select id="selectAll" resultMap="BaseResultMap" >
+    select id, ecg_device_run_mode, ecg_channel_type
+    from t_ecg_device
+  </select>
+
+  <select id="selectEcgDeviceInfo" resultMap="EcgDeviceInfoMap" parameterType="java.lang.String">
+    select ecg.ecg_device_run_mode, ecg.ecg_channel_type, device.patient_id
+    from t_ecg_device ecg, t_device device
+    WHERE ecg.id=device.id AND device.numeration=#{deviceId,jdbcType=VARCHAR}
+    limit 1
+  </select>
+</mapper>
