@@ -3,6 +3,7 @@ package com.mlnx.ecg.store.iml;
 import com.alicloud.openservices.tablestore.SyncClient;
 import com.alicloud.openservices.tablestore.model.BatchWriteRowRequest;
 import com.alicloud.openservices.tablestore.model.BatchWriteRowResponse;
+import com.alicloud.openservices.tablestore.model.Column;
 import com.alicloud.openservices.tablestore.model.ColumnValue;
 import com.alicloud.openservices.tablestore.model.GetRangeRequest;
 import com.alicloud.openservices.tablestore.model.GetRangeResponse;
@@ -153,8 +154,82 @@ public class EcgStoreTable implements EcgStore {
 
         List<Row> rows = get(start, end);
 
-        return null;
+        List<Ecg> ecgs = new ArrayList<>();
+        if (rows != null) {
+            for (Row row : rows) {
+                ecgs.add(changeToEcg(row));
+            }
+        }
+
+        return ecgs;
     }
+
+    private Ecg changeToEcg(Row row) {
+
+        Ecg ECGResponse = new Ecg();
+        Column[] valueMap = row.getColumns();
+
+        for (int i = 0; i < valueMap.length; i++) {
+            Column column = valueMap[i];
+            ColumnValue columnValue = column.getValue();
+            switch (column.getName()) {
+                case "time":
+                    ECGResponse.setStartTime(columnValue.asLong());
+                    break;
+                case "device_id":
+                    ECGResponse.setDeivceId(columnValue.asString());
+                    break;
+                case "channel_num":
+                    ECGResponse.setNumChannels(valueOf(columnValue.asString()));
+                    break;
+                case "sampling_rate":
+                    ECGResponse.setSamplingRate(valueOf(columnValue.asString()));
+                    break;
+                case "amplification":
+                    ECGResponse.setAmplification(valueOf(columnValue.asString()));
+                    break;
+                case "heart_rate":
+                    ECGResponse.setHeartRate(valueOf(columnValue.asString()));
+                    break;
+                case "wear_pose":
+                    ECGResponse.setPose(valueOf(columnValue.asString()));
+                    break;
+                case "battery_remain":
+                    ECGResponse.setBatteryLevel(valueOf(columnValue.asString()));
+                    break;
+                case "signal_strength":
+                    ECGResponse.setSignalStrength(valueOf(columnValue.asString()));
+                    break;
+                case "probe_channel_bias":
+                    ECGResponse.setProbeChannelBias(valueOf(columnValue.asString()));
+                    break;
+                case "probe_electrode_impedance":
+                    ECGResponse.setProbeElectrodeImpedance(valueOf(columnValue
+                            .asString()));
+                    break;
+                case "data":
+                    ECGResponse.setData(columnValue.asBinary());
+                    break;
+            }
+        }
+
+        return ECGResponse;
+    }
+
+    private Integer valueOf(String s) {
+
+        Integer integer = 0;
+
+        if (s != null && !s.equals("null")) {
+            try {
+                integer = Integer.valueOf(s);
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
+            }
+        }
+        return integer;
+    }
+
 
     private List<Row> get(PrimaryKeyBuilder start, PrimaryKeyBuilder end) {
 
@@ -163,6 +238,7 @@ public class EcgStoreTable implements EcgStore {
         RangeRowQueryCriteria rangeRowQueryCriteria = new RangeRowQueryCriteria(TABLE_NAME);
         rangeRowQueryCriteria.setInclusiveStartPrimaryKey(start.build());
         rangeRowQueryCriteria.setExclusiveEndPrimaryKey(end.build());
+        rangeRowQueryCriteria.setMaxVersions(1);
 
         while (true) {
             GetRangeResponse getRangeResponse = client.getRange(new GetRangeRequest(rangeRowQueryCriteria));
