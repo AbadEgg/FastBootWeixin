@@ -16,6 +16,7 @@ import com.mlnx.mptp.mptp.head.QoS;
 import com.mlnx.mptp.utils.MptpLogUtils;
 import com.mlnx.mptp.utils.RandomUtils;
 
+import java.io.IOException;
 import java.util.Date;
 
 import io.netty.channel.Channel;
@@ -89,7 +90,7 @@ public class MpSupportManager {
      * @param action
      * @param ecgDeviceInfo
      */
-    public void verifyEcg(Action action, EcgDeviceInfo ecgDeviceInfo) {
+    public void verifyEcg(Action action, EcgDeviceInfo ecgDeviceInfo) throws IOException {
 
         Session session = null;
         RegisterMessage registerMessage = action.getRegisterMessage();
@@ -111,7 +112,7 @@ public class MpSupportManager {
         }else{
             int type = 0;
 
-            session = new EcgDeviceSession();
+            session = new EcgDeviceSession(deviceId);
             session.setKey(deviceId);
             ((DeviceSession) session).setDeviceId(deviceId);
             session.setPatientId(ecgDeviceInfo.getPatientId());

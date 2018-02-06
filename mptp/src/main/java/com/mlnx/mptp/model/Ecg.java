@@ -1,161 +1,180 @@
 package com.mlnx.mptp.model;
 
+import java.util.Arrays;
+
 public class Ecg {
 
-	private Integer patientId;
+    private Integer patientId;
 
-	private String deivceId;
+    private String deivceId;
 
-	private Long startTime;
+    private Long startTime;
 
-	private Integer numChannels;
+    private Integer numChannels;
 
-	private Integer samplingRate;
+    private Integer samplingRate;
 
-	private Integer amplification;
+    private Integer amplification;
 
-	private Integer heartRate;
+    private Integer heartRate;
 
-	private Integer pose;
+    private Integer pose;
 
-	private Integer batteryLevel;
+    private Integer batteryLevel;
 
-	private Integer signalStrength;
+    private Integer signalStrength;
 
-	private Integer probeChannelBias;
+    private Integer probeChannelBias;
 
-	private Integer probeElectrodeImpedance;
+    private Integer pei;    // 探头电极阻抗
 
-	private byte[] data;
+    private byte[] data;    // 原始数据
 
-	public Integer getPatientId() {
+    private byte[] encryData;    // 加密数据
 
-		return patientId;
-	}
+    public Integer getPatientId() {
 
-	public void setPatientId(Integer patientId) {
+        return patientId;
+    }
 
-		this.patientId = patientId;
-	}
+    public void setPatientId(Integer patientId) {
 
-	public String getDeivceId() {
-		return deivceId;
-	}
+        this.patientId = patientId;
+    }
 
-	public void setDeivceId(String deivceId) {
-		this.deivceId = deivceId;
-	}
+    public String getDeivceId() {
+        return deivceId;
+    }
 
-	public Long getStartTime() {
-		return startTime;
-	}
+    public void setDeivceId(String deivceId) {
+        this.deivceId = deivceId;
+    }
 
-	public void setStartTime(Long startTime) {
-		this.startTime = startTime;
-	}
+    public Long getStartTime() {
+        return startTime;
+    }
 
-	public Integer getNumChannels() {
+    public void setStartTime(Long startTime) {
+        this.startTime = startTime;
+    }
 
-		return numChannels;
-	}
+    public Integer getNumChannels() {
 
-	public void setNumChannels(Integer numChannels) {
+        return numChannels;
+    }
 
-		this.numChannels = numChannels;
-	}
+    public void setNumChannels(Integer numChannels) {
 
-	public Integer getSamplingRate() {
+        this.numChannels = numChannels;
+    }
 
-		return samplingRate;
-	}
+    public Integer getSamplingRate() {
 
-	public void setSamplingRate(Integer samplingRate) {
+        return samplingRate;
+    }
 
-		this.samplingRate = samplingRate;
-	}
+    public void setSamplingRate(Integer samplingRate) {
 
-	public Integer getAmplification() {
+        this.samplingRate = samplingRate;
+    }
 
-		return amplification;
-	}
+    public Integer getAmplification() {
 
-	public void setAmplification(Integer amplification) {
+        return amplification;
+    }
 
-		this.amplification = amplification;
-	}
+    public void setAmplification(Integer amplification) {
 
-	public Integer getHeartRate() {
+        this.amplification = amplification;
+    }
 
-		return heartRate;
-	}
+    public Integer getHeartRate() {
 
-	public void setHeartRate(Integer heartRate) {
+        return heartRate;
+    }
 
-		this.heartRate = heartRate;
-	}
+    public void setHeartRate(Integer heartRate) {
 
-	public Integer getBatteryLevel() {
-		return batteryLevel;
-	}
+        this.heartRate = heartRate;
+    }
 
-	public void setBatteryLevel(Integer batteryLevel) {
-		this.batteryLevel = batteryLevel;
-	}
+    public Integer getBatteryLevel() {
+        return batteryLevel;
+    }
 
-	public Integer getSignalStrength() {
-		return signalStrength;
-	}
+    public void setBatteryLevel(Integer batteryLevel) {
+        this.batteryLevel = batteryLevel;
+    }
 
-	public void setSignalStrength(Integer signalStrength) {
-		this.signalStrength = signalStrength;
-	}
+    public Integer getSignalStrength() {
+        return signalStrength;
+    }
 
-	public Integer getProbeChannelBias() {
-		return probeChannelBias;
-	}
+    public void setSignalStrength(Integer signalStrength) {
+        this.signalStrength = signalStrength;
+    }
 
-	public void setProbeChannelBias(Integer probeChannelBias) {
-		this.probeChannelBias = probeChannelBias;
-	}
+    public Integer getProbeChannelBias() {
+        return probeChannelBias;
+    }
 
-	public Integer getProbeElectrodeImpedance() {
-		return probeElectrodeImpedance;
-	}
+    public void setProbeChannelBias(Integer probeChannelBias) {
+        this.probeChannelBias = probeChannelBias;
+    }
 
-	public void setProbeElectrodeImpedance(Integer probeElectrodeImpedance) {
-		this.probeElectrodeImpedance = probeElectrodeImpedance;
-	}
+    public Integer getPei() {
+        return pei;
+    }
 
-	public Integer getPose() {
+    public void setPei(Integer pei) {
+        this.pei = pei;
+    }
 
-		return pose;
-	}
+    public Integer getPose() {
 
-	public void setPose(Integer pose) {
+        return pose;
+    }
 
-		this.pose = pose;
-	}
+    public void setPose(Integer pose) {
 
-	public byte[] getData() {
+        this.pose = pose;
+    }
 
-		return data;
-	}
+    public byte[] getData() {
 
-	public void setData(byte[] data) {
+        return data;
+    }
 
-		this.data = data;
-	}
+    public void setData(byte[] data) {
 
-	@Override
-	public String toString() {
-		return "Ecg [patientId=" + patientId + ", deivceId=" + deivceId
-				+ ", startTime=" + startTime + ", numChannels=" + numChannels
-				+ ", samplingRate=" + samplingRate + ", amplification="
-				+ amplification + ", heartRate=" + heartRate + ", pose=" + pose
-				+ ", batteryLevel=" + batteryLevel + ", signalStrength="
-				+ signalStrength + ", probeChannelBias=" + probeChannelBias
-				+ ", probeElectrodeImpedance=" + probeElectrodeImpedance
-				+ ", data=" + data + "]";
-	}
+        this.data = data;
+    }
 
+    public byte[] getEncryData() {
+        return encryData;
+    }
+
+    public void setEncryData(byte[] encryData) {
+        this.encryData = encryData;
+    }
+
+    @Override
+    public String toString() {
+        return "Ecg{" +
+                "patientId=" + patientId +
+                ", deivceId='" + deivceId + '\'' +
+                ", startTime=" + startTime +
+                ", numChannels=" + numChannels +
+                ", samplingRate=" + samplingRate +
+                ", amplification=" + amplification +
+                ", heartRate=" + heartRate +
+                ", pose=" + pose +
+                ", batteryLevel=" + batteryLevel +
+                ", signalStrength=" + signalStrength +
+                ", probeChannelBias=" + probeChannelBias +
+                ", pei=" + pei +
+                ", data=" + Arrays.toString(data) +
+                ", encryData=" + Arrays.toString(encryData) +
+                '}';
+    }
 }

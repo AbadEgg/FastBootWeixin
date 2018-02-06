@@ -1,6 +1,9 @@
 package com.mlnx.mp_server.core;
 
+import com.mlnx.analysis.EcgAnalysis;
 import com.mlnx.mp_server.listenner.BroadCast;
+
+import java.io.IOException;
 
 public class EcgDeviceSession extends DeviceSession {
 	private Integer numChannels;
@@ -14,6 +17,19 @@ public class EcgDeviceSession extends DeviceSession {
 	private Long lastEcgDataTime;
 
 	private boolean fristEcgPacket = true;
+
+	private EcgAnalysis analysis;
+
+	public EcgDeviceSession(String deviceId) throws IOException {
+		super(deviceId);
+
+		analysis = new EcgAnalysis(deviceId);
+		analysis.init();
+	}
+
+	public EcgAnalysis getAnalysis() {
+		return analysis;
+	}
 
 	public Long getLastEcgDataTime() {
 		return lastEcgDataTime;

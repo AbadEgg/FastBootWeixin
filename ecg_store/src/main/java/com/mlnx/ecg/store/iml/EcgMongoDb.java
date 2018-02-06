@@ -1,12 +1,13 @@
 package com.mlnx.ecg.store.iml;
 
+import com.alibaba.fastjson.JSONObject;
 import com.cybermkd.mongo.kit.MongoKit;
 import com.cybermkd.mongo.kit.MongoQuery;
 import com.cybermkd.mongo.kit.index.MongoIndex;
 import com.cybermkd.mongo.plugin.MongoPlugin;
 import com.mlnx.ecg.store.EcgStore;
 import com.mlnx.ecg.store.config.MlnxDataMongoConfig;
-import com.mlnx.ecg.store.domain.EcgMong;
+import com.mlnx.ecg.store.utils.BeanUtils;
 import com.mlnx.mptp.model.Ecg;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
@@ -16,9 +17,9 @@ import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by amanda.shan on 2017/5/10.
@@ -41,7 +42,7 @@ public class EcgMongoDb implements EcgStore {
         MongoKit.INSTANCE.init(client, mongoPlugin.getDatabase());
 
         MongoIndex index = new MongoIndex(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
-        index.add(new MongoIndex().ascending("patientId", "startTime").setUnique(true)).compound(); // 组合索引
+//        index.add(new MongoIndex().ascending("patientId", "startTime").setUnique(true)).compound(); // 组合索引
 //        index.deleteAll();        // 删除所有索引
 //        index.ascending("patientId").save();  // 保存索引
 
@@ -56,7 +57,7 @@ public class EcgMongoDb implements EcgStore {
         List<Ecg> failEcgs = new ArrayList<Ecg>();
         for (int i = 0; i < ecgs.size(); i++) {
             try {
-                boolean sucess = query.set(new EcgMong(ecgs.get(i))).save();
+                boolean sucess = saveEcg(ecgs.get(i));
                 if (!sucess)
                     failEcgs.add(ecgs.get(i));
             } catch (RuntimeException e) {
@@ -72,22 +73,36 @@ public class EcgMongoDb implements EcgStore {
         return true;
     }
 
-    public void saveEcg(Ecg ecg) {
+    public boolean saveEcg(Ecg ecg) {
         MongoQuery query = new MongoQuery();
         query.use(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
 
-        boolean sucess = query.set(new EcgMong(ecg)).save();
+        return query.set(new Document(BeanUtils.toMap(ecg, false))).save();
     }
 
-    public List<Ecg> getEcg(long startTime, long endTime, int patientId) {
+    public List<Map<String, Object>> getEcg(long startTime, long endTime, int patientId) {
         MongoQuery query = new MongoQuery();
         query.use(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
         query.eq("patientId", patientId);
         query.gt("startTime", startTime);
         query.lt("startTime", endTime);
         query.ascending("startTime");
-        List<EcgMong> ecgMongs = query.find(EcgMong.class);
-        return null;
+        query.projection("data", "startTime", "patientId", "deivceId");
+
+        List<JSONObject> jsonObjects = query.find();
+        List<Map<String, Object>> maps = new ArrayList<>();
+
+        if (jsonObjects != null) {
+            for (JSONObject jsonObject : jsonObjects) {
+
+                JSONObject ecgObject = jsonObject.getJSONObject("data");
+                if (ecgObject != null) {
+                    jsonObject.put("data", ecgObject.getJSONArray("data"));
+                }
+                maps.add(jsonObject);
+            }
+        }
+        return maps;
     }
 
     public long count() {
@@ -96,20 +111,24 @@ public class EcgMongoDb implements EcgStore {
     }
 
     public static void main(String[] args) {
-//        EcgMongoDb ecgMongoDb = new EcgMongoDb();
-//        ecgMongoDb.init();
+        EcgMongoDb ecgMongoDb = new EcgMongoDb();
+        ecgMongoDb.init();
 //
 //        System.out.println(ecgMongoDb.count());
 //        logger.error("sbdhbdsbh");
 
-//        ecgMongoDb.saveEcg(getSimEcgs());
+//        ecgMongoDb.save(getSimEcgs());
 
-//        List<EcgMong> ecgMongs = ecgMongoDb.getEcg(1494581284766L, 1494581286778L
-//                , 50541);
-//        for (int i = 0; i < ecgMongs.size(); i++) {
-//            System.out.println(ecgMongs.get(i).toString());
-//        }
-////
+//
+        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcg(1517811324395L, System.currentTimeMillis(), 1);
+
+        System.out.println("ecgMongs.size:" + ecgMongs.size());
+        for (int i = 0; i < ecgMongs.size(); i++) {
+            System.out.println(ecgMongs.get(i).toString());
+        }
+
+        System.out.println(System.currentTimeMillis());
+
 //        System.out.println(ecgMongs.size());
 //
 //        byte[] bytes = new byte[]{(byte) 0x80, 0, (byte) 0x80, 0, (byte) 0x80, 0, (byte) 0x80, 0, (byte) 0x80, 0,};
@@ -169,10 +188,10 @@ public class EcgMongoDb implements EcgStore {
                 for (int j = 0; j < bytes.length; j++) {
                     bytes[j] = (byte) j;
                 }
-                ByteBuffer byteBuffer = ByteBuffer.allocate(200);
-                byteBuffer.put(bytes);
-                byteBuffer.flip();
-                ecg.setData(byteBuffer.array());
+//                ByteBuffer byteBuffer = ByteBuffer.allocate(2000);
+//                byteBuffer.put(bytes);
+//                byteBuffer.flip();
+                ecg.setData(bytes);
 
                 ecgs.add(ecg);
             }

@@ -10,6 +10,7 @@ import com.mlnx.mp_server.protocol.SubscribeMessage;
 import com.mlnx.mptp.mptp.MpPacket;
 import com.mlnx.mptp.mptp.body.Body;
 import com.mlnx.mptp.mptp.body.ResponseCode;
+import com.mlnx.mptp.mptp.body.Topic;
 import com.mlnx.mptp.mptp.head.DeviceType;
 import com.mlnx.mptp.mptp.head.Header;
 import com.mlnx.mptp.utils.TopicUtils;
@@ -47,7 +48,7 @@ public class MpServerHandle extends SimpleChannelInboundHandler<MpPacket> {
                 break;
             case UNSUBSCRIBE:
                 session = SessionManager.get(ctx.channel());
-                session.setDeviceTopic(null);
+                session.setTopics(null);
 
                 packet = new MpPacket().unSubscribeAck(DeviceType.SERVER,
                         ResponseCode.SUCESS);
@@ -57,9 +58,8 @@ public class MpServerHandle extends SimpleChannelInboundHandler<MpPacket> {
             case PUBLISH:
                 PublishMessage publishMessage = new PublishMessage();
                 if (body.getTopic() != null) {
-                    TopicUtils.DeviceTopic deviceTopic = TopicUtils
-                            .judgeTopic(body.getTopic());
-                    publishMessage.setDeviceTopic(deviceTopic);
+                    Topic topic = TopicUtils.getTopic(body.getTopic());
+                    publishMessage.setTopic(topic);
                 }
                 publishMessage.setBody(body);
                 if (session instanceof DeviceSession && body.getDeviceId() == null) {

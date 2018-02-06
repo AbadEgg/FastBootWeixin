@@ -3,13 +3,15 @@ package com.mlnx.mptp.model;
 import java.util.Arrays;
 
 public class ECGData {
-	private Integer ecgHeart;
+	private Integer ecgHeart;	// 心率
 
-	private Integer accelerationSensorData;
+	private Integer asd;	// 加速度传感器数据
 
-	private Integer breath;
+	private Integer breath;	// 呼吸
 
-	private byte[] successionData;
+	private byte[] encrySuccessionData;	//加密心电数据
+
+	private byte[] successionData;	//	未加密心电数据
 
 	public Integer getEcgHeart() {
 		return ecgHeart;
@@ -19,12 +21,12 @@ public class ECGData {
 		this.ecgHeart = ecgHeart;
 	}
 
-	public Integer getAccelerationSensorData() {
-		return accelerationSensorData;
+	public Integer getAsd() {
+		return asd;
 	}
 
-	public void setAccelerationSensorData(Integer accelerationSensorData) {
-		this.accelerationSensorData = accelerationSensorData;
+	public void setAsd(Integer asd) {
+		this.asd = asd;
 	}
 
 	public Integer getBreath() {
@@ -33,6 +35,14 @@ public class ECGData {
 
 	public void setBreath(Integer breath) {
 		this.breath = breath;
+	}
+
+	public byte[] getEncrySuccessionData() {
+		return encrySuccessionData;
+	}
+
+	public void setEncrySuccessionData(byte[] encrySuccessionData) {
+		this.encrySuccessionData = encrySuccessionData;
 	}
 
 	public byte[] getSuccessionData() {
@@ -45,8 +55,8 @@ public class ECGData {
 
 	@Override
 	public String toString() {
-		return "ECGData [ecgHeart=" + ecgHeart + ", accelerationSensorData="
-				+ accelerationSensorData + ", breath=" + breath
+		return "ECGData [ecgHeart=" + ecgHeart + ", asd="
+				+ asd + ", breath=" + breath
 				+ ", successionData=" + Arrays.toString(successionData) + "]";
 	}
 

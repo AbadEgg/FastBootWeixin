@@ -4,10 +4,7 @@ import com.alicloud.openservices.tablestore.ClientConfiguration;
 import com.alicloud.openservices.tablestore.SyncClient;
 import com.alicloud.openservices.tablestore.model.AlwaysRetryStrategy;
 import com.mlnx.ecg.store.config.EcgTableConfig;
-import com.mlnx.ecg.store.iml.EcgStoreTable;
-import com.mlnx.mptp.model.Ecg;
-
-import java.util.List;
+import com.mlnx.ecg.store.utils.Base64Utils;
 
 /**
  * Created by amanda.shan on 2018/1/10.
@@ -16,12 +13,34 @@ public class Test {
 
     public static void main(String[] args) {
 
-        EcgStoreTable table = new EcgStoreTable();
-        table.setClient(getSyncClient());
-        table.init();
-        List<Ecg> ecgs = table.getEcg(System.currentTimeMillis() - 2000, System.currentTimeMillis() - 1000, 10000);
+//        EcgStoreTable table = new EcgStoreTable();
+//        table.setClient(getSyncClient());
+//        table.init();
+//        List<Map<String, Object>> ecgs = table.getEcg(System.currentTimeMillis() - 6000, System.currentTimeMillis() , 10000);
+//
+//        System.out.println("ecgs.size" + ecgs.size());
+//
+//        for (Map<String, Object> ecg : ecgs){
+//            System.out.println(ecg.toString());
+//        }
 
-        System.out.println("ecgs.size" + ecgs.size());
+//        byte b = Integer.valueOf("198").byteValue();
+//        System.out.println(String.format("0x%x", b));
+//        System.out.println(String.format("0x%x", Integer.valueOf("198")));
+
+
+//        System.out.println(BeanUtils.toMap(new Ecg()));
+
+//        for (int j = 0; j < bytes.length; j++) {
+//            bytes[j] = (byte) j;
+//        }
+
+        for (int i = 1000; i < 100000; i+=1000) {
+
+            int len = Base64Utils.enc(new byte[i]).getBytes().length;
+
+            System.out.println(String.format("%5d, %5d, %5d", i, len, len*100/i));
+        }
     }
 
     private static SyncClient getSyncClient() {
@@ -40,4 +59,5 @@ public class Test {
         return client;
 
     }
+
 }

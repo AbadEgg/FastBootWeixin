@@ -26,7 +26,7 @@ public class ECGDeviceInfo {
 
 	private Integer probeChannelBias;
 
-	private Integer probeElectrodeImpedance;
+	private Integer pei;	// 导联情况
 
 	// private ProbeChannelBiasMode probeChannelBiasMode;
 	//
@@ -142,12 +142,12 @@ public class ECGDeviceInfo {
 		this.probeChannelBias = probeChannelBias;
 	}
 
-	public Integer getProbeElectrodeImpedance() {
-		return probeElectrodeImpedance;
+	public Integer getPei() {
+		return pei;
 	}
 
-	public void setProbeElectrodeImpedance(Integer probeElectrodeImpedance) {
-		this.probeElectrodeImpedance = probeElectrodeImpedance;
+	public void setPei(Integer pei) {
+		this.pei = pei;
 	}
 
 	public WearMode getWearMode() {
@@ -167,7 +167,7 @@ public class ECGDeviceInfo {
 				+ sdRemain + ", sdCapacity=" + sdCapacity + ", magnification="
 				+ magnification + ", sampling=" + sampling
 				+ ", probeChannelBias=" + probeChannelBias
-				+ ", probeElectrodeImpedance=" + probeElectrodeImpedance
+				+ ", pei=" + pei
 				+ ", wearMode=" + wearMode + "]";
 	}
 

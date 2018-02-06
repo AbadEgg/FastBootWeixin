@@ -2,14 +2,13 @@ package com.mlnx.mp_server.protocol;
 
 
 import com.mlnx.mptp.mptp.body.Body;
-import com.mlnx.mptp.utils.TopicUtils;
-import com.mlnx.mptp.utils.TopicUtils.DeviceTopic;
+import com.mlnx.mptp.mptp.body.Topic;
 
 public class PublishMessage extends AbstractMessage {
 
 	private String deviceId;
 	private Body body;
-	private TopicUtils.DeviceTopic deviceTopic;
+	private Topic topic ;
 
 	public Body getBody() {
 		return body;
@@ -27,12 +26,11 @@ public class PublishMessage extends AbstractMessage {
 		this.deviceId = deviceId;
 	}
 
-	public DeviceTopic getDeviceTopic() {
-		return deviceTopic;
+	public Topic getTopic() {
+		return topic;
 	}
 
-	public void setDeviceTopic(DeviceTopic deviceTopic) {
-		this.deviceTopic = deviceTopic;
+	public void setTopic(Topic topic) {
+		this.topic = topic;
 	}
-
 }

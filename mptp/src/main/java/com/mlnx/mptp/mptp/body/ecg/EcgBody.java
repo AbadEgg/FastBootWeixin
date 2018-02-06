@@ -129,7 +129,7 @@ public class EcgBody {
             case PROBE_ELECTRODE_IMPEDANCE:
                 Integer probeElectrodeImpedance = ReadUtils.readData(frame,
                         dataType, dataLen);
-                ecgDeviceInfo.setProbeElectrodeImpedance(probeElectrodeImpedance);
+                ecgDeviceInfo.setPei(probeElectrodeImpedance);
                 MptpLogUtils.mpDecode("收到探头电极阻抗：" + probeElectrodeImpedance);
                 break;
             // case PROBE_CHANNEL_BIAS:
@@ -173,7 +173,7 @@ public class EcgBody {
             case ACCELERATION_SENSOR_DATA:
                 Integer accelerationSensorData = ReadUtils.readData(frame,
                         dataType, dataLen);
-                ecgData.setAccelerationSensorData(accelerationSensorData);
+                ecgData.setAsd(accelerationSensorData);
                 MptpLogUtils.mpDecode("收到加速传感器数据：" + accelerationSensorData);
                 break;
 
@@ -183,6 +183,20 @@ public class EcgBody {
                 MptpLogUtils.mpDecode("收到呼吸：" + breath);
                 break;
 
+            case ENCRY_SUCCESSION_DATA:
+                byte[] encrySuccessionData = ReadUtils.readBytes(frame, dataType,
+                        dataLen);
+                ecgData.setEncrySuccessionData(encrySuccessionData);
+
+                if (MpLogLevelInfo.getInstance().isOpenDecodeLog()) {
+                    StringBuilder builder = new StringBuilder();
+                    for (byte b : encrySuccessionData) {
+                        builder.append(String.format("%x ", b));
+                    }
+
+                    MptpLogUtils.mpDecode("收到加密连续数据：" + builder.toString());
+                }
+                break;
             case SUCCESSION_DATA:
                 byte[] successionData = ReadUtils.readBytes(frame, dataType,
                         dataLen);
@@ -194,7 +208,7 @@ public class EcgBody {
                         builder.append(String.format("%x ", b));
                     }
 
-                    MptpLogUtils.mpDecode("收到连续数据：" + builder.toString());
+                    MptpLogUtils.mpDecode("收到未加密连续数据：" + builder.toString());
                 }
                 break;
         }
@@ -280,11 +294,11 @@ public class EcgBody {
             buffer.put((byte) ecgDeviceInfo.getProbeChannelBias().byteValue());
         }
 
-        if (ecgDeviceInfo.getProbeElectrodeImpedance() != null) {
+        if (ecgDeviceInfo.getPei() != null) {
             buffer.put(GroupType.PROBE_ELECTRODE_IMPEDANCE.getEncodes());
             buffer.put(new String("US").getBytes());
             byte[] bs = ByteUtils.intToBytes(
-                    ecgDeviceInfo.getProbeElectrodeImpedance(), 2);
+                    ecgDeviceInfo.getPei(), 2);
             buffer.put((byte) bs.length);
             buffer.put(bs);
         }
@@ -319,11 +333,11 @@ public class EcgBody {
             buffer.put(ecgData.getEcgHeart().byteValue());
         }
 
-        if (ecgData.getAccelerationSensorData() != null) {
+        if (ecgData.getAsd() != null) {
             buffer.put(GroupType.ACCELERATION_SENSOR_DATA.getEncodes());
             buffer.put(new String("BT").getBytes());
             buffer.put((byte) 1);
-            buffer.put(ecgData.getAccelerationSensorData().byteValue());
+            buffer.put(ecgData.getAsd().byteValue());
         }
 
         if (ecgData.getBreath() != null) {

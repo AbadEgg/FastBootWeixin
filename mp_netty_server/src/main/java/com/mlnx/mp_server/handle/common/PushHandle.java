@@ -1,22 +1,25 @@
 package com.mlnx.mp_server.handle.common;
 
+import com.mlnx.analysis.domain.ReadEcgAnalysResult;
 import com.mlnx.device.ecg.ECGChannelType;
 import com.mlnx.mp_server.core.EcgDeviceSession;
 import com.mlnx.mp_server.core.Session;
 import com.mlnx.mp_server.core.SessionManager;
 import com.mlnx.mp_server.listenner.BroadCast;
 import com.mlnx.mp_server.protocol.PublishMessage;
+import com.mlnx.mptp.model.ECGData;
 import com.mlnx.mptp.model.ECGDeviceInfo;
 import com.mlnx.mptp.model.Ecg;
 import com.mlnx.mptp.mptp.MpPacket;
 import com.mlnx.mptp.mptp.body.Body;
 import com.mlnx.mptp.mptp.body.DeviceState;
 import com.mlnx.mptp.mptp.body.ResponseCode;
+import com.mlnx.mptp.mptp.body.Topic;
+import com.mlnx.mptp.mptp.body.TopicType;
+import com.mlnx.mptp.mptp.body.ecg.EcgBody;
 import com.mlnx.mptp.mptp.head.DeviceType;
 import com.mlnx.mptp.mptp.head.QoS;
 import com.mlnx.mptp.utils.MptpLogUtils;
-import com.mlnx.mptp.utils.TopicUtils;
-import com.mlnx.mptp.utils.TopicUtils.TopicType;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -28,28 +31,15 @@ public class PushHandle extends SimpleChannelInboundHandler<PublishMessage> {
             throws Exception {
 
         String deviceId = msg.getBody().getDeviceId();
-        Body body = msg.getBody();
-        TopicUtils.DeviceTopic deviceTopic = msg.getDeviceTopic();
+        final Body body = msg.getBody();
+        Topic topic = msg.getTopic();
+        EcgBody ecgBody = msg.getBody().getEcgBody();
+        ECGData ecgData = ecgBody.getEcgData();
 
         Session session = null;
 
-        if (deviceTopic == null) {
-            switch (msg.getDeviceType()) {
-//                case BP_DEVICE:
-//                    break;
-//                case SBP_DEVICE:
-//                    break;
-                case ECG_DEVICE:
-                    deviceTopic = new TopicUtils().new DeviceTopic(
-                            TopicType.U_ECG_TOPIC);
-                    deviceTopic.setDeviceId(deviceId);
-                    break;
-            }
-
-        }
-
-        if (deviceTopic == null) {
-            MptpLogUtils.e("非法主题，设备类型：" + msg.getDeviceType());
+        if (topic == null && !msg.getDeviceType().equals(DeviceType.USR)) {
+            MptpLogUtils.e("非法主题，类型：" + msg.getDeviceType());
             MpPacket packet = new MpPacket().pushAck(DeviceType.SERVER,
                     body.getMessageId(), ResponseCode.ILLEGAL_TOPICE);
             ctx.channel().writeAndFlush(packet);
@@ -62,12 +52,18 @@ public class PushHandle extends SimpleChannelInboundHandler<PublishMessage> {
             SessionManager.addConfig(session);
         }
 
-        switch (deviceTopic.getTopicType()) {
-            case D_ECG_TOPIC:
-            case U_ECG_TOPIC:
+        switch (msg.getDeviceType()) {
+            // 用户发送给设备的主题
+            case USR:
+                switch (topic.getTopicType()) {
+                    case D_ECG_TOPIC:
+                }
+                break;
 
-                if (session instanceof EcgDeviceSession
-                        && msg.getDeviceType().equals(DeviceType.ECG_DEVICE)) {
+            // 设备发送给用户的主题
+            case ECG_DEVICE:
+
+                if (session instanceof EcgDeviceSession) {
 
                     ECGDeviceInfo ecgDeviceInfo = body.getEcgBody()
                             .getEcgDeviceInfo();
@@ -109,18 +105,41 @@ public class PushHandle extends SimpleChannelInboundHandler<PublishMessage> {
                         ecg.setHeartRate(body.getEcgBody().getEcgData()
                                 .getEcgHeart());
                         ecg.setPose(((EcgDeviceSession) session).getPose());
-                        if (body.getEcgBody().getEcgData().getSuccessionData() != null) {
-                            ecg.setData(body.getEcgBody().getEcgData().getSuccessionData());
-                        }
-                        BroadCast.ecgBroadCast.reciveEcgBody(deviceTopic, ecg);
+
+                        ecg.setBatteryLevel(body.getEcgBody().getEcgDeviceInfo().getBatteryLevel());
+                        ecg.setPei(body.getEcgBody().getEcgDeviceInfo().getPei());
 
                         // 心电更新
-                        EcgDeviceSession session1 = (EcgDeviceSession) session;
+                        final EcgDeviceSession session1 = (EcgDeviceSession) session;
+
+                        Topic topic1 = new Topic();
+                        topic1.setDeviceId(deviceId);
+                        if (body.getEcgBody().getEcgData().getSuccessionData() != null) {
+                            ecg.setEncryData(ecgData.getEncrySuccessionData());
+
+                            topic1.setTopicType(TopicType.U_ECG_TOPIC);
+                            BroadCast.ecgBroadCast.reciveEcgBody(topic1, ecg);
+                        } else if (ecgData.getEncrySuccessionData() != null) {
+                            ecg.setEncryData(ecgData.getEncrySuccessionData());
+
+                            ReadEcgAnalysResult result = session1.getAnalysis().realAnalysis(ecgData
+                                    .getSuccessionData(), body.getPacketTime());
+                            ecg.setData(result.getEcgData());
+
+                            topic1.setTopicType(TopicType.U_ECG_TOPIC);
+                            BroadCast.ecgBroadCast.reciveEcgBody(topic1, ecg);
+
+                            topic1.setTopicType(TopicType.U_ECG_REAL_ANALY_TOPIC);
+                            BroadCast.ecgBroadCast.reciveReadEcgAnalysResult(topic1, result);
+                        }
+
+
                         session1.setLastEcgDataTime(body.getPacketTime());
                         if (session1.isFristEcgPacket()) {
                             session1.setFristEcgPacket(false);
                             BroadCast.ecgBroadCast.startEcgPacket(session1.getPatientId());
                         }
+
                     }
                 }
 

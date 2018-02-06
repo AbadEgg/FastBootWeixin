@@ -5,9 +5,12 @@ import com.mlnx.mp_server.core.SessionManager;
 import com.mlnx.mp_server.protocol.SubscribeMessage;
 import com.mlnx.mptp.mptp.MpPacket;
 import com.mlnx.mptp.mptp.body.ResponseCode;
+import com.mlnx.mptp.mptp.body.Topic;
 import com.mlnx.mptp.mptp.head.DeviceType;
 import com.mlnx.mptp.utils.MptpLogUtils;
 import com.mlnx.mptp.utils.TopicUtils;
+
+import java.util.List;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -25,11 +28,11 @@ public class SubscribeHandle extends
 
         if (topic != null) {
             Session session = SessionManager.get(ctx.channel());
-            TopicUtils.DeviceTopic deviceTopic = TopicUtils.judgeTopic(topic);
+            List<Topic> topics = TopicUtils.getTopics(topic);
 
-            MptpLogUtils.d(String.format("订阅主题:" + deviceTopic));
-            if (deviceTopic != null) {
-                session.setDeviceTopic(deviceTopic);
+            MptpLogUtils.d(String.format("订阅主题:" + topic));
+            if (topics != null) {
+                session.setTopics(topics);
                 responseCode = ResponseCode.SUCESS;
             }
         }

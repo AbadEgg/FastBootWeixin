@@ -2,13 +2,13 @@ package com.mlnx.mp_server.core;
 
 import com.mlnx.mp_server.listenner.BroadCast;
 import com.mlnx.mp_server.listenner.EcgListenner;
+import com.mlnx.mptp.mptp.body.Topic;
 import com.mlnx.mptp.mptp.head.DeviceType;
-import com.mlnx.mptp.utils.TopicUtils;
-import com.mlnx.mptp.utils.TopicUtils.DeviceTopic;
 
 import java.io.Serializable;
 import java.net.SocketAddress;
 import java.util.Date;
+import java.util.List;
 
 import io.netty.channel.Channel;
 
@@ -17,7 +17,7 @@ public abstract class Session implements Serializable {
     protected Channel channel;
     protected SocketAddress socketAddress;
     protected Date lastPacketTime;        // 最后一次收到数据包的时间
-    protected TopicUtils.DeviceTopic deviceTopic; // 主题 用户消息分发
+    protected List<Topic> topics; // 主题 用户消息分发
     protected DeviceType deviceType;
     protected Integer patientId;
 
@@ -97,37 +97,32 @@ public abstract class Session implements Serializable {
         this.lastPacketTime = lastPacketTime;
     }
 
-    public DeviceTopic getDeviceTopic() {
-        return deviceTopic;
+    public List<Topic> getTopics() {
+        return topics;
+    }
+
+    public void setTopics(List<Topic> topics) {
+        this.topics = topics;
+
+        BroadCast.addEcgListenner(getEcgListener());
     }
 
     public abstract void removeLis();
-
-    public void setDeviceTopic(DeviceTopic deviceTopic) {
-        this.deviceTopic = deviceTopic;
-
-        BroadCast.removeEcgListenner(getEcgListener());
-
-        if (deviceTopic != null) {
-            switch (deviceTopic.getTopicType()) {
-                case D_ECG_TOPIC:
-                case U_ECG_TOPIC:
-                case U_ECG_HEART_TOPIC:
-                    BroadCast.addEcgListenner(getEcgListener());
-                    break;
-            }
-        }
-    }
 
     public abstract EcgListenner getEcgListener();
 
     @Override
     public String toString() {
-        return "Session [channel=" + channel + ", socketAddress="
-                + socketAddress + ", lastPacketTime=" + lastPacketTime + ", deviceTopic="
-                + (deviceTopic == null ? null : deviceTopic.getTopic()) + ", deviceType=" + deviceType
-                + ", readerIdleTimeSeconds=" + readerIdleTimeSeconds
-                + ", timeOut=" + timeOut + "]";
+        return "Session{" +
+                "channel=" + channel +
+                ", socketAddress=" + socketAddress +
+                ", lastPacketTime=" + lastPacketTime +
+                ", topics=" + topics +
+                ", deviceType=" + deviceType +
+                ", patientId=" + patientId +
+                ", key='" + key + '\'' +
+                ", readerIdleTimeSeconds=" + readerIdleTimeSeconds +
+                ", timeOut=" + timeOut +
+                '}';
     }
-
 }

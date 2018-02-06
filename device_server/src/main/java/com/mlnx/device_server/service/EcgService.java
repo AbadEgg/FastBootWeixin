@@ -1,6 +1,7 @@
 package com.mlnx.device_server.service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.mlnx.analysis.domain.ReadEcgAnalysResult;
 import com.mlnx.device.ecg.EcgDeviceInfo;
 import com.mlnx.device.inter.EcgDeviceService;
 import com.mlnx.device_server.comm.utils.DateUtils;
@@ -13,15 +14,17 @@ import com.mlnx.mp_server.support.Action;
 import com.mlnx.mp_server.support.EcgSupport;
 import com.mlnx.mp_server.support.MpSupportManager;
 import com.mlnx.mptp.model.Ecg;
-import com.mlnx.mptp.utils.TopicUtils;
+import com.mlnx.mptp.mptp.body.Topic;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -64,7 +67,11 @@ public class EcgService {
                 public void run() {
                     RegisterMessage message = action.getRegisterMessage();
                     EcgDeviceInfo ecgDeviceInfo = ecgDeviceService.getEcgDeviceInfo(message.getDeviceId());
-                    MpSupportManager.getInstance().verifyEcg(action, ecgDeviceInfo);
+                    try {
+                        MpSupportManager.getInstance().verifyEcg(action, ecgDeviceInfo);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
         }
@@ -72,7 +79,17 @@ public class EcgService {
 
     private EcgListenner ecgListenner = new EcgListenner() {
         @Override
-        public void reciveEcgBody(TopicUtils.DeviceTopic topic, final Ecg ecg) {
+        public void deviceOnline(Topic topic, String deviceId) {
+
+        }
+
+        @Override
+        public void deviceOfflien(Topic topic, String deviceId) {
+
+        }
+
+        @Override
+        public void reciveEcgBody(Topic topic, final Ecg ecg) {
             ThreadUtil.execute(new Runnable() {
                 @Override
                 public void run() {
@@ -82,22 +99,17 @@ public class EcgService {
         }
 
         @Override
+        public void reciveReadEcgAnalysResult(Topic topic, ReadEcgAnalysResult result) {
+
+        }
+
+        @Override
         public void startEcgPacket(Integer patientId) {
 
         }
 
         @Override
         public void stopEcgPacket(Integer patientId) {
-
-        }
-
-        @Override
-        public void deviceOnline(TopicUtils.DeviceTopic topic, String deviceId) {
-
-        }
-
-        @Override
-        public void deviceOfflien(TopicUtils.DeviceTopic topic, String deviceId) {
 
         }
     };
@@ -114,9 +126,9 @@ public class EcgService {
             logger.error(e.getMessage(), e);
         }
 
-        if (ecgSize.intValue() > 10 || System.currentTimeMillis() - saveTime > 3 * 1000) {
+        if (ecgSize.intValue() > 1 || System.currentTimeMillis() - saveTime > 3 * 1000) {
 
-            logger.debug("缓存心电数据大小：" + ecgSize.intValue());
+//            logger.debug("缓存心电数据大小：" + ecgSize.intValue());
 
             List<Ecg> ecgList = new ArrayList<>();
 
@@ -127,7 +139,7 @@ public class EcgService {
                 ecg1 = ecgs.poll();
             }
 
-            logger.debug("发送心电数据大小：" + ecgList.size());
+//            logger.debug("发送心电数据大小：" + ecgList.size());
             if (ecgList.size() > 0) {
                 ecgStore.save(ecgList);
             }
@@ -136,9 +148,9 @@ public class EcgService {
         }
     }
 
-    public List<Ecg> getEcg(Integer patientId, Long startTime, Long endTime) {
+    public List<Map<String, Object>> getEcg(Integer patientId, Long startTime, Long endTime) {
 
-        List<Ecg> ecgs = ecgStore.getEcg(startTime, endTime, patientId);
+        List<Map<String, Object>> ecgs = ecgStore.getEcg(startTime, endTime, patientId);
 
         StringBuilder builder = new StringBuilder();
         builder.append(DateUtils.format(System.currentTimeMillis(), "HH:mm:ss:SSS"));

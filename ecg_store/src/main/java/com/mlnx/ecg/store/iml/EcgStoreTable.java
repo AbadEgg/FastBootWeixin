@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import static com.mlnx.ecg.store.config.EcgTableConfig.COLUMN_KEY1_NAME;
 import static com.mlnx.ecg.store.config.EcgTableConfig.COLUMN_KEY2_NAME;
@@ -106,7 +107,7 @@ public class EcgStoreTable implements EcgStore {
                 rowChange.addColumn("probe_channel_bias", ColumnValue
                         .fromString(ecg.getProbeChannelBias() + ""));
                 rowChange.addColumn("probe_electrode_impedance",
-                        ColumnValue.fromString(ecg.getProbeElectrodeImpedance() + ""));
+                        ColumnValue.fromString(ecg.getPei() + ""));
                 rowChange.addColumn("data", ColumnValue.fromBinary(ecg
                         .getData()));
 
@@ -139,7 +140,7 @@ public class EcgStoreTable implements EcgStore {
 
     }
 
-    public List<Ecg> getEcg(long startTime, long endTime, int patientId) {
+    public List<Map<String, Object>> getEcg(long startTime, long endTime, int patientId) {
 
         // 设置起始主键
         PrimaryKeyBuilder start = PrimaryKeyBuilder.createPrimaryKeyBuilder();
@@ -161,7 +162,9 @@ public class EcgStoreTable implements EcgStore {
             }
         }
 
-        return ecgs;
+        throw new RuntimeException("阿里table未开发好");
+
+//        return null;
     }
 
     private Ecg changeToEcg(Row row) {
@@ -204,7 +207,7 @@ public class EcgStoreTable implements EcgStore {
                     ECGResponse.setProbeChannelBias(valueOf(columnValue.asString()));
                     break;
                 case "probe_electrode_impedance":
-                    ECGResponse.setProbeElectrodeImpedance(valueOf(columnValue
+                    ECGResponse.setPei(valueOf(columnValue
                             .asString()));
                     break;
                 case "data":
