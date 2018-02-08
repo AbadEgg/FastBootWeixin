@@ -1,6 +1,6 @@
 package com.mlnx.mp_server.listenner.adapter;
 
-import com.mlnx.analysis.domain.ReadEcgAnalysResult;
+import com.mlnx.analysis.domain.RealEcgAnalysResult;
 import com.mlnx.mp_server.listenner.EcgListenner;
 import com.mlnx.mptp.model.Ecg;
 import com.mlnx.mptp.mptp.body.Topic;
@@ -14,7 +14,7 @@ public class UsrEcgAdapter implements EcgListenner {
 	}
 
 	@Override
-	public void reciveReadEcgAnalysResult(Topic topic, ReadEcgAnalysResult result) {
+	public void reciveReadEcgAnalysResult(Topic topic, RealEcgAnalysResult result) {
 
 	}
 

@@ -27,6 +27,12 @@
         </dependency>
 
         <dependency>
+            <groupId>com.mlnx</groupId>
+            <artifactId>push_tp</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>io.netty</groupId>
             <artifactId>netty-all</artifactId>
             <version>4.0.45.Final</version>

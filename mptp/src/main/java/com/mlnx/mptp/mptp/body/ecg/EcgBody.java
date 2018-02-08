@@ -4,6 +4,7 @@ import com.mlnx.device.ecg.ECGChannelType;
 import com.mlnx.device.ecg.ECGDeviceRunMode;
 import com.mlnx.mptp.model.ECGData;
 import com.mlnx.mptp.model.ECGDeviceInfo;
+import com.mlnx.mptp.model.EcgAnalysisResult;
 import com.mlnx.mptp.mptp.InvalidPacketException;
 import com.mlnx.mptp.mptp.body.GroupType;
 import com.mlnx.mptp.mptp.config.MptpConfig;
@@ -22,9 +23,33 @@ public class EcgBody {
 
     private ECGData ecgData;
 
-    public EcgBody() {
+    private EcgAnalysisResult ecgAnalysisResult;
+
+    public ECGDeviceInfo buildECGDeviceInfo() {
+        if (ecgDeviceInfo == null) {
+            ecgDeviceInfo = new ECGDeviceInfo();
+        }
+        return ecgDeviceInfo;
+    }
+
+    public ECGData buildECGData() {
+        if (ecgData == null) {
+            ecgData = new ECGData();
+        }
+        return ecgData;
+    }
+
+    public EcgAnalysisResult buildEcgAnalysisResult() {
+        if (ecgAnalysisResult == null) {
+            ecgAnalysisResult = new EcgAnalysisResult();
+        }
+        return ecgAnalysisResult;
+    }
+
+    public void init() {
         ecgDeviceInfo = new ECGDeviceInfo();
         ecgData = new ECGData();
+        ecgAnalysisResult = new EcgAnalysisResult();
     }
 
     public ECGDeviceInfo getEcgDeviceInfo() {
@@ -41,6 +66,14 @@ public class EcgBody {
 
     public void setEcgData(ECGData ecgData) {
         this.ecgData = ecgData;
+    }
+
+    public EcgAnalysisResult getEcgAnalysisResult() {
+        return ecgAnalysisResult;
+    }
+
+    public void setEcgAnalysisResult(EcgAnalysisResult ecgAnalysisResult) {
+        this.ecgAnalysisResult = ecgAnalysisResult;
     }
 
     public void decodeData(GroupType groupType, ByteBuffer frame,
@@ -194,7 +227,7 @@ public class EcgBody {
                         builder.append(String.format("%x ", b));
                     }
 
-                    MptpLogUtils.mpDecode("收到加密连续数据：" + builder.toString());
+                    MptpLogUtils.mpDecode("收到加密连续数据：" + "长度：" + dataLen + ":::" + builder.toString());
                 }
                 break;
             case SUCCESSION_DATA:
@@ -208,7 +241,7 @@ public class EcgBody {
                         builder.append(String.format("%x ", b));
                     }
 
-                    MptpLogUtils.mpDecode("收到未加密连续数据：" + builder.toString());
+                    MptpLogUtils.mpDecode("收到加密连续数据：" + "长度：" + dataLen + ":::" + builder.toString());
                 }
                 break;
         }

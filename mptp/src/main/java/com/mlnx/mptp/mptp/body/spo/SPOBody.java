@@ -17,7 +17,7 @@ public class SPOBody {
             .allocate(MptpConfig.SPO_BODY_CAPABILITY);
     private SPOResult spoResult;
 
-    public SPOBody() {
+    public void init(){
         spoResult = new SPOResult();
     }
 

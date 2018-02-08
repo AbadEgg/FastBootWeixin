@@ -23,6 +23,7 @@
     <orderEntry type="module" module-name="mptp" />
     <orderEntry type="module" module-name="dubbo_device_domain" />
     <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.30" level="project" />
+    <orderEntry type="module" module-name="push_tp" />
     <orderEntry type="library" name="Maven: io.netty:netty-all:4.0.45.Final" level="project" />
     <orderEntry type="module" module-name="ecg_analysis" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-logging:1.5.9.RELEASE" level="project" />

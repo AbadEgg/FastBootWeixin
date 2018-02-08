@@ -10,17 +10,17 @@ import java.util.List;
  */
 public class TopicUtils {
 
-    public static List<Topic> getTopics(String topic){
+    public static List<Topic> getTopics(String topic) {
         return JSON.parseArray(topic, Topic.class);
     }
 
-    public static Topic getTopic(String topic){
+    public static Topic getTopic(String topic) {
         return JSON.parseObject(topic, Topic.class);
     }
 
-    public static boolean contain(List<Topic> topics, Topic topic){
-        for (Topic topic1:topics){
-            if (topic1.equals(topic)){
+    public static boolean contain(List<Topic> topics, Topic topic) {
+        for (Topic topic1 : topics) {
+            if (topic1.equals(topic)) {
                 return true;
             }
         }

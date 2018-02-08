@@ -1,6 +1,6 @@
 package com.mlnx.mp_server.handle.common;
 
-import com.mlnx.analysis.domain.ReadEcgAnalysResult;
+import com.mlnx.analysis.domain.RealEcgAnalysResult;
 import com.mlnx.device.ecg.ECGChannelType;
 import com.mlnx.mp_server.core.EcgDeviceSession;
 import com.mlnx.mp_server.core.Session;
@@ -38,7 +38,7 @@ public class PushHandle extends SimpleChannelInboundHandler<PublishMessage> {
 
         Session session = null;
 
-        if (topic == null && !msg.getDeviceType().equals(DeviceType.USR)) {
+        if (topic == null && msg.getDeviceType().equals(DeviceType.USR)) {
             MptpLogUtils.e("非法主题，类型：" + msg.getDeviceType());
             MpPacket packet = new MpPacket().pushAck(DeviceType.SERVER,
                     body.getMessageId(), ResponseCode.ILLEGAL_TOPICE);
@@ -90,10 +90,10 @@ public class PushHandle extends SimpleChannelInboundHandler<PublishMessage> {
                                 .getWearMode().getCode());
                     }
 
-                    if (body.getEcgBody().getEcgData().getSuccessionData() != null) {
+                    if (ecgData.getSuccessionData() != null || ecgData.getEncrySuccessionData() != null) {
 
                         Ecg ecg = new Ecg();
-                        ecg.setPatientId(body.getPatientID());
+                        ecg.setPatientId(body.getPatientId());
                         ecg.setDeivceId(((EcgDeviceSession) session).getDeviceId());
                         ecg.setStartTime(body.getPacketTime());
                         ecg.setNumChannels(((EcgDeviceSession) session)
@@ -114,16 +114,19 @@ public class PushHandle extends SimpleChannelInboundHandler<PublishMessage> {
 
                         Topic topic1 = new Topic();
                         topic1.setDeviceId(deviceId);
-                        if (body.getEcgBody().getEcgData().getSuccessionData() != null) {
-                            ecg.setEncryData(ecgData.getEncrySuccessionData());
+                        if (ecgData.getSuccessionData() != null) {
+                            ecg.setData(ecgData.getSuccessionData());
 
                             topic1.setTopicType(TopicType.U_ECG_TOPIC);
                             BroadCast.ecgBroadCast.reciveEcgBody(topic1, ecg);
                         } else if (ecgData.getEncrySuccessionData() != null) {
                             ecg.setEncryData(ecgData.getEncrySuccessionData());
 
-                            ReadEcgAnalysResult result = session1.getAnalysis().realAnalysis(ecgData
-                                    .getSuccessionData(), body.getPacketTime());
+                            RealEcgAnalysResult result = session1.getAnalysis().realAnalysis(ecgData
+                                    .getEncrySuccessionData(), body.getPacketTime());
+                            result.setDeivceId(deviceId);
+                            result.setPatientId(body.getPatientId());
+
                             ecg.setData(result.getEcgData());
 
                             topic1.setTopicType(TopicType.U_ECG_TOPIC);

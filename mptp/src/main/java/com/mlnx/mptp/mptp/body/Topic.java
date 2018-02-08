@@ -8,6 +8,14 @@ public class Topic {
     private TopicType topicType;
     private String deviceId;
 
+    public Topic(TopicType topicType, String deviceId) {
+        this.topicType = topicType;
+        this.deviceId = deviceId;
+    }
+
+    public Topic() {
+    }
+
     public TopicType getTopicType() {
         return topicType;
     }

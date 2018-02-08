@@ -1,6 +1,6 @@
 package com.mlnx.mp_server.listenner;
 
-import com.mlnx.analysis.domain.ReadEcgAnalysResult;
+import com.mlnx.analysis.domain.RealEcgAnalysResult;
 import com.mlnx.mp_server.utils.ThreadUtil;
 import com.mlnx.mptp.model.Ecg;
 import com.mlnx.mptp.mptp.body.Topic;
@@ -54,7 +54,7 @@ public class EcgBroadCast implements EcgListenner {
     }
 
     @Override
-    public void reciveReadEcgAnalysResult(final Topic topic, final ReadEcgAnalysResult result) {
+    public void reciveReadEcgAnalysResult(final Topic topic, final RealEcgAnalysResult result) {
         ThreadUtil.execute(new Runnable() {
 
             @Override

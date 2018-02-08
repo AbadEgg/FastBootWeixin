@@ -20,11 +20,9 @@ public class Body implements Codec {
     private static final ByteBuffer buffer = ByteBuffer
             .allocate(MptpConfig.BODY_CAPABILITY);
 
-    private int bodyLength;
-
     private Long packetTime;
     private String deviceId;
-    private Integer patientID;
+    private Integer patientId;
     private Float temp;
     private ResponseCode responseCode;
     private Command command;
@@ -42,12 +40,22 @@ public class Body implements Codec {
     private EcgBody ecgBody;
     private ConfigBody configBody;
 
-    public Body() {
-        super();
+    public EcgBody buildEcgBody(){
+        if (ecgBody == null){
+            ecgBody = new EcgBody();
+        }
 
+        return ecgBody;
+    }
+
+    @Override
+    public void init() {
         bpBody = new BpBody();
+        bpBody.init();
         spoBody = new SPOBody();
+        spoBody.init();
         ecgBody = new EcgBody();
+        ecgBody.init();
         configBody = new ConfigBody();
     }
 
@@ -123,10 +131,6 @@ public class Body implements Codec {
         this.deviceState = deviceState;
     }
 
-    public int getBodyLength() {
-        return bodyLength;
-    }
-
     public BpBody getBpBody() {
         return bpBody;
     }
@@ -159,12 +163,12 @@ public class Body implements Codec {
         this.configBody = configBody;
     }
 
-    public long getPacketTime() {
+    public Long getPacketTime() {
         return packetTime;
     }
 
-    public Integer getPatientID() {
-        return patientID;
+    public Integer getPatientId() {
+        return patientId;
     }
 
     public String getDeviceId() {
@@ -179,8 +183,8 @@ public class Body implements Codec {
         this.packetTime = packetTime;
     }
 
-    public void setPatientID(Integer patientID) {
-        this.patientID = patientID;
+    public void setPatientId(Integer patientId) {
+        this.patientId = patientId;
     }
 
     @Override
@@ -204,7 +208,7 @@ public class Body implements Codec {
                 throw new InvalidPacketException("收到非法组编号："
                         + String.format("0x%x", groupCode));
             } else {
-                if (groupType.equals(GroupType.SUCCESSION_DATA)) {
+                if (groupType.equals(GroupType.ENCRY_SUCCESSION_DATA) || groupType.equals(GroupType.SUCCESSION_DATA)) {
                     dst = new byte[2];
                     buf.get(dst);
                     dataLen |= (dst[1] & 0x000000ff);
@@ -273,9 +277,9 @@ public class Body implements Codec {
                         MptpLogUtils.mpDecode("主题：" + topic);
                         break;
                     case PATIENT_ID:
-                        patientID = ReadUtils.readData(buffer, dataType, dataLen);
-                        bpBody.getBpResult().setPatientID(patientID);
-                        MptpLogUtils.mpDecode("收到病人ID：" + patientID);
+                        patientId = ReadUtils.readData(buffer, dataType, dataLen);
+                        bpBody.getBpResult().setPatientID(patientId);
+                        MptpLogUtils.mpDecode("收到病人ID：" + patientId);
                         break;
                     case TEMP:
                         temp = ReadUtils.readTemp(buffer, dataType, dataLen);
@@ -329,11 +333,11 @@ public class Body implements Codec {
             buffer.put((byte) bs.length);
             buffer.put(bs);
         }
-        if (patientID != null) {
+        if (patientId != null) {
             buffer.put(GroupType.PATIENT_ID.getEncodes());
             buffer.put(new String("UL").getBytes());
 
-            byte[] bs = ByteUtils.intToBytes(patientID);
+            byte[] bs = ByteUtils.intToBytes(patientId);
             buffer.put((byte) bs.length);
             buffer.put(bs);
         }
@@ -401,4 +405,5 @@ public class Body implements Codec {
         buffer.get(bs);
         return bs;
     }
+
 }

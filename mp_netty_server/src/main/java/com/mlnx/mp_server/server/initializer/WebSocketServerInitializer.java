@@ -8,6 +8,8 @@ import com.mlnx.mp_server.handle.common.MpVerify;
 import com.mlnx.mp_server.handle.common.PushHandle;
 import com.mlnx.mp_server.handle.common.RegisterHandle;
 import com.mlnx.mp_server.handle.common.SubscribeHandle;
+import com.mlnx.mp_server.handle.web.MpWebEncode;
+import com.mlnx.mp_server.handle.web.MpWebServerHandle;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
@@ -29,8 +31,8 @@ public class WebSocketServerInitializer extends ChannelInitializer<SocketChannel
 		ch.pipeline().addLast("decoder", new HttpRequestDecoder());
 		ch.pipeline().addLast("aggregator", new HttpObjectAggregator(65536));
 
-//		ch.pipeline().addLast(new MpWebServerHandle());
-//		ch.pipeline().addLast(new MpWebEncode());
+		ch.pipeline().addLast(new MpWebServerHandle());
+		ch.pipeline().addLast(new MpWebEncode());
 
 		ch.pipeline().addLast(new MpDecode());
 

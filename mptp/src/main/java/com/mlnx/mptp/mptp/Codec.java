@@ -4,7 +4,9 @@ import java.nio.ByteBuffer;
 
 public interface Codec {
 
-	public void decode(ByteBuffer buf);
+	void decode(ByteBuffer buf);
 
-	public byte[] encode();
+	byte[] encode();
+
+	void init();
 }

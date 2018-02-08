@@ -3,6 +3,7 @@ package com.mlnx.mptp.mptp.body.bp;
 import com.mlnx.mptp.model.BpControl;
 import com.mlnx.mptp.model.BpDeviceInfo;
 import com.mlnx.mptp.model.BpResult;
+import com.mlnx.mptp.mptp.Codec;
 import com.mlnx.mptp.mptp.InvalidPacketException;
 import com.mlnx.mptp.mptp.body.GroupType;
 import com.mlnx.mptp.mptp.config.MptpConfig;
@@ -12,7 +13,7 @@ import com.mlnx.mptp.utils.ReadUtils;
 
 import java.nio.ByteBuffer;
 
-public class BpBody {
+public class BpBody implements Codec {
 
 	private static final ByteBuffer buffer = ByteBuffer
 			.allocate(MptpConfig.BP_BODY_CAPABILITY);
@@ -21,11 +22,13 @@ public class BpBody {
 	private BpDeviceInfo bpDeviceInfo;
 	private BpResult bpResult;
 
-	public BpBody() {
+	@Override
+	public void init() {
 		bpDeviceInfo = new BpDeviceInfo();
 		bpResult = new BpResult();
 		bpControl = new BpControl();
 	}
+
 
 	public BpDeviceInfo getBpDeviceInfo() {
 		return bpDeviceInfo;
@@ -119,6 +122,11 @@ public class BpBody {
 			bpResult.setWearMode(wearMode);
 			MptpLogUtils.mpDecode("佩戴方式" + (wearMode ? "正确" : "错误"));
 		}
+	}
+
+	@Override
+	public void decode(ByteBuffer buf) {
+
 	}
 
 	public byte[] encode() {

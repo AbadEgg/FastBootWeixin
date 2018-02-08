@@ -5,9 +5,11 @@ package com.mlnx.mptp.mptp.body;
  */
 public enum TopicType {
 
-    U_ECG_TOPIC("u/ecg/data/", "没有加密心电数据"), U_ECG_HEART_TOPIC("u/ecg/heart/", "心率"),
+    U_ECG_TOPIC("u/ecg/data/", "没有加密心电数据"),
     U_ECG_ENCRYPTION_TOPIC("u/ecg/encryption/data/", "加密心电数据"),
-    U_ECG_DEVICE_TOPIC("u/ecg/device/", "心电设备信息"), U_ECG_REAL_ANALY_TOPIC("u/ecg/analy_result/", "实时分析结果"),
+    U_ECG_REAL_ANALY_TOPIC("u/ecg/analy_result/", "实时分析结果"),
+    U_ECG_HEART_TOPIC("u/ecg/heart/", "心率"),
+    U_ECG_DEVICE_TOPIC("u/ecg/device/", "心电设备信息"),
 
     D_ECG_TOPIC("d/ecg/");
 

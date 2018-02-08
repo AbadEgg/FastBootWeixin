@@ -1,7 +1,7 @@
 package com.mlnx.device_server.service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.mlnx.analysis.domain.ReadEcgAnalysResult;
+import com.mlnx.analysis.domain.RealEcgAnalysResult;
 import com.mlnx.device.ecg.EcgDeviceInfo;
 import com.mlnx.device.inter.EcgDeviceService;
 import com.mlnx.device_server.comm.utils.DateUtils;
@@ -99,7 +99,7 @@ public class EcgService {
         }
 
         @Override
-        public void reciveReadEcgAnalysResult(Topic topic, ReadEcgAnalysResult result) {
+        public void reciveReadEcgAnalysResult(Topic topic, RealEcgAnalysResult result) {
 
         }
 

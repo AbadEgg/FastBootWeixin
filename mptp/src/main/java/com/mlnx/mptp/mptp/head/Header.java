@@ -34,32 +34,36 @@ public class Header implements Codec {
 		return length;
 	}
 
-	public void setBodyLength(int bodyLength) {
+	public Header setBodyLength(int bodyLength) {
 		length = bodyLength + HEAD_CONTANT_LEN;
+		return this;
 	}
 
 	public PacketType getPacketType() {
 		return packetType;
 	}
 
-	public void setPacketType(PacketType packetType) {
+	public Header setPacketType(PacketType packetType) {
 		this.packetType = packetType;
+		return this;
 	}
 
 	public QoS getQoS() {
 		return qoS;
 	}
 
-	public void setQoS(QoS qoS) {
+	public Header setQoS(QoS qoS) {
 		this.qoS = qoS;
+		return this;
 	}
 
 	public DeviceType getDeviceType() {
 		return deviceType;
 	}
 
-	public void setDeviceType(DeviceType deviceType) {
+	public Header setDeviceType(DeviceType deviceType) {
 		this.deviceType = deviceType;
+		return this;
 	}
 
 	public int getCheckSum() {
@@ -111,5 +115,10 @@ public class Header implements Codec {
 		buffer.get(bs);
 
 		return bs;
+	}
+
+	@Override
+	public void init() {
+
 	}
 }

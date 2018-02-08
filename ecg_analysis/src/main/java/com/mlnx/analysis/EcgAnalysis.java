@@ -1,7 +1,7 @@
 package com.mlnx.analysis;
 
 import com.mlnx.analysis.domain.HeartResult;
-import com.mlnx.analysis.domain.ReadEcgAnalysResult;
+import com.mlnx.analysis.domain.RealEcgAnalysResult;
 import com.mlnx.analysis.utils.FileUtils;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
@@ -44,15 +44,15 @@ public class EcgAnalysis {
         analysisLib.InitECGFilter();
     }
 
-    public ReadEcgAnalysResult realAnalysis(byte[] encryptionEcgDatas, long packetTime) {
+    public RealEcgAnalysResult realAnalysis(byte[] encryptionEcgDatas, long packetTime) {
 
         int encryptionIndex = 0;
         int index = 0;
-        ReadEcgAnalysResult result = null;
+        RealEcgAnalysResult result = null;
 
         if (encryptionEcgDatas != null && gpu8AcId != null) {
 
-            result = new ReadEcgAnalysResult();
+            result = new RealEcgAnalysResult();
             result.setTime(packetTime);
 
             byte[] ecgData = new byte[encryptionEcgDatas.length];
@@ -144,7 +144,18 @@ public class EcgAnalysis {
     }
 
     public static void main(String[] args) throws IOException {
-        EcgAnalysis ecgAnalysis = new EcgAnalysis("111");
-        ecgAnalysis.init();
+//        EcgAnalysis ecgAnalysis = new EcgAnalysis("111");
+//        ecgAnalysis.init();
+
+        byte[] gpu8AcId = new byte[]{0x0E, (byte) 0x80, 0x01, (byte) 0x80, 0x16, 0x51, 0x36, 0x32, 0x38,
+                0x37, 0x37, 0x31};
+
+        StringBuilder builder = new StringBuilder();
+        for (byte b : gpu8AcId) {
+            builder.append(String.format("%02x:", b));
+        }
+        builder.delete(builder.length()-1, builder.length());
+
+        System.out.println(builder.toString());
     }
 }

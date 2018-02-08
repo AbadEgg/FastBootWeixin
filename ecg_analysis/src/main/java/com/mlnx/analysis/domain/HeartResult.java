@@ -26,7 +26,7 @@ public enum HeartResult {
     HEART_6(6, "二连室性早搏"), HEART_7(7, "偶发室性早搏"), HEART_8(8, "二联律"),
     HEART_9(9, "三联律"), HEART_10(10, "心动过速"), HEART_11(11, "心动过缓"),
     HEART_12(12, "多形 PVC"), HEART_13(13, "起搏器未俘获"), HEART_14(14, "起搏器未起搏"),
-    HEART_15(15, "不规则节律"), HEART_16(16, "漏博"), HEART_20(20, "正常窦性心律"), HEART_24(24, "噪声过大");
+    HEART_15(15, "不规则节律"), HEART_16(16, "漏博"), HEART_20(20, "正常窦性心律"), HEART_24(24, "噪声过大"), HEART_22(22, "正常窦性心率");
 
     private int code;
     private String title;
@@ -36,9 +36,9 @@ public enum HeartResult {
         this.title = title;
     }
 
-    public static HeartResult decode(int code){
-        for (HeartResult heartResult : HeartResult.values()){
-            if (code == heartResult.getCode()){
+    public static HeartResult decode(int code) {
+        for (HeartResult heartResult : HeartResult.values()) {
+            if (code == heartResult.getCode()) {
                 return heartResult;
             }
         }

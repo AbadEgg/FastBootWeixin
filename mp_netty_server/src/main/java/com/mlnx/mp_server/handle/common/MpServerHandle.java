@@ -29,7 +29,7 @@ public class MpServerHandle extends SimpleChannelInboundHandler<MpPacket> {
 
         AbstractMessage message = null;
         MpPacket packet = null;
-        Session session = null;
+        Session session = SessionManager.get(ctx.channel());
 
 
 //        MptpLogUtils.d("PacketType:" + mpPacket.getHeader().getPacketType());
@@ -47,7 +47,6 @@ public class MpServerHandle extends SimpleChannelInboundHandler<MpPacket> {
                 message = subscribeMessage;
                 break;
             case UNSUBSCRIBE:
-                session = SessionManager.get(ctx.channel());
                 session.setTopics(null);
 
                 packet = new MpPacket().unSubscribeAck(DeviceType.SERVER,

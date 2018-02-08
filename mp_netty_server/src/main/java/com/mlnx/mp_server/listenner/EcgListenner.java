@@ -1,6 +1,6 @@
 package com.mlnx.mp_server.listenner;
 
-import com.mlnx.analysis.domain.ReadEcgAnalysResult;
+import com.mlnx.analysis.domain.RealEcgAnalysResult;
 import com.mlnx.mptp.model.Ecg;
 import com.mlnx.mptp.mptp.body.Topic;
 
@@ -18,7 +18,7 @@ public interface EcgListenner extends DeviceListenner {
 	 * @param topic
 	 * @param result
 	 */
-	public void reciveReadEcgAnalysResult(Topic topic, ReadEcgAnalysResult result);
+	public void reciveReadEcgAnalysResult(Topic topic, RealEcgAnalysResult result);
 
 	/**
 	 * 开始心电数据

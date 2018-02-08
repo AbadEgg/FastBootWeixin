@@ -6,11 +6,9 @@ import com.mlnx.mp_server.listenner.BroadCast;
 import java.io.IOException;
 
 public class EcgDeviceSession extends DeviceSession {
-	private Integer numChannels;
-
-	private Integer samplingRate;
-
-	private Integer amplification;
+	private Integer numChannels;	// 通道
+	private Integer samplingRate;	// 采样率
+	private Integer amplification;	// 放大倍数
 
 	private Integer pose;
 
@@ -18,7 +16,7 @@ public class EcgDeviceSession extends DeviceSession {
 
 	private boolean fristEcgPacket = true;
 
-	private EcgAnalysis analysis;
+	private EcgAnalysis analysis;	// 分析功能
 
 	public EcgDeviceSession(String deviceId) throws IOException {
 		super(deviceId);

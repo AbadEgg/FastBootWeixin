@@ -38,8 +38,9 @@ public class ECGDeviceInfo {
 		return ecgDeviceRunMode;
 	}
 
-	public void setEcgDeviceRunMode(ECGDeviceRunMode ecgDeviceRunMode) {
+	public ECGDeviceInfo setEcgDeviceRunMode(ECGDeviceRunMode ecgDeviceRunMode) {
 		this.ecgDeviceRunMode = ecgDeviceRunMode;
+		return this;
 	}
 
 	public ECGChannelType getEcgChannelType() {

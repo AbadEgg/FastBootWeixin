@@ -1,5 +1,6 @@
 package com.mlnx.mptp.mptp;
 
+import com.alibaba.fastjson.JSON;
 import com.mlnx.device.ecg.ECGChannelType;
 import com.mlnx.device.ecg.ECGDeviceRunMode;
 import com.mlnx.mptp.mptp.body.Body;
@@ -22,9 +23,19 @@ public class MpPacket implements Codec {
 
     public MpPacket() {
         super();
+        init();
+    }
 
+    public MpPacket(boolean notInit) {
+        super();
+    }
+
+    @Override
+    public void init() {
         header = new Header();
+        header.init();
         body = new Body();
+        body.init();
     }
 
     public Header getHeader() {
@@ -129,7 +140,7 @@ public class MpPacket implements Codec {
      */
     public MpPacket registerAck(DeviceType deviceType, Integer patientId, ResponseCode responseCode) {
 
-        body.setPatientID(patientId);
+        body.setPatientId(patientId);
         registerAck(deviceType, responseCode);
         return this;
     }
@@ -233,16 +244,33 @@ public class MpPacket implements Codec {
         }
     }
 
-    // public static void main(String[] args) {
-    // MpPacket mpPacket = new MpPacket().register("admin", "admin",
-    // DeviceType.USR);
-    // byte[] bs = mpPacket.encode();
-    //
-    // StringBuilder builder = new StringBuilder();
-    // for (int i = 0; i < bs.length; i++) {
-    // builder.append(String.format("0x%x ", bs[i]));
-    // }
-    // LogUtils.d(builder.toString());
-    // }
+    public static MpPacket build(){
+        MpPacket mpPacket = new MpPacket(false);
+        return mpPacket;
+    }
+
+    public Header buildHeader(){
+        if (header == null){
+            header = new Header();
+        }
+        return header;
+    }
+
+    public Body buildBody(){
+        if (body == null){
+            body = new Body();
+        }
+        return body;
+    }
+
+    public static void main(String[] args) {
+//         MpPacket mpPacket = new MpPacket().register("admin", "admin",
+//                 DeviceType.USR);
+
+        MpPacket mpPacket =  MpPacket.build();
+        mpPacket.buildBody().buildEcgBody().buildEcgAnalysisResult().setHeart(100).setPbNumb(10);
+
+         System.out.println(JSON.toJSONString(mpPacket));
+     }
 
 }

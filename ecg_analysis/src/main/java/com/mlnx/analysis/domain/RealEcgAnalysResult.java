@@ -3,7 +3,11 @@ package com.mlnx.analysis.domain;
 /**
  * Created by amanda.shan on 2018/2/6.
  */
-public class ReadEcgAnalysResult {
+public class RealEcgAnalysResult {
+
+    private Integer patientId;
+
+    private String deivceId;
 
     private long time;
 
@@ -52,5 +56,21 @@ public class ReadEcgAnalysResult {
 
     public void setHeartResult(HeartResult heartResult) {
         this.heartResult = heartResult;
+    }
+
+    public Integer getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(Integer patientId) {
+        this.patientId = patientId;
+    }
+
+    public String getDeivceId() {
+        return deivceId;
+    }
+
+    public void setDeivceId(String deivceId) {
+        this.deivceId = deivceId;
     }
 }
