@@ -12,27 +12,62 @@ public class ECGDeviceInfo {
 
 	private Integer packetInterval;
 
-	private Integer batteryLevel;
+	private Integer batteryLevel;	// 电量
 
-	private Integer signalStrength;
+	private Integer signalStrength;	// 信号强度
 
 	private Integer sdRemain;
 
 	private Integer sdCapacity;
 
-	private Integer magnification;
+	private Integer amplification;	// 放大倍数
 
 	private Integer sampling;
 
-	private Integer probeChannelBias;
+	private Integer probeChannelBias;	// 探头偏压
 
 	private Integer pei;	// 导联情况
 
-	// private ProbeChannelBiasMode probeChannelBiasMode;
-	//
-	// private List<ProbeElectrodeImpedanceMode> probeElectrodeImpedanceModes;
-
 	private WearMode wearMode;
+
+	public ECGDeviceInfo() {
+	}
+
+	public void updateECGDeviceInfo(ECGDeviceInfo info) {
+		if (info.getEcgDeviceRunMode() != null) {
+			setEcgDeviceRunMode(info.getEcgDeviceRunMode());
+		}
+		if (info.getEcgChannelType() != null) {
+			setEcgChannelType(info.getEcgChannelType());
+		}
+		if (info.getBatteryLevel() != null) {
+			setBatteryLevel(info.getBatteryLevel());
+		}
+		if (info.getSignalStrength() != null) {
+			setSignalStrength(info.getSignalStrength());
+		}
+		if (info.getSdCapacity() != null) {
+			setSdCapacity(info.getSdCapacity());
+		}
+		if (info.getSdRemain() != null) {
+			setSdRemain(info.getSdRemain());
+		}
+		if (info.getSampling() != null) {
+			setSampling(info.getSampling());
+		}
+		if (info.getAmplification() != null) {
+			setAmplification(info.getAmplification());
+		}
+		if (info.getWearMode() != null) {
+			setWearMode(info.getWearMode());
+		}
+		if (info.getProbeChannelBias() != null) {
+			setProbeChannelBias(info.getProbeChannelBias());
+		}
+		if (info.getPei() != null) {
+			setPei(info.getPei());
+		}
+	}
 
 	public ECGDeviceRunMode getEcgDeviceRunMode() {
 		return ecgDeviceRunMode;
@@ -91,12 +126,12 @@ public class ECGDeviceInfo {
 		this.sdCapacity = sdCapacity;
 	}
 
-	public Integer getMagnification() {
-		return magnification;
+	public Integer getAmplification() {
+		return amplification;
 	}
 
-	public void setMagnification(Integer magnification) {
-		this.magnification = magnification;
+	public void setAmplification(Integer amplification) {
+		this.amplification = amplification;
 	}
 
 	public Integer getSampling() {
@@ -155,21 +190,27 @@ public class ECGDeviceInfo {
 		return wearMode;
 	}
 
+	@Override
+	public String toString() {
+		return "ECGDeviceInfo{" +
+				"ecgDeviceRunMode=" + ecgDeviceRunMode +
+				", ecgChannelType=" + ecgChannelType +
+				", packetInterval=" + packetInterval +
+				", batteryLevel=" + batteryLevel +
+				", signalStrength=" + signalStrength +
+				", sdRemain=" + sdRemain +
+				", sdCapacity=" + sdCapacity +
+				", amplification=" + amplification +
+				", sampling=" + sampling +
+				", probeChannelBias=" + probeChannelBias +
+				", pei=" + pei +
+				", wearMode=" + wearMode +
+				'}';
+	}
+
 	public void setWearMode(WearMode wearMode) {
 		this.wearMode = wearMode;
 	}
 
-	@Override
-	public String toString() {
-		return "ECGDeviceInfo [ecgDeviceRunMode=" + ecgDeviceRunMode
-				+ ", ecgChannelType=" + ecgChannelType + ", packetInterval="
-				+ packetInterval + ", batteryLevel=" + batteryLevel
-				+ ", signalStrength=" + signalStrength + ", sdRemain="
-				+ sdRemain + ", sdCapacity=" + sdCapacity + ", magnification="
-				+ magnification + ", sampling=" + sampling
-				+ ", probeChannelBias=" + probeChannelBias
-				+ ", pei=" + pei
-				+ ", wearMode=" + wearMode + "]";
-	}
 
 }

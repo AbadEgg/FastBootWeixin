@@ -1,14 +1,14 @@
 package com.mlnx.mp_server.handle.common;
 
-import com.mlnx.mp_server.core.Session;
-import com.mlnx.mp_server.core.SessionManager;
 import com.mlnx.mp_server.protocol.RegisterMessage;
+import com.mlnx.mp_session.core.Session;
+import com.mlnx.mp_session.core.SessionManager;
+import com.mlnx.mptp.DeviceType;
+import com.mlnx.mptp.PacketType;
+import com.mlnx.mptp.ResponseCode;
 import com.mlnx.mptp.mptp.MpPacket;
 import com.mlnx.mptp.mptp.body.Body;
-import com.mlnx.mptp.mptp.body.ResponseCode;
-import com.mlnx.mptp.mptp.head.DeviceType;
 import com.mlnx.mptp.mptp.head.Header;
-import com.mlnx.mptp.mptp.head.PacketType;
 import com.mlnx.mptp.utils.MptpLogUtils;
 
 import io.netty.channel.ChannelHandlerContext;

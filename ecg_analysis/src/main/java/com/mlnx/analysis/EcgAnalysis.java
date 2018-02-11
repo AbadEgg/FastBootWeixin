@@ -1,8 +1,8 @@
 package com.mlnx.analysis;
 
-import com.mlnx.analysis.domain.HeartResult;
-import com.mlnx.analysis.domain.RealEcgAnalysResult;
 import com.mlnx.analysis.utils.FileUtils;
+import com.mlnx.mptp.model.analysis.HeartResult;
+import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.ShortByReference;
@@ -22,8 +22,11 @@ public class EcgAnalysis {
     private Logger logger = LoggerFactory.getLogger(EcgAnalysis.class);
 
     private String deviceId;
-    private byte[] gpu8AcId = new byte[]{0x0E, (byte) 0x80, 0x01, (byte) 0x80, 0x16, 0x51, 0x36, 0x32, 0x38,
-            0x37, 0x37, 0x31};
+//    private byte[] gpu8AcId = new byte[]{0x0E, (byte) 0x80, 0x01, (byte) 0x80, 0x16, 0x51, 0x36, 0x32, 0x38,
+//            0x37, 0x37, 0x31};
+
+    private byte[] gpu8AcId = new byte[]{0x00, 0x00, 0x2F, 0x00, 0x16, 0x51, 0x36, 0x32, 0x38, 0x37, 0x37, 0x31};
+
 
     private AnalysisLib analysisLib;
 

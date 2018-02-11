@@ -1,5 +1,6 @@
 package com.mlnx.mptp.mptp.body;
 
+import com.mlnx.mptp.ResponseCode;
 import com.mlnx.mptp.mptp.Codec;
 import com.mlnx.mptp.mptp.InvalidPacketException;
 import com.mlnx.mptp.mptp.body.bp.BpBody;

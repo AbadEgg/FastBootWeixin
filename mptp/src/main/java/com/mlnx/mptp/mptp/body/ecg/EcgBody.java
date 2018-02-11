@@ -4,7 +4,6 @@ import com.mlnx.device.ecg.ECGChannelType;
 import com.mlnx.device.ecg.ECGDeviceRunMode;
 import com.mlnx.mptp.model.ECGData;
 import com.mlnx.mptp.model.ECGDeviceInfo;
-import com.mlnx.mptp.model.EcgAnalysisResult;
 import com.mlnx.mptp.mptp.InvalidPacketException;
 import com.mlnx.mptp.mptp.body.GroupType;
 import com.mlnx.mptp.mptp.config.MptpConfig;
@@ -23,7 +22,7 @@ public class EcgBody {
 
     private ECGData ecgData;
 
-    private EcgAnalysisResult ecgAnalysisResult;
+    private boolean deviceInfoUpdate = false;
 
     public ECGDeviceInfo buildECGDeviceInfo() {
         if (ecgDeviceInfo == null) {
@@ -39,17 +38,13 @@ public class EcgBody {
         return ecgData;
     }
 
-    public EcgAnalysisResult buildEcgAnalysisResult() {
-        if (ecgAnalysisResult == null) {
-            ecgAnalysisResult = new EcgAnalysisResult();
-        }
-        return ecgAnalysisResult;
-    }
-
     public void init() {
         ecgDeviceInfo = new ECGDeviceInfo();
         ecgData = new ECGData();
-        ecgAnalysisResult = new EcgAnalysisResult();
+    }
+
+    public boolean isDeviceInfoUpdate() {
+        return deviceInfoUpdate;
     }
 
     public ECGDeviceInfo getEcgDeviceInfo() {
@@ -68,14 +63,6 @@ public class EcgBody {
         this.ecgData = ecgData;
     }
 
-    public EcgAnalysisResult getEcgAnalysisResult() {
-        return ecgAnalysisResult;
-    }
-
-    public void setEcgAnalysisResult(EcgAnalysisResult ecgAnalysisResult) {
-        this.ecgAnalysisResult = ecgAnalysisResult;
-    }
-
     public void decodeData(GroupType groupType, ByteBuffer frame,
                            String dataType, int dataLen) throws InvalidPacketException {
 
@@ -83,7 +70,6 @@ public class EcgBody {
 
         switch (groupType) {
             case ECG_DEVICE_MODE:
-
                 code = ReadUtils.readData(frame, dataType, dataLen);
                 ECGDeviceRunMode ecgDeviceRunMode = ECGDeviceRunMode.decode(code);
                 if (ecgDeviceRunMode == null) {
@@ -92,6 +78,7 @@ public class EcgBody {
 
                 ecgDeviceInfo.setEcgDeviceRunMode(ecgDeviceRunMode);
                 MptpLogUtils.mpDecode("收到心电设备模式：" + ecgDeviceRunMode);
+                deviceInfoUpdate = true;
                 break;
 
             case ECG_CHANNEL_TYPE:
@@ -105,6 +92,7 @@ public class EcgBody {
                 ecgDeviceInfo.setEcgChannelType(ecgChannelType);
 
                 MptpLogUtils.mpDecode("收到设备通道类型：" + ecgChannelType);
+                deviceInfoUpdate = true;
                 break;
 
             case PACKET_INTERVAL:
@@ -112,12 +100,14 @@ public class EcgBody {
                         dataLen);
                 ecgDeviceInfo.setPacketInterval(packetInterval);
                 MptpLogUtils.mpDecode("收到设备发包间隔：" + packetInterval);
+                deviceInfoUpdate = true;
                 break;
 
             case BATTERY_LEVEL:
                 Integer batteryLevel = ReadUtils.readData(frame, dataType, dataLen);
                 ecgDeviceInfo.setBatteryLevel(batteryLevel);
                 MptpLogUtils.mpDecode("收到设备电池电量：" + batteryLevel);
+                deviceInfoUpdate = true;
                 break;
 
             case SIGNAL_STRENGTH:
@@ -125,31 +115,36 @@ public class EcgBody {
                         dataLen);
                 ecgDeviceInfo.setSignalStrength(signalStrength);
                 MptpLogUtils.mpDecode("收到设备信号强度：" + signalStrength);
+                deviceInfoUpdate = true;
                 break;
 
             case SD_REMAIN:
                 Integer sdRemain = ReadUtils.readData(frame, dataType, dataLen);
                 ecgDeviceInfo.setSdRemain(sdRemain);
                 MptpLogUtils.mpDecode("收到sd卡剩余容量：" + sdRemain);
+                deviceInfoUpdate = true;
                 break;
 
             case SD_CAPACITY:
                 Integer sdCapacity = ReadUtils.readData(frame, dataType, dataLen);
                 ecgDeviceInfo.setSdCapacity(sdCapacity);
                 MptpLogUtils.mpDecode("收到sd卡总容量：" + sdCapacity);
+                deviceInfoUpdate = true;
                 break;
 
             case MAGNIFICATION:
                 Integer magnification = ReadUtils
                         .readData(frame, dataType, dataLen);
-                ecgDeviceInfo.setMagnification(magnification);
+                ecgDeviceInfo.setAmplification(magnification);
                 MptpLogUtils.mpDecode("收到放大倍数：" + magnification);
+                deviceInfoUpdate = true;
                 break;
 
             case SAMPLING:
                 Integer sampling = ReadUtils.readData(frame, dataType, dataLen);
                 ecgDeviceInfo.setSampling(sampling);
                 MptpLogUtils.mpDecode("收到采样率：" + sampling);
+                deviceInfoUpdate = true;
                 break;
 
             case PROBE_CHANNEL_BIAS:
@@ -157,6 +152,7 @@ public class EcgBody {
                         dataLen);
                 ecgDeviceInfo.setProbeChannelBias(probeChannelBias);
                 MptpLogUtils.mpDecode("收到探头通道偏压：" + probeChannelBias);
+                deviceInfoUpdate = true;
                 break;
 
             case PROBE_ELECTRODE_IMPEDANCE:
@@ -164,6 +160,7 @@ public class EcgBody {
                         dataType, dataLen);
                 ecgDeviceInfo.setPei(probeElectrodeImpedance);
                 MptpLogUtils.mpDecode("收到探头电极阻抗：" + probeElectrodeImpedance);
+                deviceInfoUpdate = true;
                 break;
             // case PROBE_CHANNEL_BIAS:
             // ProbeChannelBiasMode probeChannelBiasMode = ProbeChannelBiasMode
@@ -195,12 +192,14 @@ public class EcgBody {
                         dataType, dataLen));
                 ecgDeviceInfo.setWearMode(wearMode);
                 MptpLogUtils.mpDecode("收到设备佩戴方式：" + wearMode);
+                deviceInfoUpdate = true;
                 break;
 
             case ECG_HEART:
                 Integer ecgHeart = ReadUtils.readData(frame, dataType, dataLen);
                 ecgData.setEcgHeart(ecgHeart);
                 MptpLogUtils.mpDecode("收到心电设备心率：" + ecgHeart);
+                deviceInfoUpdate = true;
                 break;
 
             case ACCELERATION_SENSOR_DATA:
@@ -208,12 +207,14 @@ public class EcgBody {
                         dataType, dataLen);
                 ecgData.setAsd(accelerationSensorData);
                 MptpLogUtils.mpDecode("收到加速传感器数据：" + accelerationSensorData);
+                deviceInfoUpdate = true;
                 break;
 
             case BREATH:
                 Integer breath = ReadUtils.readData(frame, dataType, dataLen);
                 ecgData.setBreath(breath);
                 MptpLogUtils.mpDecode("收到呼吸：" + breath);
+                deviceInfoUpdate = true;
                 break;
 
             case ENCRY_SUCCESSION_DATA:
@@ -305,11 +306,11 @@ public class EcgBody {
             buffer.put(bs);
         }
 
-        if (ecgDeviceInfo.getMagnification() != null) {
+        if (ecgDeviceInfo.getAmplification() != null) {
             buffer.put(GroupType.MAGNIFICATION.getEncodes());
             buffer.put(new String("BT").getBytes());
             buffer.put((byte) 1);
-            buffer.put(ecgDeviceInfo.getMagnification().byteValue());
+            buffer.put(ecgDeviceInfo.getAmplification().byteValue());
         }
 
         if (ecgDeviceInfo.getSampling() != null) {

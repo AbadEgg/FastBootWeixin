@@ -1,14 +1,14 @@
 package com.mlnx.mp_server.server.initializer;
 
 import com.mlnx.mp_server.config.ConfigService;
-import com.mlnx.mp_server.handle.common.EventHandle;
+import com.mlnx.mp_server.handle.EventHandle;
 import com.mlnx.mp_server.handle.common.MpDecode;
 import com.mlnx.mp_server.handle.common.MpEncode;
 import com.mlnx.mp_server.handle.common.MpServerHandle;
 import com.mlnx.mp_server.handle.common.MpVerify;
 import com.mlnx.mp_server.handle.common.PushHandle;
-import com.mlnx.mp_server.handle.common.RegisterHandle;
-import com.mlnx.mp_server.handle.common.SubscribeHandle;
+import com.mlnx.mp_server.handle.RegisterHandle;
+import com.mlnx.mp_server.handle.SubscribeHandle;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;

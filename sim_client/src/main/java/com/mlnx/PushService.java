@@ -1,11 +1,15 @@
 package com.mlnx;
 
 
-import com.mlnx.mptp.mptp.MpPacket;
-import com.mlnx.mptp.mptp.body.ResponseCode;
+import com.mlnx.mp_session.domain.EcgInfo;
+import com.mlnx.mptp.ResponseCode;
+import com.mlnx.mptp.push.PushPacket;
+import com.mlnx.mptp.push.body.PushDataType;
+import com.mlnx.mptp.push.body.SerialType;
 import com.mlnx.mptp.utils.MptpLogUtils;
 import com.mlnx.utils.ThreadUtil;
 
+import java.util.Map;
 import java.util.Random;
 
 
@@ -71,7 +75,7 @@ public class PushService implements PushClient.LifeUsrClientLis {
     private void sub() {
 
         if (isRegister) {
-            pushClient.subscribe(topic);
+            pushClient.subscribe(topic, SerialType.JSON);
             MptpLogUtils.i("发送监听包");
         } else {
             pushClient.register(name, password);
@@ -99,11 +103,11 @@ public class PushService implements PushClient.LifeUsrClientLis {
         }
     }
 
-    public void recive(MpPacket mpPacket) {
+    public void recive(PushPacket pushPacket) {
 
-        switch (mpPacket.getHeader().getPacketType()) {
+        switch (pushPacket.getHeader().getPacketType()) {
             case Reg_ACK:
-                if (mpPacket.getBody().getResponseCode().equals(ResponseCode.SUCESS)) {
+                if (pushPacket.getBody().getResponseCode().equals(ResponseCode.SUCESS)) {
                     isRegister = true;
                     MptpLogUtils.i("注册成功");
                     if (isPush)
@@ -120,15 +124,24 @@ public class PushService implements PushClient.LifeUsrClientLis {
 //                 MptpLogUtils.d("收到pong包");
                 break;
             case SUB_ACK:
-                if (mpPacket.getBody().getResponseCode().equals(ResponseCode.SUCESS)) {
+                if (pushPacket.getBody().getResponseCode().equals(ResponseCode.SUCESS)) {
                     isListerDevice = true;
                     MptpLogUtils.i("监听成功");
                 }
                 break;
             case PUBLISH:
 
-                MptpLogUtils.i(mpPacket.getBody().getDeviceId()+" 收到推送分析结果:" + mpPacket.getBody().getEcgBody()
-                        .getEcgAnalysisResult().toString());
+                Map<PushDataType, Object> map = pushPacket.getBody().getPushDataMap();
+                for (PushDataType pushDataType : map.keySet()) {
+                    switch (pushDataType) {
+                        case ECG_INFO:
+
+                            EcgInfo ecgInfo = (EcgInfo) map.get(pushDataType);
+                            MptpLogUtils.i(ecgInfo.getDeivceId() + " 收到推送分析结果:" + ecgInfo.toString());
+                            break;
+                    }
+                }
+
                 break;
             case PUBLISH_ACK:
                 new Thread(new Runnable() {

@@ -1,7 +1,7 @@
 package com.mlnx.mp_server.protocol;
 
 
-import com.mlnx.mptp.mptp.head.DeviceType;
+import com.mlnx.mptp.DeviceType;
 import com.mlnx.mptp.mptp.head.QoS;
 
 public abstract class AbstractMessage {

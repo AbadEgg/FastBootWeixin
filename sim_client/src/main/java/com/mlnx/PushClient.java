@@ -2,12 +2,18 @@ package com.mlnx;
 
 import com.alibaba.fastjson.JSON;
 import com.mlnx.config.Config;
-import com.mlnx.mptp.mptp.MpPacket;
-import com.mlnx.mptp.mptp.head.DeviceType;
+import com.mlnx.mp_session.domain.EcgInfo;
+import com.mlnx.mptp.DeviceType;
+import com.mlnx.mptp.push.PushPacket;
+import com.mlnx.mptp.push.body.PushDataType;
+import com.mlnx.mptp.push.body.SerialType;
 import com.mlnx.mptp.utils.MptpLogUtils;
+import com.mlnx.mptp.utils.ProtostuffCodecUtil;
 import com.mlnx.utils.ThreadUtil;
 import com.mlnx.websocket.WebSocketListenner;
 import com.mlnx.websocket.WebSocketUtils;
+
+import java.util.Map;
 
 /**
  * Created by amanda.shan on 2017/9/19.
@@ -27,10 +33,10 @@ public class PushClient implements WebSocketListenner {
         ThreadUtil.execute(new Runnable() {
             public void run() {
 
-                 MpPacket  MpPacket = new  MpPacket();
-                 MpPacket.register(name, password, DeviceType.USR);
+                PushPacket pushPacket = new PushPacket();
+                pushPacket.register(name, password, DeviceType.USR);
                 try {
-                    webSocketUtils.sendString(JSON.toJSONString( MpPacket));
+                    webSocketUtils.sendString(JSON.toJSONString(pushPacket));
                 } catch (Exception e) {
                     e.printStackTrace();
                     lifeUsrClientLis.sendError();
@@ -43,10 +49,10 @@ public class PushClient implements WebSocketListenner {
         ThreadUtil.execute(new Runnable() {
             public void run() {
 
-                 MpPacket  MpPacket = new  MpPacket();
-                 MpPacket.ping(DeviceType.USR);
+                PushPacket pushPacket = new PushPacket();
+                pushPacket.ping(DeviceType.USR);
                 try {
-                    webSocketUtils.sendString(JSON.toJSONString( MpPacket));
+                    webSocketUtils.sendString(JSON.toJSONString(pushPacket));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -58,10 +64,10 @@ public class PushClient implements WebSocketListenner {
         ThreadUtil.execute(new Runnable() {
             public void run() {
 
-                 MpPacket  mpPacket = new  MpPacket();
-                 mpPacket.pong(DeviceType.USR);
+                PushPacket pushPacket = new PushPacket();
+                pushPacket.pong(DeviceType.USR);
                 try {
-                    webSocketUtils.sendString(JSON.toJSONString( mpPacket));
+                    webSocketUtils.sendString(JSON.toJSONString(pushPacket));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -69,14 +75,14 @@ public class PushClient implements WebSocketListenner {
         });
     }
 
-    public void subscribe(final String topic) {
+    public void subscribe(final String topic, final SerialType serialType) {
         ThreadUtil.execute(new Runnable() {
             public void run() {
 
-                 MpPacket  mpPacket = new  MpPacket();
-                 mpPacket.subscribe(DeviceType.USR, topic);
+                PushPacket pushPacket = new PushPacket();
+                pushPacket.subscribe(DeviceType.USR, topic, serialType);
                 try {
-                    webSocketUtils.sendString(JSON.toJSONString( mpPacket));
+                    webSocketUtils.sendString(JSON.toJSONString(pushPacket));
                 } catch (Exception e) {
                     e.printStackTrace();
                     lifeUsrClientLis.sendError();
@@ -89,13 +95,13 @@ public class PushClient implements WebSocketListenner {
         ThreadUtil.execute(new Runnable() {
             public void run() {
 
-//                 MpPacket  mpPacket = new  MpPacket();
+//                 PushPacket  PushPacket = new  PushPacket();
 //                Body body = new Body();
 //                body.setTopic(topic);
 //
-//                 mpPacket.push(DeviceType.USR, topic, msg, messageId);
+//                 PushPacket.push(DeviceType.USR, topic, msg, messageId);
 //                try {
-//                    webSocketUtils.sendString(JSON.toJSONString( mpPacket));
+//                    webSocketUtils.sendString(JSON.toJSONString( PushPacket));
 //                } catch (Exception e) {
 //                    e.printStackTrace();
 //                    lifeUsrClientLis.sendError();
@@ -105,11 +111,41 @@ public class PushClient implements WebSocketListenner {
     }
 
     public void onMessage(String message) {
-         MpPacket  MpPacket = JSON.parseObject(message,  MpPacket.class);
-        lifeUsrClientLis.recive( MpPacket);
+        PushPacket PushPacket = JSON.parseObject(message, PushPacket.class);
+        Map<PushDataType, Object> map = PushPacket.getBody().getPushDataMap();
+        if (map != null) {
+            for (PushDataType pushDataType : map.keySet()) {
+                switch (pushDataType) {
+                    case ECG_INFO:
+                        map.put(pushDataType, JSON.parseObject(map.get(pushDataType).toString(), EcgInfo.class));
+                        break;
+                }
+            }
+        }
+        lifeUsrClientLis.recive(PushPacket);
     }
 
     public void onMessage(byte[] bs) {
+        PushPacket PushPacket = null;
+        try {
+            PushPacket = ProtostuffCodecUtil.deserializer(bs, PushPacket.class);
+
+            Map<PushDataType, Object> map = PushPacket.getBody().getPushDataMap();
+            if (map != null) {
+                for (PushDataType pushDataType : map.keySet()) {
+                    switch (pushDataType) {
+                        case ECG_INFO:
+                            map.put(pushDataType, ProtostuffCodecUtil.deserializer((byte[]) map.get(pushDataType),
+                                    EcgInfo.class));
+
+                            break;
+                    }
+                }
+            }
+            lifeUsrClientLis.recive(PushPacket);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 
@@ -123,7 +159,7 @@ public class PushClient implements WebSocketListenner {
     }
 
     public interface LifeUsrClientLis {
-        void recive( MpPacket  MpPacket);
+        void recive(PushPacket PushPacket);
 
         void sendError();
 

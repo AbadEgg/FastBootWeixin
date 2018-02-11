@@ -5,10 +5,11 @@ import com.cybermkd.mongo.kit.MongoKit;
 import com.cybermkd.mongo.kit.MongoQuery;
 import com.cybermkd.mongo.kit.index.MongoIndex;
 import com.cybermkd.mongo.plugin.MongoPlugin;
+import com.mlnx.device.ecg.ECGChannelType;
 import com.mlnx.ecg.store.EcgStore;
 import com.mlnx.ecg.store.config.MlnxDataMongoConfig;
+import com.mlnx.ecg.store.domain.Ecg;
 import com.mlnx.ecg.store.utils.BeanUtils;
-import com.mlnx.mptp.model.Ecg;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -87,7 +88,7 @@ public class EcgMongoDb implements EcgStore {
         query.gt("startTime", startTime);
         query.lt("startTime", endTime);
         query.ascending("startTime");
-        query.projection("encryData", "startTime", "patientId", "deivceId");
+        query.projection("data", "startTime", "patientId", "deivceId");
 
         List<JSONObject> jsonObjects = query.find();
         List<Map<String, Object>> maps = new ArrayList<>();
@@ -95,7 +96,7 @@ public class EcgMongoDb implements EcgStore {
         if (jsonObjects != null) {
             for (JSONObject jsonObject : jsonObjects) {
 
-                JSONObject ecgObject = jsonObject.getJSONObject("encryData");
+                JSONObject ecgObject = jsonObject.getJSONObject("data");
                 if (ecgObject != null) {
                     jsonObject.put("data", ecgObject.getJSONArray("data"));
                 }
@@ -177,7 +178,7 @@ public class EcgMongoDb implements EcgStore {
                 ecg.setDeivceId("hek07bb123456");
                 ecg.setStartTime(System.currentTimeMillis() - 1000 * i);
 //                ecg.setStartTime(100000L);
-                ecg.setNumChannels(8);
+                ecg.setEcgChannelType(ECGChannelType.CHAN_8);
                 ecg.setSamplingRate(300);
                 ecg.setAmplification(5);
                 ecg.setHeartRate(90);

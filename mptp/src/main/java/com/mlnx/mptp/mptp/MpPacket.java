@@ -1,14 +1,13 @@
 package com.mlnx.mptp.mptp;
 
-import com.alibaba.fastjson.JSON;
 import com.mlnx.device.ecg.ECGChannelType;
 import com.mlnx.device.ecg.ECGDeviceRunMode;
+import com.mlnx.mptp.DeviceType;
+import com.mlnx.mptp.PacketType;
+import com.mlnx.mptp.ResponseCode;
 import com.mlnx.mptp.mptp.body.Body;
-import com.mlnx.mptp.mptp.body.ResponseCode;
 import com.mlnx.mptp.mptp.config.MptpConfig;
-import com.mlnx.mptp.mptp.head.DeviceType;
 import com.mlnx.mptp.mptp.head.Header;
-import com.mlnx.mptp.mptp.head.PacketType;
 import com.mlnx.mptp.utils.MptpLogUtils;
 
 import java.nio.ByteBuffer;
@@ -263,14 +262,5 @@ public class MpPacket implements Codec {
         return body;
     }
 
-    public static void main(String[] args) {
-//         MpPacket mpPacket = new MpPacket().register("admin", "admin",
-//                 DeviceType.USR);
-
-        MpPacket mpPacket =  MpPacket.build();
-        mpPacket.buildBody().buildEcgBody().buildEcgAnalysisResult().setHeart(100).setPbNumb(10);
-
-         System.out.println(JSON.toJSONString(mpPacket));
-     }
 
 }

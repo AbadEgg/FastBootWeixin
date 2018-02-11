@@ -1,17 +1,17 @@
 package com.mlnx.mp_server.handle.common;
 
-import com.mlnx.mp_server.core.DeviceSession;
-import com.mlnx.mp_server.core.Session;
-import com.mlnx.mp_server.core.SessionManager;
 import com.mlnx.mp_server.protocol.AbstractMessage;
 import com.mlnx.mp_server.protocol.PublishMessage;
 import com.mlnx.mp_server.protocol.RegisterMessage;
 import com.mlnx.mp_server.protocol.SubscribeMessage;
+import com.mlnx.mp_session.core.DeviceSession;
+import com.mlnx.mp_session.core.Session;
+import com.mlnx.mp_session.core.SessionManager;
+import com.mlnx.mptp.DeviceType;
+import com.mlnx.mptp.ResponseCode;
 import com.mlnx.mptp.mptp.MpPacket;
 import com.mlnx.mptp.mptp.body.Body;
-import com.mlnx.mptp.mptp.body.ResponseCode;
 import com.mlnx.mptp.mptp.body.Topic;
-import com.mlnx.mptp.mptp.head.DeviceType;
 import com.mlnx.mptp.mptp.head.Header;
 import com.mlnx.mptp.utils.TopicUtils;
 

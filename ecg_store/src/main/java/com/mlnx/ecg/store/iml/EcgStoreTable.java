@@ -15,9 +15,9 @@ import com.alicloud.openservices.tablestore.model.RangeRowQueryCriteria;
 import com.alicloud.openservices.tablestore.model.Row;
 import com.alicloud.openservices.tablestore.model.RowPutChange;
 import com.mlnx.ecg.store.EcgStore;
+import com.mlnx.ecg.store.domain.Ecg;
 import com.mlnx.ecg.store.utils.DatePrefix;
 import com.mlnx.ecg.store.utils.OTSUtils;
-import com.mlnx.mptp.model.Ecg;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -90,8 +90,8 @@ public class EcgStoreTable implements EcgStore {
                 // 加入属性列，消息内容
                 rowChange.addColumn("device_id", ColumnValue
                         .fromString(ecg.getDeivceId()));
-                rowChange.addColumn("channel_num", ColumnValue
-                        .fromString(ecg.getNumChannels() + ""));
+//                rowChange.addColumn("channel_num", ColumnValue
+//                        .fromString(ecg.getNumChannels() + ""));
                 rowChange.addColumn("sampling_rate", ColumnValue
                         .fromString(ecg.getSamplingRate() + ""));
                 rowChange.addColumn("amplification", ColumnValue
@@ -182,9 +182,9 @@ public class EcgStoreTable implements EcgStore {
                 case "device_id":
                     ECGResponse.setDeivceId(columnValue.asString());
                     break;
-                case "channel_num":
-                    ECGResponse.setNumChannels(valueOf(columnValue.asString()));
-                    break;
+//                case "channel_num":
+//                    ECGResponse.setNumChannels(valueOf(columnValue.asString()));
+//                    break;
                 case "sampling_rate":
                     ECGResponse.setSamplingRate(valueOf(columnValue.asString()));
                     break;

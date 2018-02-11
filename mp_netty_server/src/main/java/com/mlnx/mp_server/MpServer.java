@@ -1,9 +1,9 @@
 package com.mlnx.mp_server;
 
-import com.mlnx.mp_server.core.SessionManager;
 import com.mlnx.mp_server.server.MpDeviceServer;
 import com.mlnx.mp_server.server.MpWebServer;
 import com.mlnx.mp_server.server.Server;
+import com.mlnx.mp_session.core.SessionManager;
 
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;

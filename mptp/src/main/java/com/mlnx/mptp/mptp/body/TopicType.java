@@ -5,31 +5,31 @@ package com.mlnx.mptp.mptp.body;
  */
 public enum TopicType {
 
-    U_ECG_TOPIC("u/ecg/data/", "没有加密心电数据"),
-    U_ECG_ENCRYPTION_TOPIC("u/ecg/encryption/data/", "加密心电数据"),
-    U_ECG_REAL_ANALY_TOPIC("u/ecg/analy_result/", "实时分析结果"),
-    U_ECG_HEART_TOPIC("u/ecg/heart/", "心率"),
-    U_ECG_DEVICE_TOPIC("u/ecg/device/", "心电设备信息"),
+    U_ECG_TOPIC("没有加密心电数据", 1),
+    U_ECG_ENCRYPTION_TOPIC("加密心电数据", 1),
+    U_ECG_REAL_ANALY_TOPIC("实时分析结果", 1),
+    U_ECG_HEART_TOPIC("心率", 1),
+    U_ECG_DEVICE_TOPIC("心电设备信息", 1),
 
-    D_ECG_TOPIC("d/ecg/");
+    U_BP_TOPIC("血压数据", 2),
+    U_SPO_TOPIC("血氧数据", 3),
+    U_BT_TOPIC("呼吸数据", 4),
 
-    private String prefix;
+    D_ECG_TOPIC("用户发送信息给设备", 5);
+
     private String title;
+    private int type;
 
-    private TopicType(String type) {
-        this.prefix = type;
-    }
-
-    TopicType(String prefix, String title) {
-        this.prefix = prefix;
+    TopicType(String title, int type) {
         this.title = title;
+        this.type = type;
     }
 
-    public String getPrefix() {
-        return prefix;
+    public String getTitle() {
+        return title;
     }
 
-    public void setPrefix(String prefix) {
-        this.prefix = prefix;
+    public int getType() {
+        return type;
     }
 }

@@ -1,19 +1,21 @@
 package com.mlnx.device_server.service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
-import com.mlnx.analysis.domain.RealEcgAnalysResult;
 import com.mlnx.device.ecg.EcgDeviceInfo;
 import com.mlnx.device.inter.EcgDeviceService;
 import com.mlnx.device_server.comm.utils.DateUtils;
 import com.mlnx.device_server.comm.utils.ThreadUtil;
 import com.mlnx.ecg.store.EcgStore;
-import com.mlnx.mp_server.listenner.BroadCast;
-import com.mlnx.mp_server.listenner.EcgListenner;
+import com.mlnx.ecg.store.domain.Ecg;
 import com.mlnx.mp_server.protocol.RegisterMessage;
 import com.mlnx.mp_server.support.Action;
 import com.mlnx.mp_server.support.EcgSupport;
 import com.mlnx.mp_server.support.MpSupportManager;
-import com.mlnx.mptp.model.Ecg;
+import com.mlnx.mp_session.domain.EcgInfo;
+import com.mlnx.mp_session.listenner.BroadCast;
+import com.mlnx.mp_session.listenner.ecg.EcgListener;
+import com.mlnx.mptp.model.ECGData;
+import com.mlnx.mptp.model.ECGDeviceInfo;
 import com.mlnx.mptp.mptp.body.Topic;
 
 import org.slf4j.Logger;
@@ -77,7 +79,7 @@ public class EcgService {
         }
     };
 
-    private EcgListenner ecgListenner = new EcgListenner() {
+    private EcgListener ecgListenner = new EcgListener() {
         @Override
         public void deviceOnline(Topic topic, String deviceId) {
 
@@ -89,18 +91,34 @@ public class EcgService {
         }
 
         @Override
-        public void reciveEcgBody(Topic topic, final Ecg ecg) {
-            ThreadUtil.execute(new Runnable() {
-                @Override
-                public void run() {
-                    saveEcg(ecg);
+        public void reciveEcgInfo(List<Topic> topics, EcgInfo ecgInfo) {
+
+            if (ecgInfo.getEcgData() != null) {
+
+                Ecg ecg = new Ecg();
+
+                ecg.setPatientId(ecgInfo.getPatientId());
+                ecg.setDeivceId(ecgInfo.getDeivceId());
+                ecg.setStartTime(ecgInfo.getPacketTime());
+
+                ECGDeviceInfo info = ecgInfo.getEcgDeviceInfo();
+                if (info != null){
+                    ecg.setEcgChannelType(info.getEcgChannelType());
+                    ecg.setSamplingRate(info.getSampling());
+                    ecg.setAmplification(info.getAmplification());
+                    ecg.setBatteryLevel(info.getBatteryLevel());
+                    ecg.setPei(info.getPei());
                 }
-            });
-        }
 
-        @Override
-        public void reciveReadEcgAnalysResult(Topic topic, RealEcgAnalysResult result) {
+                ECGData ecgData = ecgInfo.getEcgData();
+                if (ecgData != null){
+                    ecg.setHeartRate(ecgData.getEcgHeart());
+                    ecg.setData(ecgData.getSuccessionData());
+                    ecg.setEncryData(ecgData.getEncrySuccessionData());
+                }
 
+                saveEcg(ecg);
+            }
         }
 
         @Override
@@ -157,7 +175,7 @@ public class EcgService {
         builder.append(":  mStartTime " + startTime + "   ");
         builder.append(DateUtils.format(startTime, "HH:mm:ss:SSS"));
         builder.append("-> mEndTime " + endTime + "   ");
-        builder.append(DateUtils.format(startTime, "HH:mm:ss:SSS"));
+        builder.append(DateUtils.format(endTime, "HH:mm:ss:SSS"));
         builder.append("\n");
         builder.append(ecgs.size() + "");
         logger.debug(builder.toString());

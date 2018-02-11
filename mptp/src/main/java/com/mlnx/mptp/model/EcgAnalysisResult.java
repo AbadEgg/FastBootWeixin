@@ -1,6 +1,7 @@
 package com.mlnx.mptp.model;
 
-import com.mlnx.analysis.domain.HeartResult;
+
+import com.mlnx.mptp.model.analysis.HeartResult;
 
 /**
  * Created by amanda.shan on 2018/2/6.

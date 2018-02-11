@@ -1,7 +1,7 @@
 package com.mlnx.device_server.domain;
 
-import com.mlnx.mp_server.core.EcgDeviceSession;
-import com.mlnx.mptp.mptp.head.DeviceType;
+import com.mlnx.mp_session.core.EcgDeviceSession;
+import com.mlnx.mptp.DeviceType;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

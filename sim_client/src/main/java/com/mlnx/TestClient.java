@@ -20,6 +20,7 @@ public class TestClient {
 
         List<Topic> topics = new ArrayList<Topic>();
         topics.add(new Topic(TopicType.U_ECG_REAL_ANALY_TOPIC, "HEK07EW17070015M"));
+//        topics.add(new Topic(TopicType.U_ECG_DEVICE_TOPIC, "HEK07EW17070015M"));
         testUsr.sub(JSON.toJSONString(topics));
     }
 }

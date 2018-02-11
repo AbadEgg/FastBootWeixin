@@ -1,8 +1,8 @@
 package com.mlnx.device_server.service;
 
-import com.mlnx.mp_server.core.Session;
-import com.mlnx.mp_server.core.SessionManager;
 import com.mlnx.mp_server.support.MpSupportManager;
+import com.mlnx.mp_session.core.Session;
+import com.mlnx.mp_session.core.SessionManager;
 
 import org.springframework.stereotype.Service;
 

@@ -38,6 +38,12 @@
             <artifactId>mptp</artifactId>
             <version>1.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.mlnx</groupId>
+            <artifactId>mp_session</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
 </project>

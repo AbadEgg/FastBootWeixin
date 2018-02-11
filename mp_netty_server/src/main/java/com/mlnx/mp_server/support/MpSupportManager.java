@@ -1,18 +1,19 @@
 package com.mlnx.mp_server.support;
 
 import com.mlnx.device.ecg.EcgDeviceInfo;
-import com.mlnx.mp_server.core.DeviceSession;
-import com.mlnx.mp_server.core.EcgDeviceSession;
-import com.mlnx.mp_server.core.Session;
-import com.mlnx.mp_server.core.SessionManager;
-import com.mlnx.mp_server.core.UsrSession;
 import com.mlnx.mp_server.protocol.RegisterMessage;
+import com.mlnx.mp_session.core.DeviceSession;
+import com.mlnx.mp_session.core.EcgDeviceSession;
+import com.mlnx.mp_session.core.Session;
+import com.mlnx.mp_session.core.SessionManager;
+import com.mlnx.mp_session.core.UsrSession;
+import com.mlnx.mptp.DeviceType;
+import com.mlnx.mptp.ResponseCode;
 import com.mlnx.mptp.mptp.MpPacket;
 import com.mlnx.mptp.mptp.body.Body;
 import com.mlnx.mptp.mptp.body.Command;
-import com.mlnx.mptp.mptp.body.ResponseCode;
-import com.mlnx.mptp.mptp.head.DeviceType;
 import com.mlnx.mptp.mptp.head.QoS;
+import com.mlnx.mptp.push.PushPacket;
 import com.mlnx.mptp.utils.MptpLogUtils;
 import com.mlnx.mptp.utils.RandomUtils;
 
@@ -215,12 +216,12 @@ public class MpSupportManager {
                 SessionManager.add(ctx.channel(), session);
             }
 
-            MpPacket packet = new MpPacket().registerAck(registerMessage.getDeviceType(), ResponseCode.SUCESS);
+            PushPacket packet = new PushPacket().registerAck(registerMessage.getDeviceType(), ResponseCode.SUCESS);
             ctx.channel().writeAndFlush(packet);
         } else {
             MptpLogUtils.e(String.format("%s %s 用户名或密码验证失败", registerMessage.getUsrName(), registerMessage
                     .getPassword()));
-            MpPacket packet = new MpPacket().registerAck(registerMessage.getDeviceType(),
+            PushPacket packet = new PushPacket().registerAck(registerMessage.getDeviceType(),
                     ResponseCode.VERIFY_USR_ERR);
             ctx.channel().writeAndFlush(packet);
             return;

@@ -4,11 +4,11 @@ import com.mlnx.device_server.comm.config.MpServerConfig;
 import com.mlnx.device_server.domain.EcgOnlineDevice;
 import com.mlnx.mp_server.MpServer;
 import com.mlnx.mp_server.config.ConfigService;
-import com.mlnx.mp_server.core.EcgDeviceSession;
-import com.mlnx.mp_server.core.SessionManager;
 import com.mlnx.mp_server.support.Action;
 import com.mlnx.mp_server.support.MpSupportManager;
 import com.mlnx.mp_server.support.UsrSupport;
+import com.mlnx.mp_session.core.EcgDeviceSession;
+import com.mlnx.mp_session.core.SessionManager;
 import com.mlnx.mptp.utils.LogLis;
 import com.mlnx.mptp.utils.MptpLogUtils;
 

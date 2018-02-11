@@ -1,6 +1,6 @@
 package com.mlnx.ecg.store;
 
-import com.mlnx.mptp.model.Ecg;
+import com.mlnx.ecg.store.domain.Ecg;
 
 import java.util.List;
 import java.util.Map;

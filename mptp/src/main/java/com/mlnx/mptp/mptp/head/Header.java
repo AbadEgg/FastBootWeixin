@@ -1,5 +1,7 @@
 package com.mlnx.mptp.mptp.head;
 
+import com.mlnx.mptp.DeviceType;
+import com.mlnx.mptp.PacketType;
 import com.mlnx.mptp.mptp.Codec;
 import com.mlnx.mptp.mptp.VersionManager;
 import com.mlnx.mptp.utils.ByteUtils;

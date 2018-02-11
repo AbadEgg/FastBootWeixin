@@ -1,8 +1,8 @@
 package com.mlnx.mp_server.server;
 
 import com.mlnx.mp_server.config.ConfigService;
-import com.mlnx.mp_server.core.SessionManager;
 import com.mlnx.mp_server.server.initializer.TcpServerInitializer;
+import com.mlnx.mp_session.core.SessionManager;
 import com.mlnx.mptp.utils.MptpLogUtils;
 
 import io.netty.bootstrap.ServerBootstrap;

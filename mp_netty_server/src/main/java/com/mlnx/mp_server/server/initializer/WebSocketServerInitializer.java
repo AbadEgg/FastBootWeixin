@@ -1,15 +1,13 @@
 package com.mlnx.mp_server.server.initializer;
 
 import com.mlnx.mp_server.config.ConfigService;
-import com.mlnx.mp_server.handle.common.EventHandle;
-import com.mlnx.mp_server.handle.common.MpDecode;
-import com.mlnx.mp_server.handle.common.MpServerHandle;
-import com.mlnx.mp_server.handle.common.MpVerify;
-import com.mlnx.mp_server.handle.common.PushHandle;
-import com.mlnx.mp_server.handle.common.RegisterHandle;
-import com.mlnx.mp_server.handle.common.SubscribeHandle;
-import com.mlnx.mp_server.handle.web.MpWebEncode;
-import com.mlnx.mp_server.handle.web.MpWebServerHandle;
+import com.mlnx.mp_server.handle.EventHandle;
+import com.mlnx.mp_server.handle.RegisterHandle;
+import com.mlnx.mp_server.handle.SubscribeHandle;
+import com.mlnx.mp_server.handle.web.PushHandle;
+import com.mlnx.mp_server.handle.web.PushServerHandle;
+import com.mlnx.mp_server.handle.web.PushWebEncode;
+import com.mlnx.mp_server.handle.web.PushWebServerHandle;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
@@ -31,13 +29,10 @@ public class WebSocketServerInitializer extends ChannelInitializer<SocketChannel
 		ch.pipeline().addLast("decoder", new HttpRequestDecoder());
 		ch.pipeline().addLast("aggregator", new HttpObjectAggregator(65536));
 
-		ch.pipeline().addLast(new MpWebServerHandle());
-		ch.pipeline().addLast(new MpWebEncode());
+		ch.pipeline().addLast(new PushWebServerHandle());
+		ch.pipeline().addLast(new PushWebEncode());
 
-		ch.pipeline().addLast(new MpDecode());
-
-		ch.pipeline().addLast(new MpVerify());
-		ch.pipeline().addLast(new MpServerHandle());
+		ch.pipeline().addLast(new PushServerHandle());
 		ch.pipeline().addLast(new RegisterHandle());
 		ch.pipeline().addLast(new PushHandle());
 		ch.pipeline().addLast(new SubscribeHandle());

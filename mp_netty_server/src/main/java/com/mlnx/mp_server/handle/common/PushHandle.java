@@ -1,25 +1,26 @@
 package com.mlnx.mp_server.handle.common;
 
-import com.mlnx.analysis.domain.RealEcgAnalysResult;
-import com.mlnx.device.ecg.ECGChannelType;
-import com.mlnx.mp_server.core.EcgDeviceSession;
-import com.mlnx.mp_server.core.Session;
-import com.mlnx.mp_server.core.SessionManager;
-import com.mlnx.mp_server.listenner.BroadCast;
 import com.mlnx.mp_server.protocol.PublishMessage;
+import com.mlnx.mp_session.core.EcgDeviceSession;
+import com.mlnx.mp_session.core.Session;
+import com.mlnx.mp_session.core.SessionManager;
+import com.mlnx.mp_session.domain.EcgInfo;
+import com.mlnx.mp_session.listenner.BroadCast;
+import com.mlnx.mptp.DeviceType;
+import com.mlnx.mptp.ResponseCode;
 import com.mlnx.mptp.model.ECGData;
 import com.mlnx.mptp.model.ECGDeviceInfo;
-import com.mlnx.mptp.model.Ecg;
+import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
 import com.mlnx.mptp.mptp.MpPacket;
 import com.mlnx.mptp.mptp.body.Body;
 import com.mlnx.mptp.mptp.body.DeviceState;
-import com.mlnx.mptp.mptp.body.ResponseCode;
 import com.mlnx.mptp.mptp.body.Topic;
 import com.mlnx.mptp.mptp.body.TopicType;
-import com.mlnx.mptp.mptp.body.ecg.EcgBody;
-import com.mlnx.mptp.mptp.head.DeviceType;
 import com.mlnx.mptp.mptp.head.QoS;
 import com.mlnx.mptp.utils.MptpLogUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -33,8 +34,6 @@ public class PushHandle extends SimpleChannelInboundHandler<PublishMessage> {
         String deviceId = msg.getBody().getDeviceId();
         final Body body = msg.getBody();
         Topic topic = msg.getTopic();
-        EcgBody ecgBody = msg.getBody().getEcgBody();
-        ECGData ecgData = ecgBody.getEcgData();
 
         Session session = null;
 
@@ -60,92 +59,9 @@ public class PushHandle extends SimpleChannelInboundHandler<PublishMessage> {
                 }
                 break;
 
-            // 设备发送给用户的主题
+            // 心电设备发送给用户的主题
             case ECG_DEVICE:
-
-                if (session instanceof EcgDeviceSession) {
-
-                    ECGDeviceInfo ecgDeviceInfo = body.getEcgBody()
-                            .getEcgDeviceInfo();
-
-                    if (ecgDeviceInfo.getEcgChannelType() != null) {
-                        int num = ecgDeviceInfo.getEcgChannelType() == ECGChannelType.CHAN_1 ? 1
-                                : (ecgDeviceInfo.getEcgChannelType() == ECGChannelType.CHAN_3 ? 8
-                                : 12);
-                        ((EcgDeviceSession) session).setNumChannels(num);
-                    }
-
-                    if (ecgDeviceInfo.getSampling() != null) {
-                        ((EcgDeviceSession) session).setSamplingRate(ecgDeviceInfo
-                                .getSampling());
-                    }
-
-                    if (ecgDeviceInfo.getMagnification() != null) {
-                        ((EcgDeviceSession) session).setAmplification(ecgDeviceInfo
-                                .getMagnification());
-                    }
-
-                    if (ecgDeviceInfo.getWearMode() != null) {
-                        ((EcgDeviceSession) session).setPose(ecgDeviceInfo
-                                .getWearMode().getCode());
-                    }
-
-                    if (ecgData.getSuccessionData() != null || ecgData.getEncrySuccessionData() != null) {
-
-                        Ecg ecg = new Ecg();
-                        ecg.setPatientId(body.getPatientId());
-                        ecg.setDeivceId(((EcgDeviceSession) session).getDeviceId());
-                        ecg.setStartTime(body.getPacketTime());
-                        ecg.setNumChannels(((EcgDeviceSession) session)
-                                .getNumChannels());
-                        ecg.setSamplingRate(((EcgDeviceSession) session)
-                                .getSamplingRate());
-                        ecg.setAmplification(((EcgDeviceSession) session)
-                                .getAmplification());
-                        ecg.setHeartRate(body.getEcgBody().getEcgData()
-                                .getEcgHeart());
-                        ecg.setPose(((EcgDeviceSession) session).getPose());
-
-                        ecg.setBatteryLevel(body.getEcgBody().getEcgDeviceInfo().getBatteryLevel());
-                        ecg.setPei(body.getEcgBody().getEcgDeviceInfo().getPei());
-
-                        // 心电更新
-                        final EcgDeviceSession session1 = (EcgDeviceSession) session;
-
-                        Topic topic1 = new Topic();
-                        topic1.setDeviceId(deviceId);
-                        if (ecgData.getSuccessionData() != null) {
-                            ecg.setData(ecgData.getSuccessionData());
-
-                            topic1.setTopicType(TopicType.U_ECG_TOPIC);
-                            BroadCast.ecgBroadCast.reciveEcgBody(topic1, ecg);
-                        } else if (ecgData.getEncrySuccessionData() != null) {
-                            ecg.setEncryData(ecgData.getEncrySuccessionData());
-
-                            RealEcgAnalysResult result = session1.getAnalysis().realAnalysis(ecgData
-                                    .getEncrySuccessionData(), body.getPacketTime());
-                            result.setDeivceId(deviceId);
-                            result.setPatientId(body.getPatientId());
-
-                            ecg.setData(result.getEcgData());
-
-                            topic1.setTopicType(TopicType.U_ECG_TOPIC);
-                            BroadCast.ecgBroadCast.reciveEcgBody(topic1, ecg);
-
-                            topic1.setTopicType(TopicType.U_ECG_REAL_ANALY_TOPIC);
-                            BroadCast.ecgBroadCast.reciveReadEcgAnalysResult(topic1, result);
-                        }
-
-
-                        session1.setLastEcgDataTime(body.getPacketTime());
-                        if (session1.isFristEcgPacket()) {
-                            session1.setFristEcgPacket(false);
-                            BroadCast.ecgBroadCast.startEcgPacket(session1.getPatientId());
-                        }
-
-                    }
-                }
-
+                processEcg(session, body);
                 break;
         }
 
@@ -160,5 +76,76 @@ public class PushHandle extends SimpleChannelInboundHandler<PublishMessage> {
             }
             ctx.channel().writeAndFlush(packet);
         }
+    }
+
+    private void processEcg( Session session, Body body){
+        if (session instanceof EcgDeviceSession) {
+
+            ECGData ecgData = body.getEcgBody().getEcgData();
+            String deviceId = body.getDeviceId();
+
+            // 更新设备信息session
+            ECGDeviceInfo ecgDeviceInfo = body.getEcgBody()
+                    .getEcgDeviceInfo();
+            EcgDeviceSession ecgDeviceSession = (EcgDeviceSession) session;
+            ecgDeviceSession.getEcgInfo().getEcgDeviceInfo().updateECGDeviceInfo(ecgDeviceInfo);
+
+
+            // 新建广播EcgInfo
+            EcgInfo ecgInfo = new EcgInfo();
+            ecgInfo.setDeivceId(deviceId);
+            ecgInfo.setPatientId(ecgDeviceSession.getPatientId());
+            ecgInfo.setPacketTime(body.getPacketTime());
+            List<Topic> topics = new ArrayList<>();
+
+            // 推送设备信息
+            if (ecgDeviceInfo != null && body.getEcgBody().isDeviceInfoUpdate()){
+                ecgInfo.setEcgDeviceInfo(ecgDeviceInfo);
+                topics.add(new Topic(TopicType.U_ECG_DEVICE_TOPIC, deviceId));
+            }
+            // 推送心电数据
+            if (ecgData.getSuccessionData() != null || ecgData.getEncrySuccessionData() != null) {
+
+                ecgInfo.setEcgData(ecgData);
+
+                // 不需要分析的心电数据
+                if (ecgData.getSuccessionData() != null) {
+                    topics.add(new Topic(TopicType.U_ECG_TOPIC, deviceId));
+                }
+                // 需要分析的心电数据
+                else if (ecgData.getEncrySuccessionData() != null) {
+
+                    RealEcgAnalysResult result = ecgDeviceSession.getAnalysis().realAnalysis(ecgData
+                            .getEncrySuccessionData(), body.getPacketTime());
+
+                    ecgData.setSuccessionData(result.getEcgData());
+                    topics.add(new Topic(TopicType.U_ECG_ENCRYPTION_TOPIC, deviceId));
+
+                    result.setEcgData(null);
+
+                    // 更新分析结果session
+                    ecgDeviceSession.getEcgInfo().setRealEcgAnalysResult(result);
+
+                    if (result.getHeart() != null || result.getHeartResult() != null || result.getPbNumb() !=
+                            null) {
+                        ecgInfo.setRealEcgAnalysResult(result);
+                        topics.add(new Topic(TopicType.U_ECG_REAL_ANALY_TOPIC, deviceId));
+                    }
+                }
+
+
+                ecgDeviceSession.setLastEcgDataTime(body.getPacketTime());
+                if (ecgDeviceSession.isFristEcgPacket()) {
+                    ecgDeviceSession.setFristEcgPacket(false);
+                    BroadCast.ecgBroadCast.startEcgPacket(ecgDeviceSession.getPatientId());
+                }
+
+            }
+
+            if (topics.size() > 0){
+                BroadCast.ecgBroadCast.reciveEcgInfo(topics, ecgInfo);
+            }
+        }
+
     }
 }
