@@ -35,7 +35,7 @@ public class MpDeviceServer implements Server {
 					.childOption(ChannelOption.SO_KEEPALIVE, true);
 
 			channelFuture = b.bind(ConfigService.MP_DEVICE_PORT).sync(); // (7)
-			MptpLogUtils.i("mp web utils start ok port:"+ConfigService.MP_DEVICE_PORT);
+			MptpLogUtils.i("cms web utils start ok port:"+ConfigService.MP_DEVICE_PORT);
 		} finally {
 			// 在jvm关闭的时候执行
 			Runtime.getRuntime().addShutdownHook(new Thread() {

@@ -11,6 +11,7 @@ import com.mlnx.mp_session.core.EcgDeviceSession;
 import com.mlnx.mp_session.core.SessionManager;
 import com.mlnx.mptp.utils.LogLis;
 import com.mlnx.mptp.utils.MptpLogUtils;
+import com.mlnx.qcms.utils.QcmsLogUtils;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,12 +63,40 @@ public class MpServerService {
         }
     };
 
+    private com.mlnx.qcms.utils.LogLis logLis1 = new com.mlnx.qcms.utils.LogLis() {
+        @Override
+        public void i(String log) {
+            logger.info(log);
+        }
+
+        @Override
+        public void d(String log) {
+            logger.debug(log);
+        }
+
+        @Override
+        public void w(String log) {
+            logger.warn(log);
+        }
+
+        @Override
+        public void e(String log) {
+            logger.error(log);
+        }
+
+        @Override
+        public void e(String log, Throwable t) {
+            logger.error(log, t);
+        }
+    };
+
     @PostConstruct
     private void startServer() {
 
         MpSupportManager.getInstance().setUsrSupport(usrSupport);
 
         MptpLogUtils.setLogLis(logLis);
+        QcmsLogUtils.setLogLis(logLis1);
 
         ConfigService.MP_DEVICE_PORT = mpServerConfig.getMpDevicePort();
         ConfigService.MP_WEB_PORT = mpServerConfig.getMpWebPort();

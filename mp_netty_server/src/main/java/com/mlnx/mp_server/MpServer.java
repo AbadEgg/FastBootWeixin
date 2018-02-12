@@ -3,7 +3,9 @@ package com.mlnx.mp_server;
 import com.mlnx.mp_server.server.MpDeviceServer;
 import com.mlnx.mp_server.server.MpWebServer;
 import com.mlnx.mp_server.server.Server;
+import com.mlnx.mp_server.server.initializer.MpCmsServerInitializer;
 import com.mlnx.mp_session.core.SessionManager;
+import com.mlnx.qcms_server.server.QcmsDeviceServer;
 
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -15,6 +17,7 @@ public class MpServer implements Server {
 
     private MpDeviceServer mpDeviceServer;
     private MpWebServer mpWebServer;
+    private QcmsDeviceServer qcmsDeviceServer;
 
     private Boolean isRefresh = false;
     private Thread sessionManagerThread = new Thread(new Runnable() {
@@ -47,6 +50,9 @@ public class MpServer implements Server {
             mpWebServer = new MpWebServer(bossGroup, workGroup);
             mpWebServer.start();
 
+            qcmsDeviceServer = new QcmsDeviceServer(bossGroup, workGroup);
+            qcmsDeviceServer.start(new MpCmsServerInitializer());
+
             sessionManagerThread.start();
 
         } catch (Exception e) {
@@ -58,6 +64,7 @@ public class MpServer implements Server {
     public void restart() throws Exception {
         mpDeviceServer.restart();
         mpWebServer.restart();
+        qcmsDeviceServer.restart();
     }
 
     @Override
@@ -65,6 +72,7 @@ public class MpServer implements Server {
 
         mpDeviceServer.shutdown();
         mpWebServer.shutdown();
+        qcmsDeviceServer.shutdown();
 
         isRefresh = false;
         synchronized (sessionManagerThread) {

@@ -2,13 +2,16 @@ package com.mlnx.mp_server.server.initializer;
 
 import com.mlnx.mp_server.config.ConfigService;
 import com.mlnx.mp_server.handle.EventHandle;
+import com.mlnx.mp_server.handle.PushBpHandle;
+import com.mlnx.mp_server.handle.PushEcgHandle;
+import com.mlnx.mp_server.handle.PushSpoHandle;
+import com.mlnx.mp_server.handle.RegisterHandle;
+import com.mlnx.mp_server.handle.SubscribeHandle;
 import com.mlnx.mp_server.handle.common.MpDecode;
 import com.mlnx.mp_server.handle.common.MpEncode;
 import com.mlnx.mp_server.handle.common.MpServerHandle;
 import com.mlnx.mp_server.handle.common.MpVerify;
 import com.mlnx.mp_server.handle.common.PushHandle;
-import com.mlnx.mp_server.handle.RegisterHandle;
-import com.mlnx.mp_server.handle.SubscribeHandle;
 
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.socket.SocketChannel;
@@ -32,5 +35,8 @@ public class TcpServerInitializer extends ChannelInitializer<SocketChannel> {
 		ch.pipeline().addLast(new RegisterHandle());
 		ch.pipeline().addLast(new PushHandle());
 		ch.pipeline().addLast(new SubscribeHandle());
+		ch.pipeline().addLast(new PushEcgHandle());
+		ch.pipeline().addLast(new PushBpHandle());
+		ch.pipeline().addLast(new PushSpoHandle());
 	}
 }

@@ -1,9 +1,15 @@
 package com.mlnx.mp_session.core;
 
+import com.mlnx.mp_session.domain.BpInfo;
 import com.mlnx.mp_session.domain.EcgInfo;
+import com.mlnx.mp_session.domain.SpoInfo;
 import com.mlnx.mp_session.listenner.BroadCast;
+import com.mlnx.mp_session.listenner.adapter.UserBpAdapter;
+import com.mlnx.mp_session.listenner.adapter.UserSpoAdapter;
 import com.mlnx.mp_session.listenner.adapter.UsrEcgAdapter;
+import com.mlnx.mp_session.listenner.bp.BpListener;
 import com.mlnx.mp_session.listenner.ecg.EcgListener;
+import com.mlnx.mp_session.listenner.spo.SpoListener;
 import com.mlnx.mptp.DeviceType;
 import com.mlnx.mptp.model.ECGData;
 import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
@@ -11,7 +17,6 @@ import com.mlnx.mptp.mptp.body.Topic;
 import com.mlnx.mptp.push.PushPacket;
 import com.mlnx.mptp.push.body.PushDataType;
 import com.mlnx.mptp.push.body.SerialType;
-import com.mlnx.mptp.utils.MptpLogUtils;
 import com.mlnx.mptp.utils.TopicUtils;
 
 import java.util.HashMap;
@@ -30,6 +35,8 @@ public class UsrSession extends Session {
     private SerialType serialType = SerialType.JSON;
 
     private EcgLis ecgLis = new EcgLis();
+    private SpoLis spoLis = new SpoLis();
+    private BpLis bpLis = new BpLis();
 
     public String getUserName() {
         return userName;
@@ -58,6 +65,8 @@ public class UsrSession extends Session {
     @Override
     public void removeLis() {
         BroadCast.removeEcgListenner(ecgLis);
+        BroadCast.removeBpListener(bpLis);
+        BroadCast.removeSpoListener(spoLis);
     }
 
     @Override
@@ -65,6 +74,15 @@ public class UsrSession extends Session {
         return ecgLis;
     }
 
+    @Override
+    public SpoListener getSpoListener() {
+        return spoLis;
+    }
+
+    @Override
+    public BpListener getBpListener() {
+        return bpLis;
+    }
 
     class EcgLis extends UsrEcgAdapter {
 
@@ -121,11 +139,13 @@ public class UsrSession extends Session {
                             break;
                     }
                 }
+
+//                MptpLogUtils.i(builder.toString());
             }
 
             if (isExist) {
 
-                MptpLogUtils.d(builder.toString());
+//                MptpLogUtils.d(builder.toString());
 
                 Map<PushDataType, Object> pushDataMap = new HashMap<>();
                 pushDataMap.put(PushDataType.ECG_INFO, pushEcgInfo);
@@ -133,6 +153,67 @@ public class UsrSession extends Session {
                 PushPacket packet = new PushPacket();
                 packet.getBody().setPushSerialType(serialType);
                 packet.push(DeviceType.SERVER, ecgInfo.getDeivceId(), pushDataMap);
+                channel.writeAndFlush(packet);
+            }
+        }
+    }
+
+    class SpoLis extends UserSpoAdapter{
+        @Override
+        public void reciveSpoInfo(List<Topic> topics, SpoInfo spoInfo) {
+            super.reciveSpoInfo(topics, spoInfo);
+
+            boolean isExist = false;
+            for (Topic topic : topics) {
+                if (TopicUtils.contain(getTopics(), topic)) {
+                    isExist = true;
+                    switch (topic.getTopicType()) {
+                        case U_SPO_TOPIC:
+
+                            break;
+                    }
+                }
+            }
+
+            if (isExist) {
+
+                Map<PushDataType, Object> pushDataMap = new HashMap<>();
+                pushDataMap.put(PushDataType.SPO_INFO, spoInfo);
+
+                PushPacket packet = new PushPacket();
+                packet.getBody().setPushSerialType(serialType);
+                packet.push(DeviceType.SERVER, spoInfo.getDeivceId(), pushDataMap);
+                channel.writeAndFlush(packet);
+            }
+        }
+    }
+
+    class BpLis extends UserBpAdapter{
+
+        @Override
+        public void reciveBpInfo(List<Topic> topics, BpInfo bpInfo) {
+            super.reciveBpInfo(topics, bpInfo);
+
+            boolean isExist = false;
+            for (Topic topic : topics) {
+                if (TopicUtils.contain(getTopics(), topic)) {
+                    isExist = true;
+                    switch (topic.getTopicType()) {
+                        case U_BP_TOPIC:
+
+                            break;
+                    }
+                }
+            }
+
+            if (isExist) {
+
+                Map<PushDataType, Object> pushDataMap = new HashMap<>();
+                pushDataMap.put(PushDataType.BP_INFO, bpInfo);
+
+                PushPacket packet = new PushPacket();
+                packet.getBody().setPushSerialType(serialType);
+                packet.push(DeviceType.SERVER, bpInfo.getDeivceId(), pushDataMap);
                 channel.writeAndFlush(packet);
             }
         }

@@ -1,14 +1,18 @@
 package com.mlnx.mp_session.core;
 
 import com.mlnx.mp_session.listenner.BroadCast;
+import com.mlnx.mp_session.listenner.bp.BpListener;
 import com.mlnx.mp_session.listenner.ecg.EcgListener;
+import com.mlnx.mp_session.listenner.spo.SpoListener;
 import com.mlnx.mptp.DeviceType;
 import com.mlnx.mptp.mptp.body.Topic;
 
 import java.io.Serializable;
 import java.net.SocketAddress;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import io.netty.channel.Channel;
 
@@ -107,13 +111,37 @@ public abstract class Session implements Serializable {
     public void setTopics(List<Topic> topics) {
         this.topics = topics;
 
+        removeLis();
 
-        BroadCast.addEcgListenner(getEcgListener());
+        Set<Integer> set = new HashSet<>();
+        for (Topic topic : topics) {
+            set.add(topic.getTopicType().getType());
+        }
+
+        if (getEcgListener() != null && set.contains(1)) {
+            BroadCast.addEcgListenner(getEcgListener());
+        }
+        if (getSpoListener() != null && set.contains(3)) {
+            BroadCast.addSpoListener(getSpoListener());
+        }
+        if (getBpListener() != null && set.contains(2)) {
+            BroadCast.addBpListener(getBpListener());
+        }
     }
 
     public abstract void removeLis();
 
-    public abstract EcgListener getEcgListener();
+    public EcgListener getEcgListener() {
+        return null;
+    }
+
+    public SpoListener getSpoListener() {
+        return null;
+    }
+
+    public BpListener getBpListener() {
+        return null;
+    }
 
     @Override
     public String toString() {

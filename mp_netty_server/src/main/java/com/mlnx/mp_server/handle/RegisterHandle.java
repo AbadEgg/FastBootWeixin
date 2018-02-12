@@ -52,12 +52,19 @@ public class RegisterHandle extends
             case BP_DEVICE:
             case SBP_DEVICE:
             case MP_DEVICE:
-                MptpLogUtils.e("不支持的设备类型 ：" + deviceType);
-            {
-                MpPacket packet = new MpPacket().registerAck(deviceType,
-                        ResponseCode.NOT_SUPPORT_DEVICE_TYPE);
-                ctx.channel().writeAndFlush(packet);
-            }
+                if (deviceID == null) {
+                    MptpLogUtils.e("缺少  deviceID ");
+                    return;
+                } else {
+                    action = new Action();
+                    action.setActionType(Action.ActionType.ECG_DEVICE_REGISTER);
+                    action.setCtx(ctx);
+                    action.setRegisterMessage(registerMessage);
+
+                    MptpLogUtils.i("mp设备:"+deviceID+"  注册");
+                    // 设备验证
+                    MpSupportManager.getInstance().getEcgSupport().verifyCms(action);
+                }
             break;
             default:
                 MptpLogUtils.e("设备类型非法 ：" + deviceType);

@@ -7,4 +7,6 @@ public interface EcgSupport {
 
     void verifyEcg(Action action);
 
+    void verifyCms(Action action);
+
 }

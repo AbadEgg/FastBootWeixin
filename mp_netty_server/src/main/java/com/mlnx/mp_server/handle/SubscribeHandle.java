@@ -6,8 +6,8 @@ import com.mlnx.mp_session.core.SessionManager;
 import com.mlnx.mp_session.core.UsrSession;
 import com.mlnx.mptp.DeviceType;
 import com.mlnx.mptp.ResponseCode;
-import com.mlnx.mptp.mptp.MpPacket;
 import com.mlnx.mptp.mptp.body.Topic;
+import com.mlnx.mptp.push.PushPacket;
 import com.mlnx.mptp.utils.MptpLogUtils;
 import com.mlnx.mptp.utils.TopicUtils;
 
@@ -45,7 +45,7 @@ public class SubscribeHandle extends
         if (responseCode.equals(ResponseCode.ILLEGAL_TOPICE))
             MptpLogUtils.e("非法的订阅主题:" + topic);
 
-        MpPacket packet = new MpPacket().subscribeAck(DeviceType.SERVER,
+        PushPacket packet = new PushPacket().subscribeAck(DeviceType.SERVER,
                 responseCode);
         ctx.channel().writeAndFlush(packet);
     }

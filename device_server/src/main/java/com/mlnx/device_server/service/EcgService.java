@@ -77,6 +77,22 @@ public class EcgService {
                 }
             });
         }
+
+        @Override
+        public void verifyCms(final Action action) {
+            ThreadUtil.execute(new Runnable() {
+                @Override
+                public void run() {
+                    RegisterMessage message = action.getRegisterMessage();
+                    EcgDeviceInfo ecgDeviceInfo = ecgDeviceService.getEcgDeviceInfo(message.getDeviceId());
+                    try {
+                        MpSupportManager.getInstance().verifyCmsMp(action, ecgDeviceInfo.getPatientId());
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
     };
 
     private EcgListener ecgListenner = new EcgListener() {

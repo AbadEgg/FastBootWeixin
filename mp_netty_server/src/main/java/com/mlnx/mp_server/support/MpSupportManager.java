@@ -4,6 +4,7 @@ import com.mlnx.device.ecg.EcgDeviceInfo;
 import com.mlnx.mp_server.protocol.RegisterMessage;
 import com.mlnx.mp_session.core.DeviceSession;
 import com.mlnx.mp_session.core.EcgDeviceSession;
+import com.mlnx.mp_session.core.MpDeviceSession;
 import com.mlnx.mp_session.core.Session;
 import com.mlnx.mp_session.core.SessionManager;
 import com.mlnx.mp_session.core.UsrSession;
@@ -16,6 +17,8 @@ import com.mlnx.mptp.mptp.head.QoS;
 import com.mlnx.mptp.push.PushPacket;
 import com.mlnx.mptp.utils.MptpLogUtils;
 import com.mlnx.mptp.utils.RandomUtils;
+import com.mlnx.qcms.protocol.DataPacket;
+import com.mlnx.qcms.protocol.body.CmdType;
 
 import java.io.IOException;
 import java.util.Date;
@@ -172,6 +175,90 @@ public class MpSupportManager {
             ctx.channel().writeAndFlush(packet);
 
             MptpLogUtils.i("心电设备:" + deviceId + "注册成功:" + ctx.channel().toString());
+        }
+    }
+
+    /**
+     * 验证mpcms设备是否通过
+     *
+     * @param action
+     * @param patientId
+     */
+    public void verifyCmsMp(Action action, Integer patientId) throws IOException {
+
+        Session session = null;
+        RegisterMessage registerMessage = action.getRegisterMessage();
+        ChannelHandlerContext ctx = action.getCtx();
+
+        String deviceId = registerMessage.getDeviceId();
+
+        if (patientId == null ){
+            MptpLogUtils.e(String.format("%s 设备未绑定患者", deviceId));
+        }else{
+            int type = 0;
+
+            session = new MpDeviceSession(deviceId);
+            session.setKey(deviceId);
+            session.setPatientId(patientId);
+
+            Channel channel = SessionManager.get(session.getKey());
+            if (channel != null && !ctx.channel().equals(channel)) {
+                // 同一个设备另外重新
+                type = 0;
+            } else if (channel != null && ctx.channel().equals(channel)) {
+                // 收到重复注册包
+                type = 1;
+            } else {
+                // 新设备注册
+                type = 2;
+            }
+
+            // 同一个设备另外重新
+            // 设备不允许同时上线  用户运行多个端同时上线
+            if (type == 0) {
+                SessionManager.remove(channel, true);
+                MptpLogUtils.e(String.format("重复注册 移除设备：%s 过期的Channel: %s", session.getKey(), channel.toString()));
+
+                if (registerMessage.getKeepAliveTimer() != null)
+                    session.setReaderIdleTimeSeconds(registerMessage
+                            .getKeepAliveTimer());
+
+                session.setChannel(ctx.channel());
+                session.setSocketAddress(ctx.channel().remoteAddress());
+                session.setLastPacketTime(new Date());
+                session.setDeviceType(registerMessage.getDeviceType());
+
+                SessionManager.add(ctx.channel(), session);
+            }
+            // 收到重复注册包
+            else if (type == 1) {
+                MptpLogUtils.e("同一个channel重复收到注册包");
+            }
+            // 新设备或者用户注册
+            else {
+                if (registerMessage.getKeepAliveTimer() != null)
+                    session.setReaderIdleTimeSeconds(registerMessage
+                            .getKeepAliveTimer());
+
+                session.setChannel(ctx.channel());
+                session.setSocketAddress(ctx.channel().remoteAddress());
+                session.setLastPacketTime(new Date());
+                session.setDeviceType(registerMessage.getDeviceType());
+
+                SessionManager.add(ctx.channel(), session);
+            }
+
+            DataPacket resp = new DataPacket();
+            com.mlnx.qcms.protocol.body.Command command  = new com.mlnx.qcms.protocol.body.Command();
+            command.setCmdType(CmdType.CMD_BEGIN_COMMUNICATION_OK);
+            resp.getBody().setCommand(command);
+            resp.getHeader().setPackageNum(resp.getBody().calPackageNum());
+            resp.getHeader().setPackageBytes(resp.getBody().calPackageBytes());
+            resp.getHeader().setDeviceType(com.mlnx.qcms.protocol.head.DeviceType.CENTER_MONITOR_SERVER);
+
+            ctx.channel().writeAndFlush(resp);
+
+            MptpLogUtils.i("CMS设备:" + deviceId + "注册成功:" + ctx.channel().toString());
         }
     }
 

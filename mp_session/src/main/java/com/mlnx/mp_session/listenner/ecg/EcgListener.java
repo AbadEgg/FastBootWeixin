@@ -11,7 +11,7 @@ public interface EcgListener extends DeviceListenner {
 	/**
 	 * 收到心电body
 	 *
-	 * @param topic
+	 * @param topics
 	 */
 	public void reciveEcgInfo(List<Topic> topics, EcgInfo ecgInfo);
 

@@ -117,6 +117,16 @@ public class PushPacket {
         return this;
     }
 
+    public PushPacket subscribeAck(DeviceType deviceType,
+                                 ResponseCode responseCode) {
+//		MptpLogUtils.i("订阅消息回复");
+        header.setPacketType(PacketType.SUB_ACK);
+        header.setDeviceType(deviceType);
+
+        body.setResponseCode(responseCode);
+        return this;
+    }
+
     public PushPacket unSubscribeAck(DeviceType deviceType,
                                    ResponseCode responseCode) {
 //		MptpLogUtils.i("取消订阅消息回复");

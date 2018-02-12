@@ -1,5 +1,6 @@
 package com.mlnx;
 
+import com.mlnx.device.ecg.EcgDeviceInfo;
 import com.mlnx.device.server.DubboDeviceServerApplication;
 import com.mlnx.device.server.mybatis.mapper.TEcgDeviceMapper;
 
@@ -26,7 +27,7 @@ public class EcgDeviceServiceTest {
 
     @Test
     public void test(){
-//        EcgDeviceInfo EcgDeviceInfo = tEcgDeviceMapper.selectEcgDeviceInfo("HEK07EW17070001M");
-//        logger.info(EcgDeviceInfo.toString());
+        EcgDeviceInfo EcgDeviceInfo = tEcgDeviceMapper.selectEcgDeviceInfo("CMS0001");
+        logger.info(EcgDeviceInfo.toString());
     }
 }
