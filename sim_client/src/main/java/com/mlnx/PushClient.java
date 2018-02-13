@@ -2,7 +2,9 @@ package com.mlnx;
 
 import com.alibaba.fastjson.JSON;
 import com.mlnx.config.Config;
+import com.mlnx.mp_session.domain.BpInfo;
 import com.mlnx.mp_session.domain.EcgInfo;
+import com.mlnx.mp_session.domain.SpoInfo;
 import com.mlnx.mptp.DeviceType;
 import com.mlnx.mptp.push.PushPacket;
 import com.mlnx.mptp.push.body.PushDataType;
@@ -118,6 +120,12 @@ public class PushClient implements WebSocketListenner {
                 switch (pushDataType) {
                     case ECG_INFO:
                         map.put(pushDataType, JSON.parseObject(map.get(pushDataType).toString(), EcgInfo.class));
+                        break;
+                    case SPO_INFO:
+                        map.put(pushDataType, JSON.parseObject(map.get(pushDataType).toString(), SpoInfo.class));
+                        break;
+                    case BP_INFO:
+                        map.put(pushDataType, JSON.parseObject(map.get(pushDataType).toString(), BpInfo.class));
                         break;
                 }
             }
