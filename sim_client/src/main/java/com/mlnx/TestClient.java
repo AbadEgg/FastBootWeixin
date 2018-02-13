@@ -15,7 +15,7 @@ public class TestClient {
 
     public static void main(String[] args) throws InterruptedException {
         PushService testUsr = new PushService();
-        testUsr.setName("admin");
+        testUsr.setName("adminadmin");
         testUsr.setName("123456");
 
         List<Topic> topics = new ArrayList<Topic>();

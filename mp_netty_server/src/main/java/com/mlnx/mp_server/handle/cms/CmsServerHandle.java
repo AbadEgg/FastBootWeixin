@@ -73,7 +73,11 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
                 ecgMessage.setEcgData(ecgData);
                 ecgMessage.setPacketTime(System.currentTimeMillis());
 
-            } else if (dataPacket.getBody().getSpo2Data() != null) {
+                message.setDeviceType(com.mlnx.mptp.DeviceType.MP_DEVICE);
+                ctx.fireChannelRead(message);
+
+            }
+            if (dataPacket.getBody().getSpo2Data() != null) {
 
                 SpoMessage spoMessage = new SpoMessage();
                 message = spoMessage;
@@ -83,7 +87,11 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
                 spoMessage.setPacketTime(System.currentTimeMillis());
                 spoMessage.setSpo(dataPacket.getBody().getSpo2Data().getSpo2());
 
-            } else if (dataPacket.getBody().getNibpData() != null) {
+                message.setDeviceType(com.mlnx.mptp.DeviceType.MP_DEVICE);
+                ctx.fireChannelRead(message);
+
+            }
+            if (dataPacket.getBody().getNibpData() != null) {
 
                 BpMessage bpMessage = new BpMessage();
                 message = bpMessage;
@@ -93,6 +101,9 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
                 bpMessage.setPacketTime(System.currentTimeMillis());
                 bpMessage.setSbp(dataPacket.getBody().getNibpData().getSysPress());
                 bpMessage.setDbp(dataPacket.getBody().getNibpData().getDiaPress());
+
+                message.setDeviceType(com.mlnx.mptp.DeviceType.MP_DEVICE);
+                ctx.fireChannelRead(message);
 
             }
 
@@ -106,9 +117,5 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
             ctx.channel().writeAndFlush(resp);
         }
 
-        if (message != null) {
-            message.setDeviceType(com.mlnx.mptp.DeviceType.MP_DEVICE);
-            ctx.fireChannelRead(message);
-        }
     }
 }
