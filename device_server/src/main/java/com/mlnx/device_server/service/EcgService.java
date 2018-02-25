@@ -7,6 +7,7 @@ import com.mlnx.device_server.comm.utils.DateUtils;
 import com.mlnx.device_server.comm.utils.ThreadUtil;
 import com.mlnx.ecg.store.EcgStore;
 import com.mlnx.ecg.store.domain.Ecg;
+import com.mlnx.local.data.store.ecg.EcgAnalysisStore;
 import com.mlnx.mp_server.protocol.RegisterMessage;
 import com.mlnx.mp_server.support.Action;
 import com.mlnx.mp_server.support.EcgSupport;
@@ -53,6 +54,9 @@ public class EcgService {
 
     @Autowired
     private EcgStore ecgStore;
+
+    @Autowired
+    private EcgAnalysisStore ecgAnalysisStore;
 
     @PostConstruct
     private void init() {
@@ -118,7 +122,7 @@ public class EcgService {
                 ecg.setStartTime(ecgInfo.getPacketTime());
 
                 ECGDeviceInfo info = ecgInfo.getEcgDeviceInfo();
-                if (info != null){
+                if (info != null) {
                     ecg.setEcgChannelType(info.getEcgChannelType());
                     ecg.setSamplingRate(info.getSampling());
                     ecg.setAmplification(info.getAmplification());
@@ -127,13 +131,18 @@ public class EcgService {
                 }
 
                 ECGData ecgData = ecgInfo.getEcgData();
-                if (ecgData != null){
+                if (ecgData != null) {
                     ecg.setHeartRate(ecgData.getEcgHeart());
                     ecg.setData(ecgData.getSuccessionData());
                     ecg.setEncryData(ecgData.getEncrySuccessionData());
                 }
 
                 saveEcg(ecg);
+            }
+
+            if (ecgInfo.getRealEcgAnalysResult() != null) {
+                ecgAnalysisStore.save(ecgInfo.getPacketTime(), ecgInfo.getRealEcgAnalysResult().getHeart(), ecgInfo
+                        .getRealEcgAnalysResult().getPbNumb(), ecgInfo.getRealEcgAnalysResult().getHeartResult());
             }
         }
 

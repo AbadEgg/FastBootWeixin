@@ -8,6 +8,10 @@ import com.mlnx.ecg.store.EcgStore;
 import com.mlnx.ecg.store.iml.EcgMongoDb;
 import com.mlnx.ecg.store.iml.EcgStoreTable;
 import com.mlnx.ecg.store.utils.OTSUtils;
+import com.mlnx.local.data.store.LocalStore;
+import com.mlnx.local.data.store.bp.BpStore;
+import com.mlnx.local.data.store.ecg.EcgAnalysisStore;
+import com.mlnx.local.data.store.spo.SpoStore;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +39,7 @@ public class BeanConfig {
     @Bean
     public SyncClient syncClient() {
 
-        if (ecgSaveType == 0){
+        if (ecgSaveType == 0) {
             // ClientConfiguration提供了很多配置项，以下只列举部分。
             ClientConfiguration clientConfiguration = new ClientConfiguration();
             // 设置建立连接的超时时间。
@@ -47,7 +51,7 @@ public class BeanConfig {
             SyncClient client = new SyncClient(otsConfig.getEndPoint(), otsConfig.getAccessKeyId(), otsConfig
                     .getAccessKeySecret(), otsConfig.getInstanceName(), clientConfiguration);
 
-            List<String> strings =  OTSUtils.listTableWithFuture(client);
+            List<String> strings = OTSUtils.listTableWithFuture(client);
 
             logger.info("阿里table表列表");
             for (int i = 0; i < strings.size(); i++) {
@@ -55,7 +59,7 @@ public class BeanConfig {
             }
 
             return client;
-        }else{
+        } else {
             return null;
         }
     }
@@ -66,12 +70,12 @@ public class BeanConfig {
 
         EcgStore ecgStore = null;
 
-        if (ecgSaveType == 0){
+        if (ecgSaveType == 0) {
             EcgStoreTable ecgStoreTable = new EcgStoreTable();
             ecgStoreTable.setClient(syncClient);
             ecgStoreTable.init();
             ecgStore = ecgStoreTable;
-        }else{
+        } else {
             EcgMongoDb ecgMongoDb = new EcgMongoDb();
             ecgMongoDb.init();
             ecgStore = ecgMongoDb;
@@ -79,4 +83,30 @@ public class BeanConfig {
 
         return ecgStore;
     }
+
+    @Bean
+    public LocalStore localStore() {
+        LocalStore localStore = new LocalStore();
+        localStore.init();
+
+        return localStore;
+    }
+
+    @Bean
+    public EcgAnalysisStore ecgAnalysisStore() {
+        EcgAnalysisStore store = new EcgAnalysisStore();
+        return store;
+    }
+
+    @Bean
+    public BpStore bpStore() {
+        return new BpStore();
+    }
+
+    @Bean
+    public SpoStore spoStore() {
+        return new SpoStore();
+    }
+
+
 }
