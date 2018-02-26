@@ -86,6 +86,7 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
                 spoMessage.setPatientId(session.getPatientId());
                 spoMessage.setPacketTime(System.currentTimeMillis());
                 spoMessage.setSpo(dataPacket.getBody().getSpo2Data().getSpo2());
+                spoMessage.setHeart(dataPacket.getBody().getSpo2Data().getPr());
 
                 message.setDeviceType(com.mlnx.mptp.DeviceType.MP_DEVICE);
                 ctx.fireChannelRead(message);
