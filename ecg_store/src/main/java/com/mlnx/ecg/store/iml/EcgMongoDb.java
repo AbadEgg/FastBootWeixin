@@ -82,13 +82,22 @@ public class EcgMongoDb implements EcgStore {
     }
 
     public List<Map<String, Object>> getEcg(long startTime, long endTime, int patientId) {
+        return getEcgData(startTime, endTime, patientId, "data");
+    }
+
+    @Override
+    public List<Map<String, Object>> getEncryEcg(long startTime, long endTime, int patientId) {
+        return getEcgData(startTime, endTime, patientId, "encryData");
+    }
+
+    private List<Map<String, Object>> getEcgData(long startTime, long endTime, int patientId, String ecgDataKey){
         MongoQuery query = new MongoQuery();
         query.use(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
         query.eq("patientId", patientId);
         query.gt("startTime", startTime);
         query.lt("startTime", endTime);
         query.ascending("startTime");
-        query.projection("data", "startTime", "patientId", "deivceId");
+        query.projection(ecgDataKey, "startTime", "patientId", "deivceId");
 
         List<JSONObject> jsonObjects = query.find();
         List<Map<String, Object>> maps = new ArrayList<>();
@@ -96,7 +105,7 @@ public class EcgMongoDb implements EcgStore {
         if (jsonObjects != null) {
             for (JSONObject jsonObject : jsonObjects) {
 
-                JSONObject ecgObject = jsonObject.getJSONObject("data");
+                JSONObject ecgObject = jsonObject.getJSONObject(ecgDataKey);
                 if (ecgObject != null) {
                     jsonObject.put("data", ecgObject.getJSONArray("data"));
                 }
@@ -121,7 +130,8 @@ public class EcgMongoDb implements EcgStore {
 //        ecgMongoDb.save(getSimEcgs());
 
 //
-        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcg(1517971188969L, 1517971191336L, 0);
+        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEncryEcg(System.currentTimeMillis()-1000*6, System
+                .currentTimeMillis(), 0);
 
         System.out.println("ecgMongs.size:" + ecgMongs.size());
         for (int i = 0; i < ecgMongs.size(); i++) {
