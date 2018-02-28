@@ -1,17 +1,17 @@
 package com.mlnx.mp_session.core;
 
+import com.mlnx.core.DeviceShare;
 import com.mlnx.mp_session.config.ConfigService;
 import com.mlnx.mptp.DeviceType;
 import com.mlnx.mptp.mptp.MpPacket;
 import com.mlnx.mptp.utils.MptpLogUtils;
+import io.netty.channel.Channel;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import io.netty.channel.Channel;
 
 public class SessionManager {
 
@@ -25,6 +25,12 @@ public class SessionManager {
     private static List<Session> configSessions = new ArrayList<>();
 
     private static boolean chageFlag = false;
+
+    private static DeviceShare deviceShare;
+
+    public static void setDeviceShare(DeviceShare deviceShare) {
+        SessionManager.deviceShare = deviceShare;
+    }
 
     public static List<Session> getEcgSessions() {
         return ecgSessions;
@@ -44,24 +50,28 @@ public class SessionManager {
         channelMap.put(session.getKey(), channel);
 
         if (session instanceof DeviceSession) {
-            if (session.getDeviceType().equals(DeviceType.ECG_DEVICE) && !ecgSessions.contains(session))
+            if (session.getDeviceType().equals(DeviceType.ECG_DEVICE) && !ecgSessions.contains(session)) {
                 ecgSessions.add(session);
+                deviceShare.saveDevice(((DeviceSession) session).getDeviceId());
+            }
         }
 
         chageFlag = true;
     }
 
     public static void addConfig(Session session) {
-        if (!configSessions.contains(session))
+        if (!configSessions.contains(session)) {
             configSessions.add(session);
+        }
     }
 
     public static Session getConfig(String key) {
         Channel channel = get(key);
         if (channel != null) {
             Session session = get(channel);
-            if (configSessions.contains(session))
+            if (configSessions.contains(session)) {
                 return session;
+            }
         }
         return null;
     }
@@ -76,8 +86,9 @@ public class SessionManager {
 
     public static void refreshLastTime(Channel channel) {
         Session session = sessionMap.get(channel);
-        if (session != null)
+        if (session != null) {
             session.setLastPacketTime(new Date());
+        }
     }
 
     public static void remove(Channel channel) {
@@ -96,11 +107,16 @@ public class SessionManager {
         sessionMap.remove(channel);
         session.removeLis();
 
+        if(session instanceof DeviceSession){
+            deviceShare.deleteDevice(((DeviceSession) session).getDeviceId());
+        }
+
         ecgSessions.remove(session);
         configSessions.remove(session);
 
-        if (closeChannel)
+        if (closeChannel) {
             channel.close();
+        }
         chageFlag = true;
     }
 
@@ -129,8 +145,9 @@ public class SessionManager {
                 } else if (!session.isTimeOut()) {
                     session.timeOut = true;
                     channel.writeAndFlush(new MpPacket().ping(DeviceType.SERVER));
-                    if (!session.getDeviceType().equals(DeviceType.USR))
+                    if (!session.getDeviceType().equals(DeviceType.USR)) {
                         MptpLogUtils.e("接收超时 检测...:" + session);
+                    }
                 } else if (ConfigService.RE_DETECT_SECONDS - second < sleepTime) {
                     sleepTime = ConfigService.RE_DETECT_SECONDS - second;
                 }
@@ -140,8 +157,9 @@ public class SessionManager {
         }
 
         // printOnline();
-        if (chageFlag)
+        if (chageFlag) {
             printOnlineInfo();
+        }
         chageFlag = false;
 
         return sleepTime;

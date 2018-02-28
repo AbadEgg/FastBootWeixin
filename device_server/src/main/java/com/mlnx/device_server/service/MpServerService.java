@@ -1,5 +1,6 @@
 package com.mlnx.device_server.service;
 
+import com.mlnx.core.DeviceShare;
 import com.mlnx.device_server.comm.config.MpServerConfig;
 import com.mlnx.device_server.domain.EcgOnlineDevice;
 import com.mlnx.mp_server.MpServer;
@@ -12,16 +13,14 @@ import com.mlnx.mp_session.core.SessionManager;
 import com.mlnx.mptp.utils.LogLis;
 import com.mlnx.mptp.utils.MptpLogUtils;
 import com.mlnx.qcms.utils.QcmsLogUtils;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Created by amanda.shan on 2017/12/19.
@@ -33,6 +32,9 @@ public class MpServerService {
     private MpServerConfig mpServerConfig;
 
     private MpServer mpServer;
+
+    @Autowired
+    private DeviceShare deviceShare;
 
     protected Logger logger = LoggerFactory.getLogger(MptpLogUtils.class);
 
@@ -94,6 +96,7 @@ public class MpServerService {
     private void startServer() {
 
         MpSupportManager.getInstance().setUsrSupport(usrSupport);
+        SessionManager.setDeviceShare(deviceShare);
 
         MptpLogUtils.setLogLis(logLis);
         QcmsLogUtils.setLogLis(logLis1);

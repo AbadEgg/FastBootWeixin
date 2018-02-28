@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author fzh
@@ -73,5 +75,19 @@ public class DeviceShare {
             result.add(res);
         }
         return result;
+    }
+
+    /**
+     * 获取所有在线设备
+     * @return
+     */
+    public Set<String> getOnlineDevices(){
+        Set<String> onlineDevices = new HashSet<>();
+        try {
+            onlineDevices = redisUtil.sGet(DeviceShare.DEVICE_SHARE);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return onlineDevices;
     }
 }
