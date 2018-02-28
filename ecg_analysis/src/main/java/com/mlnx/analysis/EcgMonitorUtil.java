@@ -47,7 +47,7 @@ public class EcgMonitorUtil {
 
     public EcgMonitorUtil(String dllPath, Integer patientId, byte[] mcuId) {
         this.mcuId = mcuId;
-        monitorAnalysis = Native.loadLibrary(dllPath, MonitorAnalysis.class);
+        monitorAnalysis = (MonitorAnalysis) Native.loadLibrary(dllPath, MonitorAnalysis.class);
 
         monitorAnalysis.InitEcgAna();
         monitorAnalysis.InitECGFilter();

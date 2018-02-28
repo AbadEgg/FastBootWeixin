@@ -208,6 +208,23 @@ public class EcgService {
         return ecgs;
     }
 
+    public List<Map<String, Object>> getEncryEcg(Integer patientId, Long startTime, Long endTime) {
+
+        List<Map<String, Object>> ecgs = ecgStore.getEncryEcg(startTime, endTime, patientId);
+
+        StringBuilder builder = new StringBuilder();
+        builder.append(DateUtils.format(System.currentTimeMillis(), "HH:mm:ss:SSS"));
+        builder.append(":  mStartTime " + startTime + "   ");
+        builder.append(DateUtils.format(startTime, "HH:mm:ss:SSS"));
+        builder.append("-> mEndTime " + endTime + "   ");
+        builder.append(DateUtils.format(endTime, "HH:mm:ss:SSS"));
+        builder.append("\n");
+        builder.append(ecgs.size() + "");
+        logger.debug(builder.toString());
+
+        return ecgs;
+    }
+
     public static void main(String[] args) {
         AtomicInteger integer = new AtomicInteger(0);
         integer.incrementAndGet();

@@ -184,62 +184,62 @@ public class HelloWord {
 		}
 	});
 
-//	// 获取诊断结果
-//	private Thread getDiagnosisResult = new Thread(new Runnable() {
-//
-//		@Override
-//		public void run() {
-//			while (true) {
-//				byte finishFlag = INSTANCE.GetFinishEcgAnalysisFlag();
-//				if (finishFlag == 1) {
-//					System.out.println("诊断结束");
-//					int[] resultLead = new int[12 * 250];
-//					int[] result = new int[50];
-//
-//					INSTANCE.GetResult(result, resultLead);
-//
-//					for (int i = 0; i < result.length; i++) {
-//						System.out.println(i + ": " + result[i]);
-//					}
-//
-//					break;
-//				}
-//
-//				try {
-//					Thread.sleep(2000);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//
-//		}
-//	});
-//
-//	public void start() {
-//		INSTANCE.InitEcgAna();
-//		INSTANCE.InitECGFilter();
-//		reading = true;
-//		readFile.start();
-//		getMonitorResult.start();
-//
-//		try {
-//			Thread.sleep(5000);
-//		} catch (InterruptedException e) {
-//			e.printStackTrace();
-//		}
-//		System.out.println("开始诊断");
-//		INSTANCE.DiagnosisAnalysis();
-//		System.out.println("结束诊断");
-//
-//		// try {
-//		// Thread.sleep(15000);
-//		// } catch (InterruptedException e) {
-//		// e.printStackTrace();
-//		// }
-//
-//		System.out.println("开始检测诊断结束标志");
-//		getDiagnosisResult.start();
-//	}
+	// 获取诊断结果
+	private Thread getDiagnosisResult = new Thread(new Runnable() {
+
+		@Override
+		public void run() {
+			while (true) {
+				byte finishFlag = INSTANCE.GetFinishEcgAnalysisFlag();
+				if (finishFlag == 1) {
+					System.out.println("诊断结束");
+					int[] resultLead = new int[12 * 250];
+					int[] result = new int[50];
+
+					INSTANCE.GetResult(result, resultLead);
+
+					for (int i = 0; i < result.length; i++) {
+						System.out.println(i + ": " + result[i]);
+					}
+
+					break;
+				}
+
+				try {
+					Thread.sleep(2000);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+
+		}
+	});
+
+	public void start() {
+		INSTANCE.InitEcgAna();
+		INSTANCE.InitECGFilter();
+		reading = true;
+		readFile.start();
+		getMonitorResult.start();
+
+		try {
+			Thread.sleep(5000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		System.out.println("开始诊断");
+		INSTANCE.DiagnosisAnalysis();
+		System.out.println("结束诊断");
+
+		// try {
+		// Thread.sleep(15000);
+		// } catch (InterruptedException e) {
+		// e.printStackTrace();
+		// }
+
+		System.out.println("开始检测诊断结束标志");
+		getDiagnosisResult.start();
+	}
 //
 //	public static void main(String[] args) {
 //		final TestDLL INSTANCE = (TestDLL) Native.loadLibrary(

@@ -19,6 +19,7 @@
     <orderEntry type="library" name="Maven: io.protostuff:protostuff-runtime:1.4.0" level="project" />
     <orderEntry type="library" name="Maven: io.protostuff:protostuff-collectionschema:1.4.0" level="project" />
     <orderEntry type="module" module-name="ecg_analysis" />
+    <orderEntry type="library" name="Maven: com.sun.jna:jna:3.0.9" level="project" />
     <orderEntry type="library" name="Maven: org.springframework.boot:spring-boot-starter-logging:1.5.9.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-classic:1.1.11" level="project" />
     <orderEntry type="library" name="Maven: ch.qos.logback:logback-core:1.1.11" level="project" />

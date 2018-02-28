@@ -22,10 +22,10 @@ public class EcgAnalysis {
     private Logger logger = LoggerFactory.getLogger(EcgAnalysis.class);
 
     private String deviceId;
-//    private byte[] gpu8AcId = new byte[]{0x0E, (byte) 0x80, 0x01, (byte) 0x80, 0x16, 0x51, 0x36, 0x32, 0x38,
-//            0x37, 0x37, 0x31};
+    public static byte[] gpu8AcId = new byte[]{0x0E, (byte) 0x80, 0x01, (byte) 0x80, 0x16, 0x51, 0x36, 0x32, 0x38,
+            0x37, 0x37, 0x31};
 
-    private byte[] gpu8AcId = new byte[]{0x00, 0x00, 0x2F, 0x00, 0x16, 0x51, 0x36, 0x32, 0x38, 0x37, 0x37, 0x31};
+//    private byte[] gpu8AcId = new byte[]{0x00, 0x00, 0x2F, 0x00, 0x16, 0x51, 0x36, 0x32, 0x38, 0x37, 0x37, 0x31};
 
 
     private AnalysisLib analysisLib;
@@ -34,12 +34,16 @@ public class EcgAnalysis {
         this.deviceId = deviceId;
     }
 
+    public AnalysisLib getAnalysisLib() {
+        return analysisLib;
+    }
+
     public void init() throws IOException {
 
         String path = new File("ecg_analysis" + File.separator + "libecg12.dll").getAbsolutePath();
 
         path = getCopiedDllPath(path, deviceId);
-        analysisLib = Native.loadLibrary(path, AnalysisLib.class);
+        analysisLib = (AnalysisLib) Native.loadLibrary(path, AnalysisLib.class);
 
         // 算法初始化
         analysisLib.InitEcgAna();
