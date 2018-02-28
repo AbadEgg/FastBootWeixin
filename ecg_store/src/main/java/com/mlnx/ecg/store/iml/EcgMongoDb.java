@@ -43,7 +43,7 @@ public class EcgMongoDb implements EcgStore {
         MongoKit.INSTANCE.init(client, mongoPlugin.getDatabase());
 
         MongoIndex index = new MongoIndex(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
-//        index.add(new MongoIndex().ascending("patientId", "startTime").setUnique(true)).compound(); // 组合索引
+        index.add(new MongoIndex().ascending("patientId", "startTime").setUnique(true)).compound(); // 组合索引
 //        index.deleteAll();        // 删除所有索引
 //        index.ascending("patientId").save();  // 保存索引
 
@@ -130,15 +130,22 @@ public class EcgMongoDb implements EcgStore {
 //        ecgMongoDb.save(getSimEcgs());
 
 //
-        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEncryEcg(System.currentTimeMillis()-1000*6, System
-                .currentTimeMillis(), 0);
+        long startTime = (long) (System.currentTimeMillis()-1000);
+        long endTime = System.currentTimeMillis();
 
+
+        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcg(startTime, endTime, 0);
         System.out.println("ecgMongs.size:" + ecgMongs.size());
         for (int i = 0; i < ecgMongs.size(); i++) {
             System.out.println(ecgMongs.get(i).toString());
         }
 
-        System.out.println(System.currentTimeMillis());
+        ecgMongs = ecgMongoDb.getEncryEcg(startTime, endTime, 0);
+        System.out.println("ecgMongs.size:" + ecgMongs.size());
+        for (int i = 0; i < ecgMongs.size(); i++) {
+            System.out.println(ecgMongs.get(i).toString());
+        }
+
 
 //        System.out.println(ecgMongs.size());
 //
