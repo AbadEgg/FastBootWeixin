@@ -1,9 +1,11 @@
 package com.mlnx.device_server.service;
 
 import com.alibaba.dubbo.config.annotation.Reference;
+import com.mlnx.analysis.EcgAnalysis;
 import com.mlnx.device.ecg.EcgDeviceInfo;
 import com.mlnx.device.inter.EcgDeviceService;
 import com.mlnx.device_server.comm.utils.DateUtils;
+import com.mlnx.device_server.comm.utils.MacUtils;
 import com.mlnx.device_server.comm.utils.ThreadUtil;
 import com.mlnx.ecg.store.EcgStore;
 import com.mlnx.ecg.store.domain.Ecg;
@@ -22,6 +24,7 @@ import com.mlnx.mptp.mptp.body.Topic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -58,10 +61,15 @@ public class EcgService {
     @Autowired
     private EcgAnalysisStore ecgAnalysisStore;
 
+    @Value("${ecg.device.mac}")
+    private String deviceMac;
+
     @PostConstruct
     private void init() {
         MpSupportManager.getInstance().setEcgSupport(ecgSupport);
         BroadCast.addEcgListenner(ecgListenner);
+
+        EcgAnalysis.gpu8AcId = MacUtils.getMcuId(deviceMac);
     }
 
     private EcgSupport ecgSupport = new EcgSupport() {

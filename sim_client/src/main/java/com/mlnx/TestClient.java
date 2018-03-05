@@ -2,27 +2,50 @@ package com.mlnx;
 
 
 import com.alibaba.fastjson.JSON;
-import com.mlnx.mptp.mptp.body.Topic;
-import com.mlnx.mptp.mptp.body.TopicType;
-
-import java.util.ArrayList;
-import java.util.List;
+import com.mlnx.listener.BroadCast;
+import com.mlnx.listener.MsgListener;
+import com.mlnx.mp_session.domain.BpInfo;
+import com.mlnx.mp_session.domain.EcgInfo;
+import com.mlnx.mp_session.domain.SpoInfo;
 
 /**
  * Created by amanda.shan on 2017/10/23.
  */
 public class TestClient {
 
-    public static void main(String[] args) throws InterruptedException {
+    public void lis(){
+        BroadCast.getInstance().addMsgListener(new MsgListener() {
+            @Override
+            public void reciveEcgInfo(EcgInfo ecgInfo) {
+
+            }
+
+            @Override
+            public void reciveBpInfo(BpInfo bpInfo) {
+
+            }
+
+            @Override
+            public void reciveSpoInfo(SpoInfo spoInfo) {
+
+            }
+        });
+    }
+
+    public void sub(){
         PushService testUsr = new PushService();
-        testUsr.setName("adminadmin");
+        testUsr.setName("admin");
         testUsr.setName("123456");
 
-        List<Topic> topics = new ArrayList<Topic>();
-        topics.add(new Topic(TopicType.U_ECG_HEART_TOPIC, "cms0001"));
-        topics.add(new Topic(TopicType.U_BP_TOPIC, "cms0001"));
-        topics.add(new Topic(TopicType.U_SPO_TOPIC, "cms0001"));
-//        topics.add(new Topic(TopicType.U_ECG_DEVICE_TOPIC, "HEK07EW17070015M"));
-        testUsr.sub(JSON.toJSONString(topics));
+        TopicManager topicManager = new TopicManager();
+        topicManager.lisBp("cms0001").lisSpo("cms0001").lisHeart("cms0001");
+
+        testUsr.sub(JSON.toJSONString(topicManager.getTopics()));
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        TestClient testClient = new TestClient();
+        testClient.lis();
+        testClient.sub();
     }
 }

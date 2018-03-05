@@ -56,11 +56,6 @@
             <artifactId>mptp</artifactId>
             <version>1.0</version>
         </dependency>
-        <dependency>
-            <groupId>com.mlnx</groupId>
-            <artifactId>mptp</artifactId>
-            <version>1.0</version>
-        </dependency>
 
         <dependency>
             <groupId>com.mlnx</groupId>

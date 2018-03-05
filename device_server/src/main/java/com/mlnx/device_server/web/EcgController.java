@@ -43,7 +43,7 @@ public class EcgController extends BaseController {
         if (patientId == null || startTime == null || endTime == null)
             response = result(ExceptionMsg.ParamError);
         else
-            response = new ResponseData(ecgService.getEcg(patientId, startTime, endTime));
+            response = new ResponseData(ecgService.getEncryEcg(patientId, startTime, endTime));
         return response;
     }
 

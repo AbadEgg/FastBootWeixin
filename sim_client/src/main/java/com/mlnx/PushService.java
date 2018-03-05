@@ -1,6 +1,7 @@
 package com.mlnx;
 
 
+import com.mlnx.listener.BroadCast;
 import com.mlnx.mp_session.domain.BpInfo;
 import com.mlnx.mp_session.domain.EcgInfo;
 import com.mlnx.mp_session.domain.SpoInfo;
@@ -139,16 +140,19 @@ public class PushService implements PushClient.LifeUsrClientLis {
                         case ECG_INFO:
 
                             EcgInfo ecgInfo = (EcgInfo) map.get(pushDataType);
+                            BroadCast.getInstance().reciveEcgInfo(ecgInfo);
                             MptpLogUtils.i(ecgInfo.getDeivceId() + " 收到推送心电:" + ecgInfo.toString());
                             break;
                         case BP_INFO:
 
                             BpInfo bpInfo = (BpInfo) map.get(pushDataType);
+                            BroadCast.getInstance().reciveBpInfo(bpInfo);
                             MptpLogUtils.i(bpInfo.getDeivceId() + " 收到推送血压:" + bpInfo.toString());
                             break;
                         case SPO_INFO:
 
                             SpoInfo spoInfo = (SpoInfo) map.get(pushDataType);
+                            BroadCast.getInstance().reciveSpoInfo(spoInfo);
                             MptpLogUtils.i(spoInfo.getDeivceId() + " 收到推送spo:" + spoInfo.toString());
                             break;
                     }
