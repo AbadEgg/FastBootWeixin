@@ -1,13 +1,13 @@
 package com.mlnx.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurerSupport;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -20,12 +20,36 @@ import java.lang.reflect.Method;
  * @create 2018/2/26 13:19
  */
 @Configuration
-@EnableConfigurationProperties(RedisProperties.class)
+@PropertySource(value = "classpath:redis.properties")
 @EnableCaching
 public class RedisConfig extends CachingConfigurerSupport{
 
-    @Autowired
-    private RedisProperties redisProperties;
+    @Value("${redis.server.host}")
+    private String host;
+
+    @Value("${redis.server.port}")
+    private int port;
+
+    @Value("${redis.server.password}")
+    private String password;
+
+    @Value("${redis.server.maxTotal}")
+    private int maxTotal;
+
+    @Value("${redis.server.maxWaitMills}")
+    private int maxWaitMills;
+
+    @Value("${redis.server.maxIdle}")
+    private int maxIdle;
+
+    @Value("${redis.server.minIdle}")
+    private int minIdle;
+
+    @Value("${redis.server.timeout}")
+    private int timeout;
+
+    @Value("${redis.server.database}")
+    private int database;
 
     @Override
     @Bean
@@ -56,22 +80,22 @@ public class RedisConfig extends CachingConfigurerSupport{
     @Bean
     public JedisPoolConfig jedisPoolConfig(){
         JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
-        jedisPoolConfig.setMaxTotal(redisProperties.getMaxTotal());
-        jedisPoolConfig.setMaxWaitMillis(redisProperties.getMaxWaitMills());
-        jedisPoolConfig.setMaxIdle(redisProperties.getMaxIdle());
-        jedisPoolConfig.setMinIdle(redisProperties.getMinIdle());
+        jedisPoolConfig.setMaxTotal(maxTotal);
+        jedisPoolConfig.setMaxWaitMillis(maxWaitMills);
+        jedisPoolConfig.setMaxIdle(maxIdle);
+        jedisPoolConfig.setMinIdle(minIdle);
         return jedisPoolConfig;
     }
 
     @Bean
     public JedisConnectionFactory jedisConnectionFactory(){
         JedisConnectionFactory jedisConnectionFactory = new JedisConnectionFactory();
-        jedisConnectionFactory.setHostName(redisProperties.getHost());
-        jedisConnectionFactory.setPort(redisProperties.getPort());
-        jedisConnectionFactory.setPassword(redisProperties.getPassword());
+        jedisConnectionFactory.setHostName(host);
+        jedisConnectionFactory.setPort(port);
+        jedisConnectionFactory.setPassword(password);
         jedisConnectionFactory.setPoolConfig(jedisPoolConfig());
-        jedisConnectionFactory.setTimeout(redisProperties.getTimeout());
-        jedisConnectionFactory.setDatabase(redisProperties.getDatabase());
+        jedisConnectionFactory.setTimeout(timeout);
+        jedisConnectionFactory.setDatabase(database);
         return jedisConnectionFactory;
     }
     @Bean
