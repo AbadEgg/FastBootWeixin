@@ -1,6 +1,7 @@
 package com.mlnx.qcms.protocol.body;
 
 import com.mlnx.qcms.utils.ByteUtils;
+import com.mlnx.qcms.utils.WaveformUtils;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -23,7 +24,7 @@ public class EcgData extends DataHeader{
     int[] stHighLimit = new int[12];   //st高限
     int[] stLowLimit = new int[12];    //st低限
     int waveSampleNum;		//ecg波形采样数据个数
-    int[] waveData = new int[512];		//1秒的波形
+    int[] waveData = new int[512];		//1秒的波形 2个字节拼成1个int
 
     public EcgLeadType getEcgLeadType() {
         return ecgLeadType;
@@ -167,7 +168,6 @@ public class EcgData extends DataHeader{
             byteBuffer.get(b2);
             waveData[i] = ByteUtils.bytesToInt(b2,2);
         }
-        System.out.println(this.toString());
-
+        WaveformUtils.printConsole(WaveformUtils.getDots(waveData));
     }
 }
