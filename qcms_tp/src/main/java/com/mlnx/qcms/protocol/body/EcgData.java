@@ -141,33 +141,34 @@ public class EcgData extends DataHeader{
         byteBuffer.get(b2);
         ecgLeadType = EcgLeadType.decode(ByteUtils.bytesToInt(b2,2));
         byteBuffer.get(b2);
-        hr = ByteUtils.bytesToInt(b2,2);
+        hr = ByteUtils.bytesToSignInt(b2,2);
         byteBuffer.get(b2);
-        hrHighLimt = ByteUtils.bytesToInt(b2,2);
+        hrHighLimt = ByteUtils.bytesToSignInt(b2,2);
         byteBuffer.get(b2);
-        hrLowLimt = ByteUtils.bytesToInt(b2,2);
+        hrLowLimt = ByteUtils.bytesToSignInt(b2,2);
         byteBuffer.get(b2);
-        pvcs = ByteUtils.bytesToInt(b2,2);
+        pvcs = ByteUtils.bytesToSignInt(b2,2);
         byteBuffer.get(b2);
-        pvcsHighLimit = ByteUtils.bytesToInt(b2,2);
+        pvcsHighLimit = ByteUtils.bytesToSignInt(b2,2);
         for (int i = 0; i < 12; i++) {
             byteBuffer.get(b2);
-            st[i] = ByteUtils.bytesToInt(b2,2);
+            st[i] = ByteUtils.bytesToSignInt(b2,2);
         }
         for (int i = 0; i < 12; i++) {
             byteBuffer.get(b2);
-            stHighLimit[i] = ByteUtils.bytesToInt(b2,2);
+            stHighLimit[i] = ByteUtils.bytesToSignInt(b2,2);
         }
         for (int i = 0; i < 12; i++) {
             byteBuffer.get(b2);
-            stLowLimit[i] = ByteUtils.bytesToInt(b2,2);
+            stLowLimit[i] = ByteUtils.bytesToSignInt(b2,2);
         }
         byteBuffer.get(b2);
-        waveSampleNum = ByteUtils.bytesToInt(b2,2);
+        waveSampleNum = ByteUtils.bytesToSignInt(b2,2);
         for (int i = 0; i < 512 ; i++) {
             byteBuffer.get(b2);
-            waveData[i] = ByteUtils.bytesToInt(b2,2);
+            waveData[i] = ByteUtils.bytesToSignInt(b2,2);
         }
-        WaveformUtils.printConsole(WaveformUtils.getDots(waveData));
+        System.out.println(toString());
+        WaveformUtils.printConsole(WaveformUtils.getDots(waveData,waveSampleNum,100));
     }
 }

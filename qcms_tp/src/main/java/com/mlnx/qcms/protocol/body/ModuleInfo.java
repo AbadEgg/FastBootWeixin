@@ -56,11 +56,11 @@ public class ModuleInfo extends DataHeader{
             WaveDataInfo waveDataInfo = new WaveDataInfo();
             byte[] b2 = new byte[2];
             buf.get(b2);
-            waveDataInfo.setWaveDataMinValue(ByteUtils.bytesToInt(b2,2));
+            waveDataInfo.setWaveDataMinValue(ByteUtils.bytesToSignInt(b2,2));
             buf.get(b2);
-            waveDataInfo.setWaveDataMaxValue(ByteUtils.bytesToInt(b2,2));
+            waveDataInfo.setWaveDataMaxValue(ByteUtils.bytesToSignInt(b2,2));
             buf.get(b2);
-            waveDataInfo.setWaveDataBaseLine(ByteUtils.bytesToInt(b2,2));
+            waveDataInfo.setWaveDataBaseLine(ByteUtils.bytesToSignInt(b2,2));
             byte[] b4 = new byte[4];
             buf.get(b4);
             waveDataInfo.setWaveSamplingHz(ByteUtils.bytesToInt(b4));

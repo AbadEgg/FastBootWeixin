@@ -11,27 +11,55 @@ import java.util.List;
  */
 public class WaveformUtils{
 
-    //像素点是128个
-    private static final int dots = 128;
     //模拟上一秒最后一个数据
     private static int lastData = -1;
 
-    public static List<List<Integer>> getDots(int[] data){
+    public static List<List<Integer>> getDots(int[] data,int length,int dots)  {
         List<List<Integer>> groups = new ArrayList<>();
-        int dotsEach = 4;
-        for (int i = 0; i < dots; i++) {
-            List<Integer> group = new ArrayList<>();
-            if(i==0){
-                if(lastData!=-1){
-                    group.add(lastData);
+        int dotsEach = length/dots;
+        int remaider = length%dots;
+        if(dotsEach<2) {
+            System.out.println("取样异常");
+        }
+        //没有余数
+        if(remaider==0){
+            for (int i = 0; i < dots; i++) {
+                List<Integer> group = new ArrayList<>();
+                if(i==0){
+                    if(lastData!=-1){
+                        group.add(lastData);
+                    }
+                }else {
+                    group.add(data[i*dotsEach-1]);
                 }
-            }else {
-                group.add(data[i*dotsEach-1]);
+                for (int j = 0; j < dotsEach; j++) {
+                    group.add(data[i*dotsEach+j]);
+                }
+                groups.add(group);
             }
-            for (int j = 0; j < dotsEach; j++) {
-                group.add(data[i*dotsEach+j]);
+        }else {
+            int step = length/remaider;
+            int flag = 0;
+            for (int i = 0; i < dots ; i++) {
+                List<Integer> group = new ArrayList<>();
+                if(i==0){
+                    if(lastData!=-1){
+                        group.add(lastData);
+                    }
+                }else {
+                    group.add(data[i*dotsEach+flag-1]);
+                }
+                if(i%step==0){
+                    for (int j = 0; j < dotsEach+1 ; j++) {
+                        group.add(data[i*dotsEach+j+flag]);
+                    }
+                    flag++;
+                }else {
+                    for (int j = 0; j < dotsEach ; j++) {
+                        group.add(data[i*dotsEach]+j+flag);
+                    }
+                }
             }
-            groups.add(group);
         }
         lastData = data[data.length-1];
         return transferData(groups);
@@ -63,7 +91,7 @@ public class WaveformUtils{
                 min = group.get(i);
             }
         }
-        group = new ArrayList<>(2);
+        group.clear();
         group.add(min);
         group.add(max);
         return group;
@@ -71,7 +99,7 @@ public class WaveformUtils{
 
     public static void printConsole(List<List<Integer>> groups){
         for (int i = 0; i < groups.size(); i++) {
-            System.out.println(String.format("像素%s最小值是%s,最大值是%s",i,groups.get(i).get(0),groups.get(i).get(1)));
+            System.out.println(String.format("像素%s最小值是%s,最大值是%s,大小是%s",i,groups.get(i).get(0),groups.get(i).get(1),groups.get(i).size()));
         }
     }
 }

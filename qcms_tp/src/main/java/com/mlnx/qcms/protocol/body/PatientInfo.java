@@ -193,7 +193,7 @@ public class PatientInfo extends DataHeader{
         bPace = ByteUtils.bytesToInt(b4);
 
         byteBuffer.get(b2);
-        birYear = ByteUtils.bytesToInt(b2,2);
+        birYear = ByteUtils.bytesToSignInt(b2,2);
 
         birMon = byteBuffer.get();
 
