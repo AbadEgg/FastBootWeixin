@@ -37,6 +37,21 @@ public class ByteUtils {
 		return value;
 	}
 
+	public static int bytesToSInt(byte[] src, int len) {
+		int value = 0;
+
+		for (int i = 0; i < 4; ++i) {
+			if (i < len){
+				value |= (src[i] & 0xFF) << (i * 8);
+			}else{
+				if ((byte)(src[len-1] & 0x80 )== (byte)0x80){
+					value |= (0xFF) << (i * 8);
+				}
+			}
+		}
+		return value;
+	}
+
 	public static int bytesToInt(byte[] src) {
 		return bytesToInt(src, 4);
 	}
@@ -50,13 +65,11 @@ public class ByteUtils {
 				| (((long) src[1] & 0xff) << 8) | (((long) src[0] & 0xff) << 0));
 	}
 
-//	public static void main(String[] args) {
-//		long sessionID = System.nanoTime();
-//		System.out.println(sessionID);
-//
-//		sessionID = bytesToLong(longToBytes(sessionID));
-//		System.out.println("");
-//		System.out.println(sessionID);
-//	}
+	public static void main(String[] args) {
+
+		byte[] src = new byte[]{0x01, (byte)0x80};
+		System.out.println(String.format("%x", bytesToSInt(src, 2)));
+		System.out.println(String.format("%x", bytesToInt(src, 2)));
+	}
 
 }
