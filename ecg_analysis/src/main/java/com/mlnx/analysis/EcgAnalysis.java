@@ -99,6 +99,22 @@ public class EcgAnalysis {
 
                         analysisLib.EcgGetParam(1, shortByReference);
                         builder.append("早搏个数：" + shortByReference.getValue() + " ");
+                        analysisLib.EcgGetParam(2, shortByReference);
+                        builder.append("st1：" + shortByReference.getValue() + " ");
+                        analysisLib.EcgGetParam(3, shortByReference);
+                        builder.append("st2：" + shortByReference.getValue() + " ");
+                        analysisLib.EcgGetParam(4, shortByReference);
+                        builder.append("st3：" + shortByReference.getValue() + " ");
+                        analysisLib.EcgGetParam(5, shortByReference);
+                        builder.append("st4：" + shortByReference.getValue() + " ");
+                        analysisLib.EcgGetParam(6, shortByReference);
+                        builder.append("st5：" + shortByReference.getValue() + " ");
+                        analysisLib.EcgGetParam(7, shortByReference);
+                        builder.append("st6：" + shortByReference.getValue() + " ");
+                        analysisLib.EcgGetParam(8, shortByReference);
+                        builder.append("st7：" + shortByReference.getValue() + " ");
+                        analysisLib.EcgGetParam(9, shortByReference);
+                        builder.append("st8：" + shortByReference.getValue() + " ");
                         if (shortByReference.getValue() >= 0) {
                             result.setPbNumb((int) shortByReference.getValue());
                         }
@@ -163,6 +179,6 @@ public class EcgAnalysis {
         }
         builder.delete(builder.length()-1, builder.length());
 
-        System.out.println(builder.toString());
+        builder.append(builder.toString());
     }
 }
