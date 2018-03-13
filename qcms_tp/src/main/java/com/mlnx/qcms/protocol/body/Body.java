@@ -249,7 +249,7 @@ public class Body implements Codec {
             packageTypeCode |= (byteBuf.get() & 0x000000ff);
 //            System.out.println(String.format("0x%x",packageTypeCode));
             PackageType packageType = PackageType.decode(packageTypeCode);
-            System.out.println(packageType);
+//            System.out.println(packageType);
             int checkSum = 0;
             int packageLength = 0;
             int contentLength = 0;
