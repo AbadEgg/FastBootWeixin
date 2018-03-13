@@ -1,7 +1,6 @@
 package com.mlnx.qcms.protocol.body;
 
 import com.mlnx.qcms.utils.ByteUtils;
-import com.mlnx.qcms.utils.WaveformUtils;
 
 import java.nio.ByteBuffer;
 import java.util.Arrays;
@@ -24,7 +23,7 @@ public class EcgData extends DataHeader{
     int[] stHighLimit = new int[12];   //st高限
     int[] stLowLimit = new int[12];    //st低限
     int waveSampleNum;		//ecg波形采样数据个数
-    int[] waveData = new int[512];		//1秒的波形 2个字节拼成1个int
+    byte[] waveData;		//1秒的波形
 
     public EcgLeadType getEcgLeadType() {
         return ecgLeadType;
@@ -106,11 +105,11 @@ public class EcgData extends DataHeader{
         this.waveSampleNum = waveSampleNum;
     }
 
-    public int[] getWaveData() {
+    public byte[] getWaveData() {
         return waveData;
     }
 
-    public void setWaveData(int[] waveData) {
+    public void setWaveData(byte[] waveData) {
         this.waveData = waveData;
     }
 
@@ -164,11 +163,10 @@ public class EcgData extends DataHeader{
         }
         byteBuffer.get(b2);
         waveSampleNum = ByteUtils.bytesToSignInt(b2,2);
-        for (int i = 0; i < 512 ; i++) {
-            byteBuffer.get(b2);
-            waveData[i] = ByteUtils.bytesToSignInt(b2,2);
-        }
-        System.out.println(toString());
-        WaveformUtils.printConsole(WaveformUtils.getDots(waveData,waveSampleNum,100));
+        byte[] b1024 = new byte[1024];
+        byteBuffer.get(b1024);
+        waveData = Arrays.copyOfRange(b1024, 0, waveSampleNum*2);
+//        System.out.println(toString());
+//        WaveformUtils.printConsole(WaveformUtils.getDots(waveData,100));
     }
 }

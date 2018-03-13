@@ -68,6 +68,7 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
                 ecgMessage.setDeviceId(deviceId);
 
                 ECGData ecgData = new ECGData();
+                ecgData.setSuccessionData(dataPacket.getBody().getEcgData().getWaveData());
                 ecgData.setEcgHeart(dataPacket.getBody().getEcgData().getHr());
 
                 ecgMessage.setEcgData(ecgData);

@@ -14,7 +14,15 @@ public class WaveformUtils{
     //模拟上一秒最后一个数据
     private static int lastData = -1;
 
-    public static List<List<Integer>> getDots(int[] data,int length,int dots)  {
+    /**
+     *
+     * @param waveData ecg波形数据
+     * @param dots 像素点
+     * @return
+     */
+    public static List<List<Integer>> getDots(byte[] waveData,int dots)  {
+        int[] data = byte2int(waveData);
+        int length = data.length;
         List<List<Integer>> groups = new ArrayList<>();
         int dotsEach = length/dots;
         int remaider = length%dots;
@@ -52,16 +60,20 @@ public class WaveformUtils{
                 if(i%step==0){
                     for (int j = 0; j < dotsEach+1 ; j++) {
                         group.add(data[i*dotsEach+j+flag]);
+                        if(flag==remaider){
+                            break;
+                        }
                     }
                     flag++;
                 }else {
                     for (int j = 0; j < dotsEach ; j++) {
-                        group.add(data[i*dotsEach]+j+flag);
+                        group.add(data[i*dotsEach+j+flag]);
                     }
                 }
+                groups.add(group);
             }
         }
-        lastData = data[data.length-1];
+        lastData = data[length-1];
         return transferData(groups);
     }
 
@@ -71,6 +83,18 @@ public class WaveformUtils{
             group = handleArray(group);
         }
         return groups;
+    }
+
+    public static int[] byte2int(byte[] waveData){
+        int length = waveData.length/2;
+        int[] result = new int[length];
+        byte[] b2 = new byte[2];
+        for (int i = 0; i < length ; i++) {
+            b2[0]=waveData[i*2];
+            b2[1]=waveData[i*2+1];
+            result[i] = ByteUtils.bytesToSignInt(b2 ,2);
+        }
+        return result;
     }
 
     /**
