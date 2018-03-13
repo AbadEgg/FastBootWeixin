@@ -1,5 +1,7 @@
 package com.mlnx.mp_session.domain;
 
+import com.mlnx.mptp.DeviceType;
+
 /**
  * Created by amanda.shan on 2018/2/11.
  */
@@ -8,6 +10,8 @@ public class DeviceInfo {
     private Integer patientId;
 
     private String deivceId;
+
+    private DeviceType deviceType;
 
     private Long packetTime;
 
@@ -25,6 +29,14 @@ public class DeviceInfo {
 
     public void setDeivceId(String deivceId) {
         this.deivceId = deivceId;
+    }
+
+    public DeviceType getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(DeviceType deviceType) {
+        this.deviceType = deviceType;
     }
 
     public Long getPacketTime() {

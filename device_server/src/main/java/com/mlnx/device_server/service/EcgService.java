@@ -7,7 +7,9 @@ import com.mlnx.device.inter.EcgDeviceService;
 import com.mlnx.device_server.comm.utils.DateUtils;
 import com.mlnx.device_server.comm.utils.MacUtils;
 import com.mlnx.device_server.comm.utils.ThreadUtil;
+import com.mlnx.ecg.store.DeviceStore;
 import com.mlnx.ecg.store.EcgStore;
+import com.mlnx.ecg.store.domain.DeviceOnlineRecord;
 import com.mlnx.ecg.store.domain.Ecg;
 import com.mlnx.local.data.store.ecg.EcgAnalysisStore;
 import com.mlnx.mp_server.protocol.RegisterMessage;
@@ -19,23 +21,19 @@ import com.mlnx.mp_session.listenner.BroadCast;
 import com.mlnx.mp_session.listenner.ecg.EcgListener;
 import com.mlnx.mptp.model.ECGData;
 import com.mlnx.mptp.model.ECGDeviceInfo;
+import com.mlnx.mptp.mptp.body.DeviceState;
 import com.mlnx.mptp.mptp.body.Topic;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.annotation.PostConstruct;
 
 import static com.mlnx.device.ecg.dubbo.DerviceDubboServiceVersion.DEVICE_GROUP;
 import static com.mlnx.device.ecg.dubbo.DerviceDubboServiceVersion.DEVICE_V;
@@ -57,6 +55,9 @@ public class EcgService {
 
     @Autowired
     private EcgStore ecgStore;
+
+    @Autowired
+    private DeviceStore deviceStore;
 
     @Autowired
     private EcgAnalysisStore ecgAnalysisStore;
@@ -110,12 +111,20 @@ public class EcgService {
     private EcgListener ecgListenner = new EcgListener() {
         @Override
         public void deviceOnline(Topic topic, String deviceId) {
-
+            DeviceOnlineRecord record = new DeviceOnlineRecord();
+            record.setDate(new Date());
+            record.setDeviceId(deviceId);
+            record.setDeviceState(DeviceState.DEVICE_ONLINE);
+            deviceStore.save(record);
         }
 
         @Override
         public void deviceOfflien(Topic topic, String deviceId) {
-
+            DeviceOnlineRecord record = new DeviceOnlineRecord();
+            record.setDate(new Date());
+            record.setDeviceId(deviceId);
+            record.setDeviceState(DeviceState.DEVICE_OFFLINE);
+            deviceStore.save(record);
         }
 
         @Override
@@ -127,6 +136,7 @@ public class EcgService {
 
                 ecg.setPatientId(ecgInfo.getPatientId());
                 ecg.setDeivceId(ecgInfo.getDeivceId());
+                ecg.setDeviceType(ecgInfo.getDeviceType()+"");
                 ecg.setStartTime(ecgInfo.getPacketTime());
 
                 ECGDeviceInfo info = ecgInfo.getEcgDeviceInfo();

@@ -2,8 +2,11 @@ package com.mlnx.mp_session.core;
 
 import com.mlnx.core.DeviceShare;
 import com.mlnx.mp_session.config.ConfigService;
+import com.mlnx.mp_session.listenner.BroadCast;
 import com.mlnx.mptp.DeviceType;
 import com.mlnx.mptp.mptp.MpPacket;
+import com.mlnx.mptp.mptp.body.Topic;
+import com.mlnx.mptp.mptp.body.TopicType;
 import com.mlnx.mptp.utils.MptpLogUtils;
 import io.netty.channel.Channel;
 
@@ -49,10 +52,13 @@ public class SessionManager {
         sessionMap.put(channel, session);
         channelMap.put(session.getKey(), channel);
 
+        String deviceId = null;
+
         if (session instanceof DeviceSession) {
-            if (session.getDeviceType().equals(DeviceType.ECG_DEVICE) && !ecgSessions.contains(session)) {
-                ecgSessions.add(session);
-                deviceShare.saveDevice(((DeviceSession) session).getDeviceId());
+            if (session.getDeviceType().equals(DeviceType.ECG_DEVICE) || session.getDeviceType().equals(DeviceType.MP_DEVICE)) {
+                deviceId = ((DeviceSession) session).getDeviceId();
+                deviceShare.saveDevice(deviceId);
+                BroadCast.ecgBroadCast.deviceOnline(new Topic(TopicType.U_DEVICE_ONLINE_TOPIC,deviceId),deviceId);
             }
         }
 

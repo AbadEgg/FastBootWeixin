@@ -4,7 +4,9 @@ import com.alicloud.openservices.tablestore.ClientConfiguration;
 import com.alicloud.openservices.tablestore.SyncClient;
 import com.alicloud.openservices.tablestore.model.AlwaysRetryStrategy;
 import com.mlnx.device_server.comm.config.OTSConfig;
+import com.mlnx.ecg.store.DeviceStore;
 import com.mlnx.ecg.store.EcgStore;
+import com.mlnx.ecg.store.iml.DeviceMongoDb;
 import com.mlnx.ecg.store.iml.EcgMongoDb;
 import com.mlnx.ecg.store.iml.EcgStoreTable;
 import com.mlnx.ecg.store.utils.OTSUtils;
@@ -108,5 +110,12 @@ public class BeanConfig {
         return new SpoStore();
     }
 
-
+    @Bean
+    public DeviceStore deviceStore(){
+        DeviceStore deviceStore = null;
+        DeviceMongoDb mongoDb = new DeviceMongoDb();
+        mongoDb.init();
+        deviceStore = mongoDb;
+        return deviceStore;
+    }
 }

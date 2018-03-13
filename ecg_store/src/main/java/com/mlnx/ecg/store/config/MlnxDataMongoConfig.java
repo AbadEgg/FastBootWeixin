@@ -16,5 +16,7 @@ public class MlnxDataMongoConfig {
     public static String ECG_COLLECTIONNAME = "ecg_collection";
     public static String BP_COLLECTIONNAME = "bp_collection";
     public static String BS_COLLECTIONNAME = "bs_collection";
+    public static String DEVICE_COLLECTIONNAME = "bs_collection";
+
 
 }

@@ -97,7 +97,7 @@ public class EcgMongoDb implements EcgStore {
         query.gt("startTime", startTime);
         query.lt("startTime", endTime);
         query.ascending("startTime");
-        query.projection(ecgDataKey, "startTime", "patientId", "deivceId");
+        query.projection(ecgDataKey, "startTime", "patientId", "deivceId","deviceType");
 
         List<JSONObject> jsonObjects = query.find();
         List<Map<String, Object>> maps = new ArrayList<>();

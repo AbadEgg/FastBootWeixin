@@ -8,6 +8,8 @@ public class Ecg {
 
     private String deivceId;
 
+    private String deviceType;
+
     private Long startTime;
 
     private ECGChannelType ecgChannelType;
@@ -48,6 +50,14 @@ public class Ecg {
 
     public void setDeivceId(String deivceId) {
         this.deivceId = deivceId;
+    }
+
+    public String getDeviceType() {
+        return deviceType;
+    }
+
+    public void setDeviceType(String deviceType) {
+        this.deviceType = deviceType;
     }
 
     public Long getStartTime() {
