@@ -13,6 +13,7 @@ public class RealEcgAnalysResult {
 
     private Integer heart;
     private Integer pbNumb; // 早搏个数
+    private int[] sts = new int[8];
 
     private HeartResult heartResult;    // 心率失常疾病
 
@@ -54,6 +55,14 @@ public class RealEcgAnalysResult {
 
     public void setHeartResult(HeartResult heartResult) {
         this.heartResult = heartResult;
+    }
+
+    public int[] getSts() {
+        return sts;
+    }
+
+    public void setSts(int[] sts) {
+        this.sts = sts;
     }
 
     @Override
