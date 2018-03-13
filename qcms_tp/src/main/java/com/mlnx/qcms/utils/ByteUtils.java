@@ -32,6 +32,7 @@ public class ByteUtils {
         return src;
     }
 
+    //无符号转换
     public static int bytesToInt(byte[] src, int len) {
         int value = 0;
 
@@ -39,6 +40,23 @@ public class ByteUtils {
             value |= (src[i] & 0xFF) << (i * 8);
         }
         return value;
+    }
+
+    //有符号转换
+    public static int bytesToSignInt(byte[] src, int len) {
+        int value = 0;
+
+        for (int i = 0; i < 4; ++i) {
+            if (i < len){
+                value |= (src[i] & 0xFF) << (i * 8);
+            }else{
+                if ((byte)(src[len-1] & 0x80 )== (byte)0x80){
+                    value |= (0xFF) << (i * 8);
+                }
+            }
+        }
+        return value;
+
     }
 
     public static int bytesToInt(byte[] src) {

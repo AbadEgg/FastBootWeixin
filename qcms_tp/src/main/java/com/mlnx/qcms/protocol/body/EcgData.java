@@ -23,7 +23,7 @@ public class EcgData extends DataHeader{
     int[] stHighLimit = new int[12];   //st高限
     int[] stLowLimit = new int[12];    //st低限
     int waveSampleNum;		//ecg波形采样数据个数
-    int[] waveData = new int[512];		//1秒的波形
+    byte[] waveData;		//1秒的波形
 
     public EcgLeadType getEcgLeadType() {
         return ecgLeadType;
@@ -105,11 +105,11 @@ public class EcgData extends DataHeader{
         this.waveSampleNum = waveSampleNum;
     }
 
-    public int[] getWaveData() {
+    public byte[] getWaveData() {
         return waveData;
     }
 
-    public void setWaveData(int[] waveData) {
+    public void setWaveData(byte[] waveData) {
         this.waveData = waveData;
     }
 
@@ -140,34 +140,33 @@ public class EcgData extends DataHeader{
         byteBuffer.get(b2);
         ecgLeadType = EcgLeadType.decode(ByteUtils.bytesToInt(b2,2));
         byteBuffer.get(b2);
-        hr = ByteUtils.bytesToInt(b2,2);
+        hr = ByteUtils.bytesToSignInt(b2,2);
         byteBuffer.get(b2);
-        hrHighLimt = ByteUtils.bytesToInt(b2,2);
+        hrHighLimt = ByteUtils.bytesToSignInt(b2,2);
         byteBuffer.get(b2);
-        hrLowLimt = ByteUtils.bytesToInt(b2,2);
+        hrLowLimt = ByteUtils.bytesToSignInt(b2,2);
         byteBuffer.get(b2);
-        pvcs = ByteUtils.bytesToInt(b2,2);
+        pvcs = ByteUtils.bytesToSignInt(b2,2);
         byteBuffer.get(b2);
-        pvcsHighLimit = ByteUtils.bytesToInt(b2,2);
+        pvcsHighLimit = ByteUtils.bytesToSignInt(b2,2);
         for (int i = 0; i < 12; i++) {
             byteBuffer.get(b2);
-            st[i] = ByteUtils.bytesToInt(b2,2);
-        }
-        for (int i = 0; i < 12; i++) {
-            byteBuffer.get(b2);
-            stHighLimit[i] = ByteUtils.bytesToInt(b2,2);
+            st[i] = ByteUtils.bytesToSignInt(b2,2);
         }
         for (int i = 0; i < 12; i++) {
             byteBuffer.get(b2);
-            stLowLimit[i] = ByteUtils.bytesToInt(b2,2);
+            stHighLimit[i] = ByteUtils.bytesToSignInt(b2,2);
+        }
+        for (int i = 0; i < 12; i++) {
+            byteBuffer.get(b2);
+            stLowLimit[i] = ByteUtils.bytesToSignInt(b2,2);
         }
         byteBuffer.get(b2);
-        waveSampleNum = ByteUtils.bytesToInt(b2,2);
-        for (int i = 0; i < 512 ; i++) {
-            byteBuffer.get(b2);
-            waveData[i] = ByteUtils.bytesToInt(b2,2);
-        }
-        System.out.println(this.toString());
-
+        waveSampleNum = ByteUtils.bytesToSignInt(b2,2);
+        byte[] b1024 = new byte[1024];
+        byteBuffer.get(b1024);
+        waveData = Arrays.copyOfRange(b1024, 0, waveSampleNum*2);
+//        System.out.println(toString());
+//        WaveformUtils.printConsole(WaveformUtils.getDots(waveData,100));
     }
 }

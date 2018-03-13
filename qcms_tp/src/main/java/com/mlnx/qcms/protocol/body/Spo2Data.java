@@ -108,22 +108,22 @@ public class Spo2Data extends DataHeader{
     public void decodeData(ByteBuffer buf) {
         byte[] b2 = new byte[2];
         buf.get(b2);
-        spo2 = ByteUtils.bytesToInt(b2,2);
+        spo2 = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        spo2HighLimt = ByteUtils.bytesToInt(b2,2);
+        spo2HighLimt = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        spo2LowLimt = ByteUtils.bytesToInt(b2,2);
+        spo2LowLimt = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        pr = ByteUtils.bytesToInt(b2,2);
+        pr = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        prHighLimt = ByteUtils.bytesToInt(b2,2);
+        prHighLimt = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        prLowLimt = ByteUtils.bytesToInt(b2,2);
+        prLowLimt = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        waveSampleNum = ByteUtils.bytesToInt(b2,2);
+        waveSampleNum = ByteUtils.bytesToSignInt(b2,2);
         for (int i = 0; i < 128 ; i++) {
             buf.get(b2);
-            waveData[i] = ByteUtils.bytesToInt(b2,2);
+            waveData[i] = ByteUtils.bytesToSignInt(b2,2);
         }
 //        System.out.println(this.toString());
     }

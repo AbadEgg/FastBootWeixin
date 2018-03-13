@@ -180,34 +180,34 @@ public class NibpData extends DataHeader{
         newMeasureValue = buf.get()==0x01?true:false;
         byte[] b2 = new byte[2];
         buf.get(b2);
-        sysPress = ByteUtils.bytesToInt(b2,2);
+        sysPress = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        sysPressHighLimt = ByteUtils.bytesToInt(b2,2);
+        sysPressHighLimt = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        sysPressLowLimt = ByteUtils.bytesToInt(b2,2);
+        sysPressLowLimt = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        meanPress = ByteUtils.bytesToInt(b2,2);
+        meanPress = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        meanPressHighLimt = ByteUtils.bytesToInt(b2,2);
+        meanPressHighLimt = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        meanPressLowLimt = ByteUtils.bytesToInt(b2,2);
+        meanPressLowLimt = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        diaPress = ByteUtils.bytesToInt(b2,2);
+        diaPress = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        diaPressHighLimt = ByteUtils.bytesToInt(b2,2);
+        diaPressHighLimt = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        diaPressLowLimt = ByteUtils.bytesToInt(b2,2);
+        diaPressLowLimt = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        intervel = ByteUtils.bytesToInt(b2,2);
+        intervel = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        nibpMeasureMode = NibpMeasureMode.decode(ByteUtils.bytesToInt(b2,2));
+        nibpMeasureMode = NibpMeasureMode.decode(ByteUtils.bytesToSignInt(b2,2));
         buf.get(b2);
-        remainSec = ByteUtils.bytesToInt(b2,2);
+        remainSec = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        pressure = ByteUtils.bytesToInt(b2,2);
+        pressure = ByteUtils.bytesToSignInt(b2,2);
         for (int i = 0; i < 64 ; i++) {
             buf.get(b2);
-            promptInfo[i] = ByteUtils.bytesToInt(b2,2);
+            promptInfo[i] = ByteUtils.bytesToSignInt(b2,2);
         }
 //        System.out.println(this.toString());
     }

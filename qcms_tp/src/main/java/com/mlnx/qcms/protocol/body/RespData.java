@@ -3,7 +3,6 @@ package com.mlnx.qcms.protocol.body;
 import com.mlnx.qcms.utils.ByteUtils;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 /**
  * 响应参数
@@ -67,16 +66,16 @@ public class RespData extends DataHeader{
     public void decodeData(ByteBuffer buf) {
         byte[] b2 = new byte[2];
         buf.get(b2);
-        resp = ByteUtils.bytesToInt(b2,2);
+        resp = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        respHighLimt = ByteUtils.bytesToInt(b2,2);
+        respHighLimt = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        respLowLimt = ByteUtils.bytesToInt(b2,2);
+        respLowLimt = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        waveSampleNum = ByteUtils.bytesToInt(b2,2);
+        waveSampleNum = ByteUtils.bytesToSignInt(b2,2);
         for (int i = 0; i < 512; i++) {
             buf.get(b2);
-            waveData[i] = ByteUtils.bytesToInt(b2,2);
+            waveData[i] = ByteUtils.bytesToSignInt(b2,2);
         }
 
     }
