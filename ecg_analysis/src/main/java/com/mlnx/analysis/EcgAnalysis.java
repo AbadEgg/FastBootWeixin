@@ -22,13 +22,18 @@ public class EcgAnalysis {
     private Logger logger = LoggerFactory.getLogger(EcgAnalysis.class);
 
     private String deviceId;
-    public static byte[] gpu8AcId = new byte[]{0x0E, (byte) 0x80, 0x01, (byte) 0x80, 0x16, 0x51, 0x36, 0x32, 0x38,
+    public byte[] gpu8AcId = new byte[]{0x0E, (byte) 0x80, 0x01, (byte) 0x80, 0x16, 0x51, 0x36, 0x32, 0x38,
             0x37, 0x37, 0x31};
 
 //    private byte[] gpu8AcId = new byte[]{0x00, 0x00, 0x2F, 0x00, 0x16, 0x51, 0x36, 0x32, 0x38, 0x37, 0x37, 0x31};
 
 
     private AnalysisLib analysisLib;
+
+    public EcgAnalysis(String deviceId, byte[] gpu8AcId) {
+        this.deviceId = deviceId;
+        this.gpu8AcId = gpu8AcId;
+    }
 
     public EcgAnalysis(String deviceId) {
         this.deviceId = deviceId;

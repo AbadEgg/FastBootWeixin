@@ -12,6 +12,7 @@ public class EcgDeviceInfo implements Serializable {
     private Integer patientId;
     private ECGDeviceRunMode ecgDeviceRunMode;
     private ECGChannelType ecgChannelType;
+    private String cpuId;
 
     public Integer getPatientId() {
         return patientId;
@@ -37,12 +38,21 @@ public class EcgDeviceInfo implements Serializable {
         this.ecgChannelType = ecgChannelType;
     }
 
+    public String getCpuId() {
+        return cpuId;
+    }
+
+    public void setCpuId(String cpuId) {
+        this.cpuId = cpuId;
+    }
+
     @Override
     public String toString() {
         return "EcgDeviceInfo{" +
                 "patientId=" + patientId +
                 ", ecgDeviceRunMode=" + ecgDeviceRunMode +
                 ", ecgChannelType=" + ecgChannelType +
+                ", cpuId='" + cpuId + '\'' +
                 '}';
     }
 }

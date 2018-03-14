@@ -1,12 +1,11 @@
 package com.mlnx.device_server.service;
 
-import com.alibaba.dubbo.config.annotation.Reference;
 import com.mlnx.analysis.EcgAnalysis;
 import com.mlnx.device.ecg.EcgDeviceInfo;
-import com.mlnx.device.inter.EcgDeviceService;
 import com.mlnx.device_server.comm.utils.DateUtils;
 import com.mlnx.device_server.comm.utils.MacUtils;
 import com.mlnx.device_server.comm.utils.ThreadUtil;
+import com.mlnx.device_server.mybatis.mapper.TDeviceMapper;
 import com.mlnx.ecg.store.DeviceStore;
 import com.mlnx.ecg.store.EcgStore;
 import com.mlnx.ecg.store.domain.DeviceOnlineRecord;
@@ -23,20 +22,23 @@ import com.mlnx.mptp.model.ECGData;
 import com.mlnx.mptp.model.ECGDeviceInfo;
 import com.mlnx.mptp.mptp.body.DeviceState;
 import com.mlnx.mptp.mptp.body.Topic;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static com.mlnx.device.ecg.dubbo.DerviceDubboServiceVersion.DEVICE_GROUP;
-import static com.mlnx.device.ecg.dubbo.DerviceDubboServiceVersion.DEVICE_V;
+import javax.annotation.PostConstruct;
 
 /**
  * Created by amanda.shan on 2017/12/19.
@@ -45,9 +47,6 @@ import static com.mlnx.device.ecg.dubbo.DerviceDubboServiceVersion.DEVICE_V;
 public class EcgService {
 
     private Logger logger = LoggerFactory.getLogger(this.getClass());
-
-    @Reference(version = DEVICE_V, group = DEVICE_GROUP, check = true)
-    private EcgDeviceService ecgDeviceService;
 
     private Queue<Ecg> ecgs = new ConcurrentLinkedDeque<>();
     private long saveTime;
@@ -62,6 +61,9 @@ public class EcgService {
     @Autowired
     private EcgAnalysisStore ecgAnalysisStore;
 
+    @Autowired
+    private TDeviceMapper tDeviceMapper;
+
     @Value("${ecg.device.mac}")
     private String deviceMac;
 
@@ -69,8 +71,6 @@ public class EcgService {
     private void init() {
         MpSupportManager.getInstance().setEcgSupport(ecgSupport);
         BroadCast.addEcgListenner(ecgListenner);
-
-        EcgAnalysis.gpu8AcId = MacUtils.getMcuId(deviceMac);
     }
 
     private EcgSupport ecgSupport = new EcgSupport() {
@@ -81,7 +81,7 @@ public class EcgService {
                 @Override
                 public void run() {
                     RegisterMessage message = action.getRegisterMessage();
-                    EcgDeviceInfo ecgDeviceInfo = ecgDeviceService.getEcgDeviceInfo(message.getDeviceId());
+                    EcgDeviceInfo ecgDeviceInfo = tDeviceMapper.getEcgDeviceInfo(message.getDeviceId());
                     try {
                         MpSupportManager.getInstance().verifyEcg(action, ecgDeviceInfo);
                     } catch (IOException e) {
@@ -97,9 +97,9 @@ public class EcgService {
                 @Override
                 public void run() {
                     RegisterMessage message = action.getRegisterMessage();
-                    EcgDeviceInfo ecgDeviceInfo = ecgDeviceService.getEcgDeviceInfo(message.getDeviceId());
+                    Integer patientId = tDeviceMapper.getPatientId(message.getDeviceId());
                     try {
-                        MpSupportManager.getInstance().verifyCmsMp(action, ecgDeviceInfo.getPatientId());
+                        MpSupportManager.getInstance().verifyCmsMp(action, patientId);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -136,7 +136,7 @@ public class EcgService {
 
                 ecg.setPatientId(ecgInfo.getPatientId());
                 ecg.setDeivceId(ecgInfo.getDeivceId());
-                ecg.setDeviceType(ecgInfo.getDeviceType()+"");
+                ecg.setDeviceType(ecgInfo.getDeviceType() + "");
                 ecg.setStartTime(ecgInfo.getPacketTime());
 
                 ECGDeviceInfo info = ecgInfo.getEcgDeviceInfo();
