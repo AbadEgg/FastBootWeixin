@@ -40,7 +40,7 @@ public class EcgAnalysis {
 
     public void init() throws IOException {
 
-        String path = new File("ecg_analysis" + File.separator + "libecg12.dll").getAbsolutePath();
+        String path = new File("../ecg_analysis" + File.separator + "libecg12.dll").getAbsolutePath();
 
         path = getCopiedDllPath(path, deviceId);
         analysisLib = (AnalysisLib) Native.loadLibrary(path, AnalysisLib.class);
@@ -159,18 +159,18 @@ public class EcgAnalysis {
     }
 
     public static void main(String[] args) throws IOException {
-//        EcgAnalysis ecgAnalysis = new EcgAnalysis("111");
-//        ecgAnalysis.init();
+        EcgAnalysis ecgAnalysis = new EcgAnalysis("111");
+        ecgAnalysis.init();
 
-        byte[] gpu8AcId = new byte[]{0x0E, (byte) 0x80, 0x01, (byte) 0x80, 0x16, 0x51, 0x36, 0x32, 0x38,
-                0x37, 0x37, 0x31};
-
-        StringBuilder builder = new StringBuilder();
-        for (byte b : gpu8AcId) {
-            builder.append(String.format("%02x:", b));
-        }
-        builder.delete(builder.length() - 1, builder.length());
-
-        builder.append(builder.toString());
+//        byte[] gpu8AcId = new byte[]{0x0E, (byte) 0x80, 0x01, (byte) 0x80, 0x16, 0x51, 0x36, 0x32, 0x38,
+//                0x37, 0x37, 0x31};
+//
+//        StringBuilder builder = new StringBuilder();
+//        for (byte b : gpu8AcId) {
+//            builder.append(String.format("%02x:", b));
+//        }
+//        builder.delete(builder.length() - 1, builder.length());
+//
+//        builder.append(builder.toString());
     }
 }

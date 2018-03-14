@@ -6,15 +6,14 @@ import com.mlnx.qcms.protocol.head.Header;
 import com.mlnx.qcms.utils.InvalidPacketException;
 import com.mlnx.qcms.utils.LogLevelInfo;
 import com.mlnx.qcms.utils.QcmsLogUtils;
-
-import java.util.List;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.util.ReferenceCountUtil;
+
+import java.util.List;
 
 public class QcmsDecode extends ByteToMessageDecoder {
 
@@ -46,9 +45,16 @@ public class QcmsDecode extends ByteToMessageDecoder {
             case HEAD_INFO:
                 // 读取内容
                 if (in.isReadable(12)) {
-                    dataPacket.getHeader().decode(in.readBytes(12).nioBuffer());
-                    state = State.CONTANT;
-                    length = dataPacket.getHeader().getPackageBytes();
+                    ByteBuf headBuf = in.readBytes(12);
+                    try {
+                        dataPacket.getHeader().decode(headBuf.nioBuffer());
+                        state = State.CONTANT;
+                        length = dataPacket.getHeader().getPackageBytes();
+                    }catch (InvalidPacketException e) {
+                        e.printStackTrace();
+                    } finally {
+                        ReferenceCountUtil.release(headBuf);
+                    }
                 } else {
                     break;
                 }

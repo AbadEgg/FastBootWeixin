@@ -1,7 +1,5 @@
 package com.mlnx.ecg.store.domain;
 
-import com.mlnx.mptp.mptp.body.DeviceState;
-
 import java.util.Date;
 
 /**
@@ -16,7 +14,7 @@ public class DeviceOnlineRecord {
 
     private Date date;
 
-    private DeviceState deviceState;
+    private String deviceState;
 
     public String getDeviceId() {
         return deviceId;
@@ -34,11 +32,11 @@ public class DeviceOnlineRecord {
         this.date = date;
     }
 
-    public DeviceState getDeviceState() {
+    public String getDeviceState() {
         return deviceState;
     }
 
-    public void setDeviceState(DeviceState deviceState) {
+    public void setDeviceState(String deviceState) {
         this.deviceState = deviceState;
     }
 }

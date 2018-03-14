@@ -15,7 +15,9 @@ public enum TopicType {
     U_SPO_TOPIC("血氧数据", 3),
     U_BT_TOPIC("呼吸数据", 4),
 
-    D_ECG_TOPIC("用户发送信息给设备", 5);
+    D_ECG_TOPIC("用户发送信息给设备", 5),
+
+    U_DEVICE_ONLINE_TOPIC("设备是否在线",6);
 
     private String title;
     private int type;

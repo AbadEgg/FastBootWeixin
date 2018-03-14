@@ -1,5 +1,7 @@
 package com.mlnx.analysis.utils;
 
+import com.mlnx.mptp.utils.MptpLogUtils;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -18,6 +20,8 @@ public class FileUtils {
             inputChannel = new FileInputStream(source).getChannel();
             outputChannel = new FileOutputStream(dest).getChannel();
             outputChannel.transferFrom(inputChannel, 0, inputChannel.size());
+        } catch (Exception e){
+            MptpLogUtils.e("拷贝文件失败:",e);
         } finally {
             inputChannel.close();
             outputChannel.close();
