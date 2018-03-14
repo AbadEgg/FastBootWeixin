@@ -18,4 +18,6 @@ public class MlnxDataMongoConfig {
     public static String BS_COLLECTIONNAME = "bs_collection";
     public static String ECG_REAL_ANALY_COLLECTIONNAME = "ecg_real_analy_collection";
 
+    public static String BP_AVG_COLLECTIONNAME = "bp_avg_collection";
+
 }

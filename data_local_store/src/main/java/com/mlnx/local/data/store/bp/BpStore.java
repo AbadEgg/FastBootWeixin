@@ -13,11 +13,12 @@ import java.util.Map;
  */
 public class BpStore {
 
-    public boolean saveBp(int sbp, int dbp, int heart, long time){
+    public boolean saveBp(int patientId,int sbp, int dbp, int heart, long time){
         MongoQuery query = new MongoQuery();
         query.use(MlnxDataMongoConfig.BP_COLLECTIONNAME);
 
         Map<String, Object> map = new HashMap<>();
+        map.put("patientId",patientId);
         map.put("time", time);
         map.put("dbp", dbp);
         map.put("sbp", sbp);
