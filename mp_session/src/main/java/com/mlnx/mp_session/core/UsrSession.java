@@ -92,6 +92,8 @@ public class UsrSession extends Session {
 
             boolean isExist = false;
             EcgInfo pushEcgInfo = new EcgInfo();
+            pushEcgInfo.setDeivceId(ecgInfo.getDeivceId());
+            pushEcgInfo.setPatientId(ecgInfo.getPatientId());
 
             StringBuilder builder = new StringBuilder();
             builder.append(userName + ":" + password + "  ");
