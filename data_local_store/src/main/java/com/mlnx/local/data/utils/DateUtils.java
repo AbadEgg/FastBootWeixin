@@ -19,7 +19,7 @@ public class DateUtils {
     public static Date getDayBefore(Date date){
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        calendar.add(Calendar.DAY_OF_MONTH, -1);
+//        calendar.add(Calendar.DAY_OF_MONTH, -1);
         //将小时至0
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         //将分钟至0

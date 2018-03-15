@@ -41,7 +41,7 @@ public class BpAvgUtils {
             bpAvg.setPatientId((Integer) list.get(0).get("patientId"));
 
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            bpAvg.setDayTime(format.parse(format.format((Date) list.get(0).get("time"))));
+            bpAvg.setDayTime(format.parse(format.format(new Date((long) list.get(0).get("time")))));
             for (JSONObject jsonObject :list) {
                 if (jsonObject.get("sbp") == null || jsonObject.get("dbp") == null || jsonObject.get("heart") == null) {
                     logger.error("血压数据为null： " + jsonObject.toString());
@@ -52,7 +52,7 @@ public class BpAvgUtils {
                 sumHeart += (int)jsonObject.get("heart");
 
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime((Date) jsonObject.get("time"));
+                calendar.setTime(new Date((long) jsonObject.get("time")));
                 if (calendar.get(Calendar.HOUR_OF_DAY) > 7 && calendar.get(Calendar.HOUR_OF_DAY) < 22) {
                     daySumSbp += (int)jsonObject.get("sbp");
                     daySumDbp += (int)jsonObject.get("dbp");

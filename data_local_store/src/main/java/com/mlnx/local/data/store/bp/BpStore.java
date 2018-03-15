@@ -30,7 +30,7 @@ public class BpStore {
 
     public List<JSONObject> getBpData(long startTime, long endTime, int patientId){
         MongoQuery query = new MongoQuery();
-        query.use(MlnxDataMongoConfig.BP_AVG_COLLECTIONNAME);
+        query.use(MlnxDataMongoConfig.BP_COLLECTIONNAME);
         query.eq("patientId", patientId);
         query.gt("time", startTime);
         query.lt("time", endTime);

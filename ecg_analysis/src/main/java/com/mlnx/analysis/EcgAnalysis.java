@@ -45,7 +45,7 @@ public class EcgAnalysis {
 
     public void init() throws IOException {
 
-        String path = new File("../ecg_analysis" + File.separator + "libecg12.dll").getAbsolutePath();
+        String path = new File("ecg_analysis" + File.separator + "libecg12.dll").getAbsolutePath();
 
         path = getCopiedDllPath(path, deviceId);
         analysisLib = (AnalysisLib) Native.loadLibrary(path, AnalysisLib.class);
