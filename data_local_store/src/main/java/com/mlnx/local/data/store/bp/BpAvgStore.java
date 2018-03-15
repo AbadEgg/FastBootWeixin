@@ -8,6 +8,7 @@ import com.mlnx.local.data.utils.BeanUtils;
 import com.mlnx.local.data.utils.DateUtils;
 import org.bson.Document;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -28,8 +29,13 @@ public class BpAvgStore {
      * 获取最近一周的日均血压数据
      * @return
      */
-    public List<BpAvg> getLastWeekBpAvg(Integer patientId) throws Exception {
-        return getBpAvg(DateUtils.getPastDate(7),DateUtils.getPastDate(1),patientId);
+    public List<BpAvg> getLastWeekBpAvg(Integer patientId) {
+        try {
+            return getBpAvg(DateUtils.getPastDate(7),DateUtils.getPastDate(0),patientId);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     /**
@@ -40,20 +46,26 @@ public class BpAvgStore {
         return getBpAvg(DateUtils.getPastDate(14),DateUtils.getPastDate(7),patientId);
     }
 
-    public List<BpAvg> getBpAvg(Date startTime, Date endTime, Integer patientId) throws Exception {
+    public List<BpAvg> getBpAvg(Date startTime, Date endTime, Integer patientId){
         MongoQuery query = new MongoQuery();
         query.use(MlnxDataMongoConfig.BP_AVG_COLLECTIONNAME);
         query.eq("patientId", patientId);
-        query.gte("time", startTime);
-        query.lt("time", endTime);
+        query.gte("dayTime", startTime);
+        query.lt("dayTime", endTime);
         query.ascending("time");
         List<JSONObject> jsonObjects = query.find();
         List<BpAvg> bpAvgs = new ArrayList<>();
-        for (JSONObject jsonObject:jsonObjects) {
-            BpAvg bpAvg = (BpAvg) BeanUtils.mapToBean(jsonObject,BpAvg.class);
-            bpAvgs.add(bpAvg);
+        try {
+            for (JSONObject jsonObject:jsonObjects) {
+                BpAvg bpAvg = null;
+                bpAvg = (BpAvg) BeanUtils.mapToBean(jsonObject,BpAvg.class);
+                bpAvgs.add(bpAvg);
+            }
+            return bpAvgs;
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return bpAvgs;
+        return null;
     }
 
     public BpAvg calcBpAvg(List<BpAvg> list){
