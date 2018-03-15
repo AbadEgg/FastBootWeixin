@@ -1,9 +1,7 @@
 package com.mlnx.device_server.service;
 
-import com.mlnx.analysis.EcgAnalysis;
 import com.mlnx.device.ecg.EcgDeviceInfo;
 import com.mlnx.device_server.comm.utils.DateUtils;
-import com.mlnx.device_server.comm.utils.MacUtils;
 import com.mlnx.device_server.comm.utils.ThreadUtil;
 import com.mlnx.device_server.mybatis.mapper.TDeviceMapper;
 import com.mlnx.ecg.store.DeviceStore;
@@ -22,23 +20,17 @@ import com.mlnx.mptp.model.ECGData;
 import com.mlnx.mptp.model.ECGDeviceInfo;
 import com.mlnx.mptp.mptp.body.DeviceState;
 import com.mlnx.mptp.mptp.body.Topic;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import javax.annotation.PostConstruct;
 
 /**
  * Created by amanda.shan on 2017/12/19.

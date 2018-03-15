@@ -1,11 +1,12 @@
 package com.mlnx.local.data.store.bp;
 
+import com.alibaba.fastjson.JSONObject;
 import com.cybermkd.mongo.kit.MongoQuery;
 import com.mlnx.local.data.config.MlnxDataMongoConfig;
-
 import org.bson.Document;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,5 +26,17 @@ public class BpStore {
         map.put("heart", heart);
 
         return query.set(new Document(map)).save();
+    }
+
+    public List<JSONObject> getBpData(long startTime, long endTime, int patientId){
+        MongoQuery query = new MongoQuery();
+        query.use(MlnxDataMongoConfig.BP_AVG_COLLECTIONNAME);
+        query.eq("patientId", patientId);
+        query.gt("time", startTime);
+        query.lt("time", endTime);
+        query.ascending("time");
+
+        List<JSONObject> jsonObjects = query.find();
+        return jsonObjects;
     }
 }

@@ -1,7 +1,7 @@
 package com.mlnx.local.data.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import com.mlnx.local.data.domain.BpAvg;
-import com.mlnx.local.data.store.bp.BpAvgStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author fzh
@@ -19,15 +18,9 @@ import java.util.Map;
 
 public class BpAvgUtils {
 
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static Logger logger = LoggerFactory.getLogger(BpAvgUtils.class);
 
-    private BpAvgStore bpAvgStore;
-
-    public void setBpAvgStore(BpAvgStore bpAvgStore) {
-        this.bpAvgStore = bpAvgStore;
-    }
-
-    private BpAvg bpDataProcess(List<Map<String, Object>> list) throws ParseException {
+    public static BpAvg bpDataProcess(List<JSONObject> list) throws ParseException {
         if (list != null && list.size() > 0) {
             BpAvg bpAvg = new BpAvg();
 
@@ -49,26 +42,26 @@ public class BpAvgUtils {
 
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             bpAvg.setDayTime(format.parse(format.format((Date) list.get(0).get("time"))));
-            for (Map<String,Object> map :list) {
-                if (map.get("sbp") == null || map.get("dbp") == null || map.get("heart") == null) {
-                    logger.error("血压数据为null： " + map.toString());
+            for (JSONObject jsonObject :list) {
+                if (jsonObject.get("sbp") == null || jsonObject.get("dbp") == null || jsonObject.get("heart") == null) {
+                    logger.error("血压数据为null： " + jsonObject.toString());
                     continue;
                 }
-                sumSbp += (int)map.get("sbp");
-                sumDbp += (int)map.get("dbp");
-                sumHeart += (int)map.get("heart");
+                sumSbp += (int)jsonObject.get("sbp");
+                sumDbp += (int)jsonObject.get("dbp");
+                sumHeart += (int)jsonObject.get("heart");
 
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime((Date) map.get("time"));
+                calendar.setTime((Date) jsonObject.get("time"));
                 if (calendar.get(Calendar.HOUR_OF_DAY) > 7 && calendar.get(Calendar.HOUR_OF_DAY) < 22) {
-                    daySumSbp += (int)map.get("sbp");
-                    daySumDbp += (int)map.get("dbp");
-                    daySumHeart += (int)map.get("heart");
+                    daySumSbp += (int)jsonObject.get("sbp");
+                    daySumDbp += (int)jsonObject.get("dbp");
+                    daySumHeart += (int)jsonObject.get("heart");
                     dayCount++;
                 } else {
-                    nightSumSbp += (int)map.get("sbp");
-                    nightSumDbp += (int)map.get("dbp");
-                    nightSumHeart += (int)map.get("heart");
+                    nightSumSbp += (int)jsonObject.get("sbp");
+                    nightSumDbp += (int)jsonObject.get("dbp");
+                    nightSumHeart += (int)jsonObject.get("heart");
                     nightCount++;
                 }
             }
