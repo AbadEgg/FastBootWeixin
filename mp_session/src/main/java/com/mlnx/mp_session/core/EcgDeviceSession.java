@@ -19,10 +19,10 @@ public class EcgDeviceSession extends DeviceSession {
 
 	private EcgInfo ecgInfo;
 
-	public EcgDeviceSession(String deviceId) throws IOException {
+	public EcgDeviceSession(String deviceId, byte[] gpu8AcId) throws IOException {
 		super(deviceId);
 
-		analysis = new EcgAnalysis(deviceId);
+		analysis = new EcgAnalysis(deviceId, gpu8AcId);
 		analysis.init();
 
 		ecgInfo = new EcgInfo();

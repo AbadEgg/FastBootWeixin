@@ -2,6 +2,7 @@ package com.mlnx.mp_server.support;
 
 import com.mlnx.device.ecg.EcgDeviceInfo;
 import com.mlnx.mp_server.protocol.RegisterMessage;
+import com.mlnx.mp_server.utils.MacUtils;
 import com.mlnx.mp_session.core.DeviceSession;
 import com.mlnx.mp_session.core.EcgDeviceSession;
 import com.mlnx.mp_session.core.MpDeviceSession;
@@ -108,15 +109,15 @@ public class MpSupportManager {
                     ResponseCode.NOT_EXIST_DEVICE);
             ctx.channel().writeAndFlush(packet);
             return;
-        }else if (ecgDeviceInfo.getPatientId() == null ){
+        } else if (ecgDeviceInfo.getPatientId() == null) {
             MptpLogUtils.e(String.format("%s 设备未绑定患者", deviceId));
             MpPacket packet = new MpPacket().registerAck(DeviceType.SERVER,
                     ResponseCode.UN_BIND_PATIENT);
             ctx.channel().writeAndFlush(packet);
-        }else{
+        } else {
             int type = 0;
 
-            session = new EcgDeviceSession(deviceId);
+            session = new EcgDeviceSession(deviceId,  MacUtils.getMcuId(ecgDeviceInfo.getCpuId()));
             session.setKey(deviceId);
             ((DeviceSession) session).setDeviceId(deviceId);
             session.setPatientId(ecgDeviceInfo.getPatientId());
@@ -192,9 +193,9 @@ public class MpSupportManager {
 
         String deviceId = registerMessage.getDeviceId();
 
-        if (patientId == null ){
+        if (patientId == null) {
             MptpLogUtils.e(String.format("%s 设备未绑定患者", deviceId));
-        }else{
+        } else {
             int type = 0;
 
             session = new MpDeviceSession(deviceId);
@@ -249,7 +250,7 @@ public class MpSupportManager {
             }
 
             DataPacket resp = new DataPacket();
-            com.mlnx.qcms.protocol.body.Command command  = new com.mlnx.qcms.protocol.body.Command();
+            com.mlnx.qcms.protocol.body.Command command = new com.mlnx.qcms.protocol.body.Command();
             command.setCmdType(CmdType.CMD_BEGIN_COMMUNICATION_OK);
             resp.getBody().setCommand(command);
             resp.getHeader().setPackageNum(resp.getBody().calPackageNum());
@@ -264,6 +265,7 @@ public class MpSupportManager {
 
     /**
      * 用户验证
+     *
      * @param sucess
      * @param action
      */
