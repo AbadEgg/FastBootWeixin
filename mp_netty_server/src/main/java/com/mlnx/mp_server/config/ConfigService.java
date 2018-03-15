@@ -2,7 +2,7 @@ package com.mlnx.mp_server.config;
 
 public class ConfigService {
 
-	public static final int DeviceReaderIdleMaxTimeSeconds = 20;
+	public static final int DeviceReaderIdleMaxTimeSeconds = 10;
 
 	public static final int RE_DETECT_SECONDS = 5;
 

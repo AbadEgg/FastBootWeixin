@@ -4,6 +4,7 @@ import com.mlnx.device.ecg.EcgDeviceInfo;
 import com.mlnx.device_server.DeviceServerApplication;
 import com.mlnx.device_server.mybatis.mapper.TDeviceMapper;
 
+import com.mlnx.device_server.task.BpTask;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -25,6 +26,9 @@ public class EcgDeviceServiceTest {
     @Autowired
     private TDeviceMapper tDeviceMapper;
 
+    @Autowired
+    private BpTask bpTask;
+
     @Test
     public void test(){
         EcgDeviceInfo ecgDeviceInfo = tDeviceMapper.getEcgDeviceInfo("HEK07EW17070015M");
@@ -32,5 +36,10 @@ public class EcgDeviceServiceTest {
 
         Integer patientId = tDeviceMapper.getPatientId("cms0001");
         logger.info("patientId:"+patientId);
+    }
+
+    @Test
+    public void bpTask(){
+        bpTask.bp();
     }
 }

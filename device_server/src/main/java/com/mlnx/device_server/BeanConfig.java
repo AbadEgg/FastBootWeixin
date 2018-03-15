@@ -11,16 +11,19 @@ import com.mlnx.ecg.store.iml.EcgMongoDb;
 import com.mlnx.ecg.store.iml.EcgStoreTable;
 import com.mlnx.ecg.store.utils.OTSUtils;
 import com.mlnx.local.data.store.LocalStore;
+import com.mlnx.local.data.store.bp.BpAvgStore;
 import com.mlnx.local.data.store.bp.BpStore;
 import com.mlnx.local.data.store.ecg.EcgAnalysisStore;
 import com.mlnx.local.data.store.spo.SpoStore;
-
+import com.mlnx.utils.RedisUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 import java.util.List;
 
@@ -34,6 +37,9 @@ public class BeanConfig {
 
     @Autowired
     private OTSConfig otsConfig;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     @Value("${ecgSaveType}")
     private Integer ecgSaveType;    //  0 表格存储   1 mongodb存储
@@ -117,5 +123,23 @@ public class BeanConfig {
         mongoDb.init();
         deviceStore = mongoDb;
         return deviceStore;
+    }
+
+    @Bean
+    public BpAvgStore bpAvgStore(){
+        return new BpAvgStore();
+    }
+
+
+
+    @Bean
+    public RedisUtil<String> redisUtil(){
+        RedisUtil<String> redisUtil = new RedisUtil<>();
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new StringRedisSerializer());
+        redisTemplate.setHashKeySerializer(new StringRedisSerializer());
+        redisTemplate.setHashValueSerializer(new StringRedisSerializer());
+        redisUtil.setRedisTemplate(redisTemplate);
+        return redisUtil;
     }
 }

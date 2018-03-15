@@ -93,7 +93,7 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
                 ctx.fireChannelRead(message);
 
             }
-            if (dataPacket.getBody().getNibpData() != null) {
+            if (dataPacket.getBody().getNibpData() != null && dataPacket.getBody().getNibpData().isNewMeasureValue()) {
 
                 BpMessage bpMessage = new BpMessage();
                 message = bpMessage;
@@ -103,6 +103,7 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
                 bpMessage.setPacketTime(System.currentTimeMillis());
                 bpMessage.setSbp(dataPacket.getBody().getNibpData().getSysPress());
                 bpMessage.setDbp(dataPacket.getBody().getNibpData().getDiaPress());
+                bpMessage.setHeart(dataPacket.getBody().getNibpData().getintervel());
 
                 message.setDeviceType(com.mlnx.mptp.DeviceType.MP_DEVICE);
                 ctx.fireChannelRead(message);

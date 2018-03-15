@@ -3,12 +3,7 @@ package com.mlnx.mp_server.support;
 import com.mlnx.device.ecg.EcgDeviceInfo;
 import com.mlnx.mp_server.protocol.RegisterMessage;
 import com.mlnx.mp_server.utils.MacUtils;
-import com.mlnx.mp_session.core.DeviceSession;
-import com.mlnx.mp_session.core.EcgDeviceSession;
-import com.mlnx.mp_session.core.MpDeviceSession;
-import com.mlnx.mp_session.core.Session;
-import com.mlnx.mp_session.core.SessionManager;
-import com.mlnx.mp_session.core.UsrSession;
+import com.mlnx.mp_session.core.*;
 import com.mlnx.mptp.DeviceType;
 import com.mlnx.mptp.ResponseCode;
 import com.mlnx.mptp.mptp.MpPacket;
@@ -20,12 +15,11 @@ import com.mlnx.mptp.utils.MptpLogUtils;
 import com.mlnx.mptp.utils.RandomUtils;
 import com.mlnx.qcms.protocol.DataPacket;
 import com.mlnx.qcms.protocol.body.CmdType;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
 import java.util.Date;
-
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
 
 /**
  * Created by amanda.shan on 2017/4/7.
