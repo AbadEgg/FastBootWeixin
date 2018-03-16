@@ -61,7 +61,9 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
                 deviceId = deviceSession.getDeviceId();
             }
 
-            if (dataPacket.getBody().getEcgData() != null) {
+            if (dataPacket.getBody().getEcgData() != null &&
+                    dataPacket.getBody().getEcgData().getHr()!=-100 &&
+                    dataPacket.getBody().getEcgData().getPvcs()!=-100) {
 
                 EcgMessage ecgMessage = new EcgMessage();
                 message = ecgMessage;
@@ -78,7 +80,9 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
                 ctx.fireChannelRead(message);
 
             }
-            if (dataPacket.getBody().getSpo2Data() != null) {
+            if (dataPacket.getBody().getSpo2Data() != null &&
+                    dataPacket.getBody().getSpo2Data().getSpo2()!=-100
+                    && dataPacket.getBody().getSpo2Data().getPr()!= -100) {
 
                 SpoMessage spoMessage = new SpoMessage();
                 message = spoMessage;

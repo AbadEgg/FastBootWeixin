@@ -52,7 +52,7 @@ public class BpAvgStore {
         query.eq("patientId", patientId);
         query.gte("dayTime", startTime);
         query.lt("dayTime", endTime);
-        query.ascending("time");
+        query.ascending("dayTime");
         List<JSONObject> jsonObjects = query.find();
         List<BpAvg> bpAvgs = new ArrayList<>();
         try {
