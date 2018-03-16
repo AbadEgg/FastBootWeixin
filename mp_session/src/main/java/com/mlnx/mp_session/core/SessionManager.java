@@ -54,11 +54,11 @@ public class SessionManager {
 
         String deviceId = null;
 
-        if (session instanceof DeviceSession) {
+        if (session instanceof DeviceSession && session.getPatientId()!=null && session.getPatientId()!=0) {
             if (session.getDeviceType().equals(DeviceType.ECG_DEVICE) || session.getDeviceType().equals(DeviceType.MP_DEVICE)) {
                 deviceId = ((DeviceSession) session).getDeviceId();
                 deviceShare.saveDevice(deviceId);
-                BroadCast.ecgBroadCast.deviceOnline(new Topic(TopicType.U_DEVICE_ONLINE_TOPIC,deviceId),deviceId);
+                BroadCast.ecgBroadCast.deviceOnline(new Topic(TopicType.U_DEVICE_ONLINE_TOPIC,deviceId),deviceId, session.getPatientId());
             }
         }
 

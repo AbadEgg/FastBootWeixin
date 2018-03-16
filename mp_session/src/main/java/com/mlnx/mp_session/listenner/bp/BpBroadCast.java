@@ -17,12 +17,12 @@ public class BpBroadCast implements BpListener {
 
 
     @Override
-    public void deviceOnline(Topic topic, String deviceId) {
+    public void deviceOnline(Topic topic, String deviceId, Integer patientId) {
 
     }
 
     @Override
-    public void deviceOfflien(Topic topic, String deviceId) {
+    public void deviceOfflien(Topic topic, String deviceId, Integer patientId) {
 
     }
 

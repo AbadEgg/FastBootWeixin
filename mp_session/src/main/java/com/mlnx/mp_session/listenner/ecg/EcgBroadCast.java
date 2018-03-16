@@ -17,21 +17,21 @@ public class EcgBroadCast implements EcgListener {
     }
 
     @Override
-    public void deviceOnline(Topic topic, String deviceId) {
+    public void deviceOnline(Topic topic, String deviceId, Integer patientId) {
         synchronized (ecgListeners) {
             for (EcgListener ecgListener : ecgListeners) {
-                ecgListener.deviceOnline(topic, deviceId);
+                ecgListener.deviceOnline(topic, deviceId,patientId);
             }
         }
 
     }
 
     @Override
-    public void deviceOfflien(Topic topic, String deviceId) {
+    public void deviceOfflien(Topic topic, String deviceId, Integer patientId) {
 
         synchronized (ecgListeners) {
             for (EcgListener ecgListener : ecgListeners) {
-                ecgListener.deviceOfflien(topic, deviceId);
+                ecgListener.deviceOfflien(topic, deviceId,patientId);
             }
         }
 
