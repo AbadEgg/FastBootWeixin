@@ -13,11 +13,12 @@ import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
 import com.mlnx.mptp.mptp.body.Topic;
 import com.mlnx.mptp.mptp.body.TopicType;
 import com.mlnx.mptp.utils.MptpLogUtils;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 
 /**
  * Created by amanda.shan on 2018/2/12.
@@ -57,13 +58,15 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
             if (ecgData.getSuccessionData() != null || ecgData.getEncrySuccessionData() != null) {
 
                 ecgInfo.setEcgData(ecgData);
-                if (ecgData.getEcgHeart() != null){
-                    topics.add(new Topic(TopicType.U_ECG_HEART_TOPIC, deviceId));
-                }
 
                 // 不需要分析的心电数据
                 if (ecgData.getSuccessionData() != null) {
                     topics.add(new Topic(TopicType.U_ECG_TOPIC, deviceId));
+
+                    if (ecgData.getEcgHeart() != null && ecgData.getEcgHeart() != 0){
+                        topics.add(new Topic(TopicType.U_ECG_HEART_TOPIC, deviceId));
+                    }
+
                 }
                 // 需要分析的心电数据
                 else if (ecgData.getEncrySuccessionData() != null) {
@@ -81,6 +84,10 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
 
                     if (result.getHeart() != null || result.getHeartResult() != null || result.getPbNumb() !=
                             null) {
+
+                        ecgInfo.getEcgData().setEcgHeart(result.getHeart());
+                        topics.add(new Topic(TopicType.U_ECG_HEART_TOPIC, deviceId));
+
                         ecgInfo.setRealEcgAnalysResult(result);
                         topics.add(new Topic(TopicType.U_ECG_REAL_ANALY_TOPIC, deviceId));
                     }

@@ -38,7 +38,9 @@ public class TestClient {
         testUsr.setName("123456");
 
         TopicManager topicManager = new TopicManager();
-        topicManager.lisBp("cms0001").lisSpo("cms0001").lisHeart("cms0001");
+        topicManager.lisEcgDevice("HEK07EW17070015M")
+                .lisRealAnaly("HEK07EW17070015M")
+                .lisHeart("HEK07EW17070015M");
 
         testUsr.sub(JSON.toJSONString(topicManager.getTopics()));
     }

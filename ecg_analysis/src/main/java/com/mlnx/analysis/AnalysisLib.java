@@ -18,6 +18,9 @@ public interface AnalysisLib extends Library {
     void GetProcData(byte[] iEcgdata, byte[] gpu8AcId,
                      byte[] gu32EncryptEcgOutData);
 
+    // 获取滤波后波形
+    void GetFilterData(int[] filterData);
+
     // 算法调用
     // 获取算法调用标志
     byte CheckMonitorAnalysisStartFlag();
