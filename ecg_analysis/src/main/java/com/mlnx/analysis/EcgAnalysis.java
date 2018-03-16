@@ -49,10 +49,12 @@ public class EcgAnalysis {
 
         path = getCopiedDllPath(path, deviceId);
         analysisLib = (AnalysisLib) Native.loadLibrary(path, AnalysisLib.class);
+        initAnalysis();
+    }
 
+    private void initAnalysis(){
         // 算法初始化
         analysisLib.InitEcgAna();
-
         analysisLib.InitECGFilter();
     }
 
@@ -111,9 +113,7 @@ public class EcgAnalysis {
                         for (int i = 2, j = 0; i <= 9 && j < 8; i++, j++) {
                             analysisLib.EcgGetParam(i, shortByReference);
                             builder.append("st" + (j + 1) + "：" + shortByReference.getValue() + " ");
-                            if (shortByReference.getValue() >= 0) {
-                                result.getSts()[j] = (int) shortByReference.getValue();
-                            }
+                            result.getSts()[j] = (int) shortByReference.getValue();
                         }
 
                         IntByReference type = new IntByReference();
@@ -139,6 +139,15 @@ public class EcgAnalysis {
         }
         return result;
     }
+
+    // 数据滤波
+    public int[] ecgFilter() {
+        int[] filterData = new int[8];
+        analysisLib.GetFilterData(filterData);
+        return filterData;
+    }
+
+
 
     private static String getCopiedDllPath(String dllPath, String deviceId) throws IOException {
         File currDirectory = new File("");

@@ -24,6 +24,11 @@ public class TopicManager {
         return this;
     }
 
+    public TopicManager lisRealAnaly(String deviceId) {
+        addTopic(deviceId, TopicType.U_ECG_REAL_ANALY_TOPIC);
+        return this;
+    }
+
     public TopicManager lisEcgDevice(String deviceId) {
         addTopic(deviceId, TopicType.U_ECG_DEVICE_TOPIC);
         return this;

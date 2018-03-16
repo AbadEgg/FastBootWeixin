@@ -130,21 +130,21 @@ public class EcgMongoDb implements EcgStore {
 //        ecgMongoDb.save(getSimEcgs());
 
 //
-        long startTime = (long) (System.currentTimeMillis()-1000);
-        long endTime = System.currentTimeMillis();
+        long startTime = 1521195967942l;
+        long endTime = 1521195969399l;
 
 
-        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcg(startTime, endTime, 0);
+        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcg(startTime, endTime, 7);
         System.out.println("ecgMongs.size:" + ecgMongs.size());
-        for (int i = 0; i < ecgMongs.size(); i++) {
-            System.out.println(ecgMongs.get(i).toString());
-        }
-
-        ecgMongs = ecgMongoDb.getEncryEcg(startTime, endTime, 0);
-        System.out.println("ecgMongs.size:" + ecgMongs.size());
-        for (int i = 0; i < ecgMongs.size(); i++) {
-            System.out.println(ecgMongs.get(i).toString());
-        }
+//        for (int i = 0; i < ecgMongs.size(); i++) {
+//            System.out.println(ecgMongs.get(i).toString());
+//        }
+//
+//        ecgMongs = ecgMongoDb.getEncryEcg(startTime, endTime, 0);
+//        System.out.println("ecgMongs.size:" + ecgMongs.size());
+//        for (int i = 0; i < ecgMongs.size(); i++) {
+//            System.out.println(ecgMongs.get(i).toString());
+//        }
 
 
 //        System.out.println(ecgMongs.size());

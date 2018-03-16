@@ -12,7 +12,6 @@ import com.mlnx.mp_session.listenner.ecg.EcgListener;
 import com.mlnx.mp_session.listenner.spo.SpoListener;
 import com.mlnx.mptp.DeviceType;
 import com.mlnx.mptp.model.ECGData;
-import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
 import com.mlnx.mptp.mptp.body.Topic;
 import com.mlnx.mptp.push.PushPacket;
 import com.mlnx.mptp.push.body.PushDataType;
@@ -126,7 +125,6 @@ public class UsrSession extends Session {
                         // 实时分析结果
                         case U_ECG_REAL_ANALY_TOPIC:
 
-                            RealEcgAnalysResult result = ecgInfo.getRealEcgAnalysResult();
                             pushEcgInfo.setRealEcgAnalysResult(ecgInfo.getRealEcgAnalysResult());
                             builder.append("实时分析结果 ");
                             break;
