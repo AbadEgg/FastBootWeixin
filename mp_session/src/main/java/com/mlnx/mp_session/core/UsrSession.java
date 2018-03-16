@@ -219,6 +219,25 @@ public class UsrSession extends Session {
         }
     }
 
+    public void pushInfo(List<String> deviceIds){
+        for (String deviceId : deviceIds){
+            Session session = SessionManager.get(SessionManager.get(deviceId));
+
+            if (session instanceof EcgDeviceSession){
+
+                EcgDeviceSession ecgDeviceSession = (EcgDeviceSession) session;
+
+                EcgInfo pushEcgInfo = new EcgInfo();
+                pushEcgInfo.setDeivceId(ecgDeviceSession.getDeviceId());
+                pushEcgInfo.setPatientId(ecgDeviceSession.getPatientId());
+
+                pushEcgInfo.setEcgDeviceInfo(ecgDeviceSession.getEcgInfo().getEcgDeviceInfo());
+            }else if (session instanceof MpDeviceSession){
+
+            }
+        }
+    }
+
     @Override
     public String toString() {
         return "UsrSession [userName=" + userName + ", password=" + password

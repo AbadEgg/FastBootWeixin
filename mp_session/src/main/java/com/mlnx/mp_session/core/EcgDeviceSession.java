@@ -59,6 +59,42 @@ public class EcgDeviceSession extends DeviceSession {
 		this.ecgInfo = ecgInfo;
 	}
 
+	public void setECGDeviceInfo(ECGDeviceInfo info){
+		if (info.getPei() != null){
+			ecgInfo.getEcgDeviceInfo().setPei(info.getPei());
+		}
+		if (info.getBatteryLevel() != null){
+			ecgInfo.getEcgDeviceInfo().setBatteryLevel(info.getBatteryLevel());
+		}
+		if (info.getSignalStrength() != null){
+			ecgInfo.getEcgDeviceInfo().setSignalStrength(info.getSignalStrength());
+		}
+		if (info.getProbeChannelBias() != null){
+			ecgInfo.getEcgDeviceInfo().setProbeChannelBias(info.getProbeChannelBias());
+		}
+	}
+
+	public void setECGData(ECGData ecgData){
+		if (ecgData.getEcgHeart() != null){
+			ecgInfo.getEcgData().setEcgHeart(ecgData.getEcgHeart());
+		}
+	}
+
+	public void setRealEcgAnalysResult(RealEcgAnalysResult result){
+		if (result.getSts() != null){
+			ecgInfo.getRealEcgAnalysResult().setSts(result.getSts());
+		}
+		if (result.getPbNumb() != null){
+			ecgInfo.getRealEcgAnalysResult().setPbNumb(result.getPbNumb());
+		}
+		if (result.getHeartResult() != null){
+			ecgInfo.getRealEcgAnalysResult().setHeartResult(result.getHeartResult());
+		}
+		if (result.getHeart() != null){
+			ecgInfo.getRealEcgAnalysResult().setHeart(result.getHeart());
+		}
+	}
+
 	@Override
 	public void removeLis() {
 		super.removeLis();

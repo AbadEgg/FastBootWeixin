@@ -27,7 +27,7 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, EcgMessage msg) throws Exception {
-        Session session = SessionManager.get(ctx.channel());
+        Session session = (EcgDeviceSession) SessionManager.get(ctx.channel());
 
         String deviceId = msg.getDeviceId();
 
@@ -38,8 +38,8 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
             // 更新设备信息session
             ECGDeviceInfo ecgDeviceInfo = msg.getEcgDeviceInfo();
             EcgDeviceSession ecgDeviceSession = (EcgDeviceSession) session;
+            ecgDeviceSession.setECGDeviceInfo(ecgDeviceInfo);
             ecgDeviceSession.getEcgInfo().getEcgDeviceInfo().updateECGDeviceInfo(ecgDeviceInfo);
-
 
             // 新建广播EcgInfo
             EcgInfo ecgInfo = new EcgInfo();
@@ -67,6 +67,8 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
                         topics.add(new Topic(TopicType.U_ECG_HEART_TOPIC, deviceId));
                     }
 
+                    ecgDeviceSession.setECGData(ecgData);
+
                 }
                 // 需要分析的心电数据
                 else if (ecgData.getEncrySuccessionData() != null) {
@@ -74,6 +76,7 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
                     RealEcgAnalysResult result = ecgDeviceSession.getAnalysis().realAnalysis(ecgData
                             .getEncrySuccessionData(), msg.getPacketTime());
 
+                    ecgData.setEcgHeart(result.getHeart());
                     ecgData.setSuccessionData(result.getEcgData());
                     topics.add(new Topic(TopicType.U_ECG_ENCRYPTION_TOPIC, deviceId));
 
@@ -91,9 +94,11 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
                         ecgInfo.setRealEcgAnalysResult(result);
                         topics.add(new Topic(TopicType.U_ECG_REAL_ANALY_TOPIC, deviceId));
                     }
+
+                    ecgDeviceSession.setECGData(ecgData);
+                    ecgDeviceSession.setRealEcgAnalysResult(result);
+
                 }
-
-
                 ecgDeviceSession.setLastEcgDataTime(msg.getPacketTime());
                 if (ecgDeviceSession.isFristEcgPacket()) {
                     ecgDeviceSession.setFristEcgPacket(false);
@@ -122,6 +127,8 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
             if (ecgData.getEcgHeart() != null){
                 topics.add(new Topic(TopicType.U_ECG_HEART_TOPIC, deviceId));
             }
+
+            mpDeviceSession.setECGData(ecgData);
 
             if (topics.size() > 0){
                 BroadCast.ecgBroadCast.reciveEcgInfo(topics, ecgInfo);
