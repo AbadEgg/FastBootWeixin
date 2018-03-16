@@ -4,10 +4,10 @@ import com.mlnx.device.ecg.EcgDeviceInfo;
 import com.mlnx.device_server.comm.utils.DateUtils;
 import com.mlnx.device_server.comm.utils.ThreadUtil;
 import com.mlnx.device_server.mybatis.mapper.TDeviceMapper;
-import com.mlnx.ecg.store.DeviceStore;
 import com.mlnx.ecg.store.EcgStore;
-import com.mlnx.ecg.store.domain.DeviceOnlineRecord;
 import com.mlnx.ecg.store.domain.Ecg;
+import com.mlnx.local.data.domain.DeviceOnlineRecord;
+import com.mlnx.local.data.store.device.DeviceStore;
 import com.mlnx.local.data.store.ecg.EcgAnalysisStore;
 import com.mlnx.mp_server.protocol.RegisterMessage;
 import com.mlnx.mp_server.support.Action;
@@ -102,7 +102,7 @@ public class EcgService {
 
     private EcgListener ecgListenner = new EcgListener() {
         @Override
-        public void deviceOnline(Topic topic, String deviceId) {
+        public void deviceOnline(Topic topic, String deviceId, Integer patientId) {
             DeviceOnlineRecord record = new DeviceOnlineRecord();
             record.setDate(new Date());
             record.setDeviceId(deviceId);
@@ -111,7 +111,7 @@ public class EcgService {
         }
 
         @Override
-        public void deviceOfflien(Topic topic, String deviceId) {
+        public void deviceOfflien(Topic topic, String deviceId, Integer patientId) {
             DeviceOnlineRecord record = new DeviceOnlineRecord();
             record.setDate(new Date());
             record.setDeviceId(deviceId);

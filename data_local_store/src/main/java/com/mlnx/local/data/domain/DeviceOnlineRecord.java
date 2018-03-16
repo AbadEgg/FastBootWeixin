@@ -1,4 +1,4 @@
-package com.mlnx.ecg.store.domain;
+package com.mlnx.local.data.domain;
 
 import java.util.Date;
 
@@ -10,11 +10,21 @@ import java.util.Date;
  */
 public class DeviceOnlineRecord {
 
+    private Integer patientId;
+
     private String deviceId;
 
     private Date date;
 
     private String deviceState;
+
+    public Integer getPatientId() {
+        return patientId;
+    }
+
+    public void setPatientId(Integer patientId) {
+        this.patientId = patientId;
+    }
 
     public String getDeviceId() {
         return deviceId;
