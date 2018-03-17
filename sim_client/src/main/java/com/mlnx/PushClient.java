@@ -33,6 +33,7 @@ public class PushClient implements WebSocketListenner {
 
     public void register(final String name, final String password) {
         ThreadUtil.execute(new Runnable() {
+            @Override
             public void run() {
 
                 PushPacket pushPacket = new PushPacket();
@@ -49,6 +50,7 @@ public class PushClient implements WebSocketListenner {
 
     public void ping() {
         ThreadUtil.execute(new Runnable() {
+            @Override
             public void run() {
 
                 PushPacket pushPacket = new PushPacket();
@@ -64,6 +66,7 @@ public class PushClient implements WebSocketListenner {
 
     public void pong() {
         ThreadUtil.execute(new Runnable() {
+            @Override
             public void run() {
 
                 PushPacket pushPacket = new PushPacket();
@@ -79,6 +82,7 @@ public class PushClient implements WebSocketListenner {
 
     public void subscribe(final String topic, final SerialType serialType) {
         ThreadUtil.execute(new Runnable() {
+            @Override
             public void run() {
 
                 PushPacket pushPacket = new PushPacket();
@@ -93,8 +97,33 @@ public class PushClient implements WebSocketListenner {
         });
     }
 
+    //测试用的
+//    public void sendTest(){
+//        ThreadUtil.execute(new Runnable() {
+//            @Override
+//            public void run() {
+//
+//                while (true){
+//                    PushPacket pushPacket = new PushPacket();
+//                    pushPacket.getHeader().setPacketType(PacketType.PUBLISH);
+//                    pushPacket.getBody().setPushDataMap(new HashMap<PushDataType, Object>());
+//                    List<String> deviceIds = new ArrayList<>();
+//                    deviceIds.add("cms0001");
+//                    pushPacket.getBody().getPushDataMap().put(PushDataType.ASK_DEVICE_INFO, deviceIds);
+//                    try {
+//                        webSocketUtils.sendString(JSON.toJSONString(pushPacket));
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                        lifeUsrClientLis.sendError();
+//                    }
+//                }
+//            }
+//        });
+//    }
+
     public void push(final String topic, final String msg, final Integer messageId) {
         ThreadUtil.execute(new Runnable() {
+            @Override
             public void run() {
 
 //                 PushPacket  PushPacket = new  PushPacket();
@@ -112,6 +141,7 @@ public class PushClient implements WebSocketListenner {
         });
     }
 
+    @Override
     public void onMessage(String message) {
         PushPacket PushPacket = JSON.parseObject(message, PushPacket.class);
         Map<PushDataType, Object> map = PushPacket.getBody().getPushDataMap();
@@ -127,12 +157,15 @@ public class PushClient implements WebSocketListenner {
                     case BP_INFO:
                         map.put(pushDataType, JSON.parseObject(map.get(pushDataType).toString(), BpInfo.class));
                         break;
+                    default:
+                        break;
                 }
             }
         }
         lifeUsrClientLis.recive(PushPacket);
     }
 
+    @Override
     public void onMessage(byte[] bs) {
         PushPacket PushPacket = null;
         try {
@@ -147,6 +180,8 @@ public class PushClient implements WebSocketListenner {
                                     EcgInfo.class));
 
                             break;
+                        default:
+                            break;
                     }
                 }
             }
@@ -157,6 +192,7 @@ public class PushClient implements WebSocketListenner {
 
     }
 
+    @Override
     public void onClose(int code, String reason, boolean remote) {
         MptpLogUtils.e(String.format("wesocket onClose:code = %d  reason=%s", code, reason));
         lifeUsrClientLis.close();

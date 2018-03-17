@@ -71,6 +71,8 @@ public class PushServerHandle extends SimpleChannelInboundHandler<PushPacket> {
                 break;
             case PINGRESP:
                 break;
+            default:
+                break;
         }
 
         if (message != null) {

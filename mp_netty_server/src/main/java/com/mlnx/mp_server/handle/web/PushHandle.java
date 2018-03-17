@@ -11,11 +11,10 @@ import com.mlnx.mptp.mptp.head.QoS;
 import com.mlnx.mptp.push.PushPacket;
 import com.mlnx.mptp.push.body.Body;
 import com.mlnx.mptp.push.body.PushDataType;
-
-import java.util.List;
-
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+
+import java.util.List;
 
 public class PushHandle extends SimpleChannelInboundHandler<WebPublishMessage> {
 
@@ -39,13 +38,14 @@ public class PushHandle extends SimpleChannelInboundHandler<WebPublishMessage> {
         for (PushDataType type : body.getPushDataMap().keySet()){
             switch (type){
                 case ASK_DEVICE_INFO:
-
                     List<String> deviceIds = JSON.parseArray(body.getPushDataMap().get(type).toString(), String.class);
                     Session session = SessionManager.get(ctx.channel());
                     if (session instanceof UsrSession){
                         UsrSession usrSession = (UsrSession) session;
                         usrSession.pushInfo(deviceIds);
                     }
+                    break;
+                default:
                     break;
             }
         }

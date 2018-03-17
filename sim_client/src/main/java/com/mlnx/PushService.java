@@ -49,6 +49,7 @@ public class PushService implements PushClient.LifeUsrClientLis {
         pushClient = new PushClient(this);
 
         ThreadUtil.execute(new Runnable() {
+            @Override
             public void run() {
 
                 while (true) {
@@ -107,6 +108,7 @@ public class PushService implements PushClient.LifeUsrClientLis {
         }
     }
 
+    @Override
     public void recive(PushPacket pushPacket) {
 
         switch (pushPacket.getHeader().getPacketType()) {
@@ -114,10 +116,11 @@ public class PushService implements PushClient.LifeUsrClientLis {
                 if (pushPacket.getBody().getResponseCode().equals(ResponseCode.SUCESS)) {
                     isRegister = true;
                     MptpLogUtils.i("注册成功");
-                    if (isPush)
+                    if (isPush) {
                         push();
-                    else
+                    } else {
                         sub();
+                    }
                 }
                 break;
             case PINGREQ:
@@ -156,6 +159,8 @@ public class PushService implements PushClient.LifeUsrClientLis {
                             BroadCast.getInstance().reciveSpoInfo(spoInfo);
                             MptpLogUtils.i(spoInfo.getDeivceId() + " 收到推送spo:" + JSON.toJSONString(spoInfo));
                             break;
+                        default:
+                            break;
                     }
                 }
 
@@ -174,6 +179,8 @@ public class PushService implements PushClient.LifeUsrClientLis {
                     }
                 }).start();
                 break;
+            default:
+                break;
         }
     }
 
@@ -182,10 +189,12 @@ public class PushService implements PushClient.LifeUsrClientLis {
         pushClient.disConnect();
     }
 
+    @Override
     public void sendError() {
 
     }
 
+    @Override
     public void close() {
         isRegister = false;
         isListerDevice = false;

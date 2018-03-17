@@ -137,6 +137,8 @@ public class UsrSession extends Session {
                                     .getEcgHeart());
                             builder.append("心率 ");
                             break;
+                        default:
+                            break;
                     }
                 }
 
@@ -202,6 +204,8 @@ public class UsrSession extends Session {
                         case U_BP_TOPIC:
 
                             break;
+                        default:
+                            break;
                     }
                 }
             }
@@ -221,19 +225,38 @@ public class UsrSession extends Session {
 
     public void pushInfo(List<String> deviceIds){
         for (String deviceId : deviceIds){
-            Session session = SessionManager.get(SessionManager.get(deviceId));
+            if(SessionManager.get(deviceId)!=null){
+                Session session = SessionManager.get(SessionManager.get(deviceId));
+                PushPacket packet = null;
+                if (session instanceof EcgDeviceSession){
 
-            if (session instanceof EcgDeviceSession){
+                    EcgDeviceSession ecgDeviceSession = (EcgDeviceSession) session;
 
-                EcgDeviceSession ecgDeviceSession = (EcgDeviceSession) session;
+                    EcgInfo pushEcgInfo = new EcgInfo();
+                    pushEcgInfo.setDeivceId(ecgDeviceSession.getDeviceId());
+                    pushEcgInfo.setPatientId(ecgDeviceSession.getPatientId());
 
-                EcgInfo pushEcgInfo = new EcgInfo();
-                pushEcgInfo.setDeivceId(ecgDeviceSession.getDeviceId());
-                pushEcgInfo.setPatientId(ecgDeviceSession.getPatientId());
+                    pushEcgInfo.setEcgDeviceInfo(ecgDeviceSession.getEcgInfo().getEcgDeviceInfo());
 
-                pushEcgInfo.setEcgDeviceInfo(ecgDeviceSession.getEcgInfo().getEcgDeviceInfo());
-            }else if (session instanceof MpDeviceSession){
+                    Map<PushDataType, Object> pushDataMap = new HashMap<>();
+                    pushDataMap.put(PushDataType.ECG_INFO, pushEcgInfo);
 
+                    packet = new PushPacket();
+                    packet.getBody().setPushSerialType(serialType);
+                    packet.push(DeviceType.SERVER, pushEcgInfo.getDeivceId(), pushDataMap);
+                }else if (session instanceof MpDeviceSession){
+                    MpDeviceSession mpDeviceSession = (MpDeviceSession) session;
+
+                    Map<PushDataType, Object> pushDataMap = new HashMap<>();
+                    pushDataMap.put(PushDataType.ECG_INFO, mpDeviceSession.getEcgInfo());
+                    pushDataMap.put(PushDataType.BP_INFO,mpDeviceSession.getBpInfo());
+                    pushDataMap.put(PushDataType.SPO_INFO,mpDeviceSession.getSpoInfo());
+
+                    packet = new PushPacket();
+                    packet.getBody().setPushSerialType(serialType);
+                    packet.push(DeviceType.SERVER, mpDeviceSession.getDeviceId(), pushDataMap);
+                }
+                channel.writeAndFlush(packet);
             }
         }
     }

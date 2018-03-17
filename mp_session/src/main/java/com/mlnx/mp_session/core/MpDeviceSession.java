@@ -50,4 +50,16 @@ public class MpDeviceSession extends DeviceSession {
             ecgInfo.getEcgData().setEcgHeart(ecgData.getEcgHeart());
         }
     }
+
+    public SpoInfo getSpoInfo() {
+        return spoInfo;
+    }
+
+    public BpInfo getBpInfo() {
+        return bpInfo;
+    }
+
+    public EcgInfo getEcgInfo() {
+        return ecgInfo;
+    }
 }
