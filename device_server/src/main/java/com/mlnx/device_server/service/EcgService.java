@@ -106,6 +106,7 @@ public class EcgService {
             DeviceOnlineRecord record = new DeviceOnlineRecord();
             record.setDate(new Date());
             record.setDeviceId(deviceId);
+            record.setPatientId(patientId);
             record.setDeviceState(DeviceState.DEVICE_ONLINE.toString());
             deviceStore.save(record);
         }
@@ -115,6 +116,7 @@ public class EcgService {
             DeviceOnlineRecord record = new DeviceOnlineRecord();
             record.setDate(new Date());
             record.setDeviceId(deviceId);
+            record.setPatientId(patientId);
             record.setDeviceState(DeviceState.DEVICE_OFFLINE.toString());
             deviceStore.save(record);
         }

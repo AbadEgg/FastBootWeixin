@@ -13,12 +13,11 @@ import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
 import com.mlnx.mptp.mptp.body.Topic;
 import com.mlnx.mptp.mptp.body.TopicType;
 import com.mlnx.mptp.utils.MptpLogUtils;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
 
 /**
  * Created by amanda.shan on 2018/2/12.
@@ -27,7 +26,7 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, EcgMessage msg) throws Exception {
-        Session session = (EcgDeviceSession) SessionManager.get(ctx.channel());
+        Session session = SessionManager.get(ctx.channel());
 
         String deviceId = msg.getDeviceId();
 
@@ -126,6 +125,9 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
             ecgInfo.setEcgData(ecgData);
             if (ecgData.getEcgHeart() != null){
                 topics.add(new Topic(TopicType.U_ECG_HEART_TOPIC, deviceId));
+            }
+            if (ecgData.getSuccessionData() != null){
+                topics.add(new Topic(TopicType.U_ECG_TOPIC, deviceId));
             }
 
             mpDeviceSession.setECGData(ecgData);

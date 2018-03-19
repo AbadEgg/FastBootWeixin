@@ -61,9 +61,7 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
                 deviceId = deviceSession.getDeviceId();
             }
 
-            if (dataPacket.getBody().getEcgData() != null &&
-                    dataPacket.getBody().getEcgData().getHr()!=-100 &&
-                    dataPacket.getBody().getEcgData().getPvcs()!=-100) {
+            if (dataPacket.getBody().getEcgData() != null) {
 
                 EcgMessage ecgMessage = new EcgMessage();
                 message = ecgMessage;
@@ -71,7 +69,7 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
 
                 ECGData ecgData = new ECGData();
                 ecgData.setSuccessionData(dataPacket.getBody().getEcgData().getWaveData());
-                ecgData.setEcgHeart(dataPacket.getBody().getEcgData().getHr());
+                ecgData.setEcgHeart(dataPacket.getBody().getEcgData().getHr()==-100?null:dataPacket.getBody().getEcgData().getHr());
 
                 ecgMessage.setEcgData(ecgData);
                 ecgMessage.setPacketTime(System.currentTimeMillis());
