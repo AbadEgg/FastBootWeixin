@@ -99,13 +99,13 @@ public class PushService implements PushClient.LifeUsrClientLis {
         this.topic = topic;
         this.msg = msg;
 
-        if (isListerDevice) {
+//        if (isListerDevice) {
 
             pushClient.push(topic, msg, new Random().nextInt());
             MptpLogUtils.i("发送push包");
-        } else {
-            sub();
-        }
+//        } else {
+//            sub();
+//        }
     }
 
     @Override

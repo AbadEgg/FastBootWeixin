@@ -13,6 +13,16 @@ import com.mlnx.mp_session.domain.SpoInfo;
  */
 public class TestClient {
 
+    private PushService testUsr;
+
+    public TestClient() {
+
+        testUsr = new PushService();
+        testUsr.setName("admin");
+        testUsr.setName("123456");
+
+    }
+
     public void lis(){
         BroadCast.getInstance().addMsgListener(new MsgListener() {
             @Override
@@ -33,21 +43,44 @@ public class TestClient {
     }
 
     public void sub(){
-        PushService testUsr = new PushService();
-        testUsr.setName("admin");
-        testUsr.setName("123456");
 
         TopicManager topicManager = new TopicManager();
-        topicManager.lisEcgDevice("HEK07EW17070015M")
-                .lisRealAnaly("HEK07EW17070015M")
-                .lisHeart("HEK07EW17070015M");
+        topicManager.lisEcgDevice("cms0001")
+                .lisRealAnaly("cms0001")
+                .lisHeart("cms0001")
+                .lisSpo("cms0001")
+                .lisBp("cms0001");
 
         testUsr.sub(JSON.toJSONString(topicManager.getTopics()));
     }
 
     public static void main(String[] args) throws InterruptedException {
-        TestClient testClient = new TestClient();
+        final TestClient testClient = new TestClient();
         testClient.lis();
         testClient.sub();
+
+
+
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (true){
+//                    List<String> deviceIds = new ArrayList<>();
+//                    deviceIds.add("cms0001");
+//
+//                    Map<PushDataType, Object> pushDataMap = new HashMap<>();
+//                    pushDataMap.put(PushDataType.ASK_DEVICE_INFO, JSON.toJSON(deviceIds));
+//                    PushPacket pushPacket = new PushPacket().push(DeviceType.USR, null, pushDataMap);
+//                    testClient.testUsr.push(null, JSON.toJSONString(pushPacket));
+//
+//                    try {
+//                        Thread.sleep(5000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }).start();
+
     }
 }
