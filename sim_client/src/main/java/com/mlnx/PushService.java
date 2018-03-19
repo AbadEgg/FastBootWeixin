@@ -14,7 +14,6 @@ import com.mlnx.mptp.utils.MptpLogUtils;
 import com.mlnx.utils.ThreadUtil;
 
 import java.util.Map;
-import java.util.Random;
 
 
 /**
@@ -30,9 +29,7 @@ public class PushService implements PushClient.LifeUsrClientLis {
     private boolean isRegister;
 
     private String topic;
-    private String msg;
-
-    private boolean isPush = false;
+    private Map<PushDataType, Object> pushDataMap;
 
     private String name;
     private String password;
@@ -70,6 +67,10 @@ public class PushService implements PushClient.LifeUsrClientLis {
         });
     }
 
+    public void register(){
+        pushClient.register(name, password);
+    }
+
     public void sub(String topic) {
 
         this.topic = topic;
@@ -87,21 +88,18 @@ public class PushService implements PushClient.LifeUsrClientLis {
         }
     }
 
-    public void push(String topic, String msg) {
-        isPush = true;
+    public void push(String topic, final Map<PushDataType, Object> pushDataMap) {
         this.topic = topic;
-        this.msg = msg;
+        this.pushDataMap = pushDataMap;
 
         push();
     }
 
     private void push() {
-        this.topic = topic;
-        this.msg = msg;
 
 //        if (isListerDevice) {
 
-            pushClient.push(topic, msg, new Random().nextInt());
+            pushClient.push(topic, pushDataMap);
             MptpLogUtils.i("发送push包");
 //        } else {
 //            sub();
@@ -116,11 +114,7 @@ public class PushService implements PushClient.LifeUsrClientLis {
                 if (pushPacket.getBody().getResponseCode().equals(ResponseCode.SUCESS)) {
                     isRegister = true;
                     MptpLogUtils.i("注册成功");
-                    if (isPush) {
-                        push();
-                    } else {
-                        sub();
-                    }
+                    sub();
                 }
                 break;
             case PINGREQ:
@@ -166,18 +160,6 @@ public class PushService implements PushClient.LifeUsrClientLis {
 
                 break;
             case PUBLISH_ACK:
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        try {
-                            Thread.sleep(5000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        push();
-                    }
-                }).start();
                 break;
             default:
                 break;
