@@ -97,30 +97,6 @@ public class PushClient implements WebSocketListenner {
         });
     }
 
-    //测试用的
-//    public void sendTest(){
-//        ThreadUtil.execute(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                while (true){
-//                    PushPacket pushPacket = new PushPacket();
-//                    pushPacket.getHeader().setPacketType(PacketType.PUBLISH);
-//                    pushPacket.getBody().setPushDataMap(new HashMap<PushDataType, Object>());
-//                    List<String> deviceIds = new ArrayList<>();
-//                    deviceIds.add("cms0001");
-//                    pushPacket.getBody().getPushDataMap().put(PushDataType.ASK_DEVICE_INFO, deviceIds);
-//                    try {
-//                        webSocketUtils.sendString(JSON.toJSONString(pushPacket));
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                        lifeUsrClientLis.sendError();
-//                    }
-//                }
-//            }
-//        });
-//    }
-
     public void push(final String topic, final String msg, final Integer messageId) {
         ThreadUtil.execute(new Runnable() {
             @Override
