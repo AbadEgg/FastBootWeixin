@@ -14,6 +14,7 @@ public enum TopicType {
     U_BP_TOPIC("血压数据", 2),
     U_SPO_TOPIC("血氧数据", 3),
     U_BT_TOPIC("呼吸数据", 4),
+    U_TEMP_TOPIC("体温数据",7),
 
     D_ECG_TOPIC("用户发送信息给设备", 5),
 

@@ -1,10 +1,6 @@
 package com.mlnx.mp_server.handle.cms;
 
-import com.mlnx.mp_server.protocol.AbstractMessage;
-import com.mlnx.mp_server.protocol.BpMessage;
-import com.mlnx.mp_server.protocol.EcgMessage;
-import com.mlnx.mp_server.protocol.RegisterMessage;
-import com.mlnx.mp_server.protocol.SpoMessage;
+import com.mlnx.mp_server.protocol.*;
 import com.mlnx.mp_session.core.DeviceSession;
 import com.mlnx.mp_session.core.Session;
 import com.mlnx.mp_session.core.SessionManager;
@@ -110,6 +106,17 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
                 message.setDeviceType(com.mlnx.mptp.DeviceType.MP_DEVICE);
                 ctx.fireChannelRead(message);
 
+            }
+
+            if(dataPacket.getBody().getTempData()!=null){
+                TempMessage tempMessage = new TempMessage();
+                message = tempMessage;
+
+                tempMessage.setDeviceId(deviceId);
+                tempMessage.setPatientId(session.getPatientId());
+                tempMessage.setPacketTime(System.currentTimeMillis());
+                message.setDeviceType(com.mlnx.mptp.DeviceType.MP_DEVICE);
+                ctx.fireChannelRead(message);
             }
 
             DataPacket resp = new DataPacket();

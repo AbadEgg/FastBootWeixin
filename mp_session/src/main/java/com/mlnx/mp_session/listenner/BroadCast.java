@@ -6,6 +6,8 @@ import com.mlnx.mp_session.listenner.ecg.EcgBroadCast;
 import com.mlnx.mp_session.listenner.ecg.EcgListener;
 import com.mlnx.mp_session.listenner.spo.SpoBroadCast;
 import com.mlnx.mp_session.listenner.spo.SpoListener;
+import com.mlnx.mp_session.listenner.temp.TempBroadCast;
+import com.mlnx.mp_session.listenner.temp.TempListener;
 import com.mlnx.mptp.utils.MptpLogUtils;
 
 import java.util.ArrayList;
@@ -16,12 +18,14 @@ public class BroadCast {
     private static List<EcgListener> ecgListeners = new ArrayList<EcgListener>();
     private static List<SpoListener> spoListeners = new ArrayList<>();
     private static List<BpListener> bpListeners = new ArrayList<>();
+    private static List<TempListener> tempListeners = new ArrayList<>();
 
 
     public static void addEcgListenner(EcgListener ecgListener) {
 
-        if (ecgListener == null)
+        if (ecgListener == null) {
             return;
+        }
         synchronized (ecgListeners) {
             if (!ecgListeners.contains(ecgListener)) {
                 ecgListeners.add(ecgListener);
@@ -40,8 +44,9 @@ public class BroadCast {
 
     public static void addSpoListener(SpoListener spoListener) {
 
-        if (spoListener == null)
+        if (spoListener == null) {
             return;
+        }
         synchronized (spoListeners) {
             if (!spoListeners.contains(spoListener)) {
                 spoListeners.add(spoListener);
@@ -60,8 +65,9 @@ public class BroadCast {
 
     public static void addBpListener(BpListener bpListener) {
 
-        if (bpListener == null)
+        if (bpListener == null) {
             return;
+        }
         synchronized (bpListeners) {
             if (!bpListeners.contains(bpListener)) {
                 bpListeners.add(bpListener);
@@ -78,8 +84,30 @@ public class BroadCast {
         }
     }
 
+    public static void addTempListener(TempListener tempListener) {
+
+        if (tempListener == null) {
+            return;
+        }
+        synchronized (tempListeners) {
+            if (!tempListeners.contains(tempListener)) {
+                tempListeners.add(tempListener);
+            } else {
+                MptpLogUtils.w("不能重复监听体温设备");
+            }
+        }
+    }
+
+    public static void removeTempListener(TempListener tempListener) {
+
+        synchronized (tempListeners) {
+            tempListeners.remove(tempListener);
+        }
+    }
+
     public static EcgBroadCast ecgBroadCast = new EcgBroadCast(ecgListeners);
     public static SpoBroadCast spoBroadCast = new SpoBroadCast(spoListeners);
     public static BpBroadCast bpBroadCast = new BpBroadCast(bpListeners);
+    public static TempBroadCast tempBroadCast = new TempBroadCast(tempListeners);
 
 }

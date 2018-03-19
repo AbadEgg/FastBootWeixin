@@ -1,9 +1,6 @@
 package com.mlnx.mp_server.server.initializer;
 
-import com.mlnx.mp_server.handle.PushBpHandle;
-import com.mlnx.mp_server.handle.PushEcgHandle;
-import com.mlnx.mp_server.handle.PushSpoHandle;
-import com.mlnx.mp_server.handle.RegisterHandle;
+import com.mlnx.mp_server.handle.*;
 import com.mlnx.mp_server.handle.cms.CmsServerHandle;
 import com.mlnx.mp_server.handle.cms.CmsVerify;
 import com.mlnx.qcms_server.server.initializer.CmsServerInitializer;
@@ -25,5 +22,6 @@ public class MpCmsServerInitializer extends CmsServerInitializer {
         ch.pipeline().addLast(new PushEcgHandle());
         ch.pipeline().addLast(new PushBpHandle());
         ch.pipeline().addLast(new PushSpoHandle());
+        ch.pipeline().addLast(new PushTempHandle());
     }
 }
