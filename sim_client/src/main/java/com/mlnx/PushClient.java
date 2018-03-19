@@ -7,6 +7,7 @@ import com.mlnx.mp_session.domain.EcgInfo;
 import com.mlnx.mp_session.domain.SpoInfo;
 import com.mlnx.mptp.DeviceType;
 import com.mlnx.mptp.push.PushPacket;
+import com.mlnx.mptp.push.body.Body;
 import com.mlnx.mptp.push.body.PushDataType;
 import com.mlnx.mptp.push.body.SerialType;
 import com.mlnx.mptp.utils.MptpLogUtils;
@@ -97,7 +98,7 @@ public class PushClient implements WebSocketListenner {
         });
     }
 
-    public void push(final String topic, final String msg, final Integer messageId) {
+    public void push(final String topic, final Map<PushDataType, Object> pushDataMap) {
         ThreadUtil.execute(new Runnable() {
             @Override
             public void run() {

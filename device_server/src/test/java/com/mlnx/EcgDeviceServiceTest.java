@@ -90,7 +90,7 @@ public class EcgDeviceServiceTest {
 
     @Test
     public void getDeviceOnlineRecords() throws Exception {
-        List<DeviceOnlineRecord> list = deviceStore.get(DateUtils.getPastDate(3),DateUtils.getPastDate(-1),8);
+        List<DeviceOnlineRecord> list = deviceStore.get(DateUtils.getPastDate(3),DateUtils.getPastDate(-1),3);
         System.out.println(list.size());
     }
 }

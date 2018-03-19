@@ -3,9 +3,11 @@ package com.mlnx.mp_session.core;
 import com.mlnx.mp_session.domain.BpInfo;
 import com.mlnx.mp_session.domain.EcgInfo;
 import com.mlnx.mp_session.domain.SpoInfo;
+import com.mlnx.mp_session.domain.TempInfo;
 import com.mlnx.mp_session.listenner.BroadCast;
 import com.mlnx.mp_session.listenner.adapter.UserBpAdapter;
 import com.mlnx.mp_session.listenner.adapter.UserSpoAdapter;
+import com.mlnx.mp_session.listenner.adapter.UserTempAdapter;
 import com.mlnx.mp_session.listenner.adapter.UsrEcgAdapter;
 import com.mlnx.mp_session.listenner.bp.BpListener;
 import com.mlnx.mp_session.listenner.ecg.EcgListener;
@@ -36,6 +38,7 @@ public class UsrSession extends Session {
     private EcgLis ecgLis = new EcgLis();
     private SpoLis spoLis = new SpoLis();
     private BpLis bpLis = new BpLis();
+    private TempLis tempLis = new TempLis();
 
     public String getUserName() {
         return userName;
@@ -66,6 +69,7 @@ public class UsrSession extends Session {
         BroadCast.removeEcgListenner(ecgLis);
         BroadCast.removeBpListener(bpLis);
         BroadCast.removeSpoListener(spoLis);
+        BroadCast.removeTempListener(tempLis);
     }
 
     @Override
@@ -81,6 +85,11 @@ public class UsrSession extends Session {
     @Override
     public BpListener getBpListener() {
         return bpLis;
+    }
+
+    @Override
+    public TempLis getTempListener() {
+        return tempLis;
     }
 
     class EcgLis extends UsrEcgAdapter {
@@ -218,6 +227,39 @@ public class UsrSession extends Session {
                 PushPacket packet = new PushPacket();
                 packet.getBody().setPushSerialType(serialType);
                 packet.push(DeviceType.SERVER, bpInfo.getDeivceId(), pushDataMap);
+                channel.writeAndFlush(packet);
+            }
+        }
+    }
+
+    class TempLis extends UserTempAdapter{
+
+        @Override
+        public void receiveTemp(List<Topic> topics, TempInfo tempInfo) {
+            super.receiveTemp(topics, tempInfo);
+
+            boolean isExist = false;
+            for (Topic topic : topics) {
+                if (TopicUtils.contain(getTopics(), topic)) {
+                    isExist = true;
+                    switch (topic.getTopicType()) {
+                        case U_TEMP_TOPIC:
+
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            if (isExist) {
+
+                Map<PushDataType, Object> pushDataMap = new HashMap<>();
+                pushDataMap.put(PushDataType.TEMP_INFO, tempInfo);
+
+                PushPacket packet = new PushPacket();
+                packet.getBody().setPushSerialType(serialType);
+                packet.push(DeviceType.SERVER, tempInfo.getDeivceId(), pushDataMap);
                 channel.writeAndFlush(packet);
             }
         }

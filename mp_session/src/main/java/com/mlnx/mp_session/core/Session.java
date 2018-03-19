@@ -4,8 +4,10 @@ import com.mlnx.mp_session.listenner.BroadCast;
 import com.mlnx.mp_session.listenner.bp.BpListener;
 import com.mlnx.mp_session.listenner.ecg.EcgListener;
 import com.mlnx.mp_session.listenner.spo.SpoListener;
+import com.mlnx.mp_session.listenner.temp.TempListener;
 import com.mlnx.mptp.DeviceType;
 import com.mlnx.mptp.mptp.body.Topic;
+import io.netty.channel.Channel;
 
 import java.io.Serializable;
 import java.net.SocketAddress;
@@ -13,8 +15,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import io.netty.channel.Channel;
 
 public abstract class Session implements Serializable {
 
@@ -127,6 +127,9 @@ public abstract class Session implements Serializable {
         if (getBpListener() != null && set.contains(2)) {
             BroadCast.addBpListener(getBpListener());
         }
+        if (getTempListener() != null && set.contains(7)){
+            BroadCast.addTempListener(getTempListener());
+        }
     }
 
     public abstract void removeLis();
@@ -140,6 +143,10 @@ public abstract class Session implements Serializable {
     }
 
     public BpListener getBpListener() {
+        return null;
+    }
+
+    public TempListener getTempListener(){
         return null;
     }
 

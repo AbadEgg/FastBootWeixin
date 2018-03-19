@@ -3,6 +3,7 @@ package com.mlnx.mp_session.core;
 import com.mlnx.mp_session.domain.BpInfo;
 import com.mlnx.mp_session.domain.EcgInfo;
 import com.mlnx.mp_session.domain.SpoInfo;
+import com.mlnx.mp_session.domain.TempInfo;
 import com.mlnx.mptp.model.ECGData;
 
 /**
@@ -13,6 +14,7 @@ public class MpDeviceSession extends DeviceSession {
     private SpoInfo spoInfo;
     private BpInfo bpInfo;
     private EcgInfo ecgInfo;
+    private TempInfo tempInfo;
 
     public MpDeviceSession(String deviceId) {
         super(deviceId);
@@ -20,6 +22,12 @@ public class MpDeviceSession extends DeviceSession {
         spoInfo = new SpoInfo();
         bpInfo = new BpInfo();
         ecgInfo = new EcgInfo();
+        tempInfo = new TempInfo();
+
+        spoInfo.setDeivceId(deviceId);
+        bpInfo.setDeivceId(deviceId);
+        ecgInfo.setDeivceId(deviceId);
+        tempInfo.setDeivceId(deviceId);
 
         ecgInfo.setEcgData(new ECGData());
     }
@@ -51,6 +59,10 @@ public class MpDeviceSession extends DeviceSession {
         }
     }
 
+    public void setTempInfo(TempInfo tempData) {
+        tempInfo.setTemp(tempData.getTemp());
+    }
+
     public SpoInfo getSpoInfo() {
         return spoInfo;
     }
@@ -61,5 +73,9 @@ public class MpDeviceSession extends DeviceSession {
 
     public EcgInfo getEcgInfo() {
         return ecgInfo;
+    }
+
+    public TempInfo getTempInfo() {
+        return tempInfo;
     }
 }

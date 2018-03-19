@@ -6,6 +6,7 @@ import com.mlnx.listener.BroadCast;
 import com.mlnx.mp_session.domain.BpInfo;
 import com.mlnx.mp_session.domain.EcgInfo;
 import com.mlnx.mp_session.domain.SpoInfo;
+import com.mlnx.mp_session.domain.TempInfo;
 import com.mlnx.mptp.ResponseCode;
 import com.mlnx.mptp.push.PushPacket;
 import com.mlnx.mptp.push.body.PushDataType;
@@ -152,6 +153,11 @@ public class PushService implements PushClient.LifeUsrClientLis {
                             SpoInfo spoInfo = (SpoInfo) map.get(pushDataType);
                             BroadCast.getInstance().reciveSpoInfo(spoInfo);
                             MptpLogUtils.i(spoInfo.getDeivceId() + " 收到推送spo:" + JSON.toJSONString(spoInfo));
+                            break;
+                        case TEMP_INFO:
+                            TempInfo tempInfo = (TempInfo) map.get(pushDataType);
+                            BroadCast.getInstance().receiveTempInfo(tempInfo);
+                            MptpLogUtils.i(tempInfo.getDeivceId() + " 收到推送temp:" + JSON.toJSONString(tempInfo));
                             break;
                         default:
                             break;

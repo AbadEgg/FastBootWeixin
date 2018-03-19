@@ -3,6 +3,7 @@ package com.mlnx.listener;
 import com.mlnx.mp_session.domain.BpInfo;
 import com.mlnx.mp_session.domain.EcgInfo;
 import com.mlnx.mp_session.domain.SpoInfo;
+import com.mlnx.mp_session.domain.TempInfo;
 import com.mlnx.mptp.utils.MptpLogUtils;
 
 import java.util.ArrayList;
@@ -72,6 +73,15 @@ public class BroadCast implements MsgListener{
         synchronized (msgListeners) {
             for (MsgListener msgListener : msgListeners) {
                 msgListener.reciveSpoInfo(spoInfo);
+            }
+        }
+    }
+
+    @Override
+    public void receiveTempInfo(TempInfo tempInfo) {
+        synchronized (msgListeners) {
+            for (MsgListener msgListener : msgListeners) {
+                msgListener.receiveTempInfo(tempInfo);
             }
         }
     }

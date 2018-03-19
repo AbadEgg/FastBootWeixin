@@ -64,8 +64,8 @@ public class TestClient {
         final TestClient testClient = new TestClient();
 
         testClient.testUsr.register();
-//        testClient.lis();
-//        testClient.sub();
+        testClient.lis();
+        testClient.sub();
 
 
         Thread.sleep(2000);
