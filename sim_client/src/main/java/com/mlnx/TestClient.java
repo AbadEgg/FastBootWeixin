@@ -7,6 +7,12 @@ import com.mlnx.listener.MsgListener;
 import com.mlnx.mp_session.domain.BpInfo;
 import com.mlnx.mp_session.domain.EcgInfo;
 import com.mlnx.mp_session.domain.SpoInfo;
+import com.mlnx.mptp.push.body.PushDataType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by amanda.shan on 2017/10/23.
@@ -56,31 +62,32 @@ public class TestClient {
 
     public static void main(String[] args) throws InterruptedException {
         final TestClient testClient = new TestClient();
-        testClient.lis();
-        testClient.sub();
+
+        testClient.testUsr.register();
+//        testClient.lis();
+//        testClient.sub();
 
 
+        Thread.sleep(2000);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true){
+                    List<String> deviceIds = new ArrayList<>();
+                    deviceIds.add("cms0001");
 
-//        new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while (true){
-//                    List<String> deviceIds = new ArrayList<>();
-//                    deviceIds.add("cms0001");
-//
-//                    Map<PushDataType, Object> pushDataMap = new HashMap<>();
-//                    pushDataMap.put(PushDataType.ASK_DEVICE_INFO, JSON.toJSON(deviceIds));
-//                    PushPacket pushPacket = new PushPacket().push(DeviceType.USR, null, pushDataMap);
-//                    testClient.testUsr.push(null, JSON.toJSONString(pushPacket));
-//
-//                    try {
-//                        Thread.sleep(5000);
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//        }).start();
+                    Map<PushDataType, Object> pushDataMap = new HashMap<>();
+                    pushDataMap.put(PushDataType.ASK_DEVICE_INFO, JSON.toJSON(deviceIds));
+                    testClient.testUsr.push(null, pushDataMap);
+
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start();
 
     }
 }

@@ -102,17 +102,17 @@ public class PushClient implements WebSocketListenner {
             @Override
             public void run() {
 
-//                 PushPacket  PushPacket = new  PushPacket();
-//                Body body = new Body();
-//                body.setTopic(topic);
-//
-//                 PushPacket.push(DeviceType.USR, topic, msg, messageId);
-//                try {
-//                    webSocketUtils.sendString(JSON.toJSONString( PushPacket));
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                    lifeUsrClientLis.sendError();
-//                }
+                PushPacket PushPacket = new PushPacket();
+                Body body = new Body();
+                body.setTopic(topic);
+
+                PushPacket.push(DeviceType.USR, topic, pushDataMap);
+                try {
+                    webSocketUtils.sendString(JSON.toJSONString(PushPacket));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    lifeUsrClientLis.sendError();
+                }
             }
         });
     }
