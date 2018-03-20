@@ -11,12 +11,16 @@ import java.util.Date;
  */
 public class DateUtils {
 
+    //格式化日期
+    public static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
     /**
      * 获取前一天的0点0分0秒0毫秒
+     *
      * @param date
      * @return
      */
-    public static Date getDayBefore(Date date){
+    public static Date getDayBefore(Date date) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
 //        calendar.add(Calendar.DAY_OF_MONTH, -1);
@@ -25,7 +29,7 @@ public class DateUtils {
         //将分钟至0
         calendar.set(Calendar.MINUTE, 0);
         //将秒至0
-        calendar.set(Calendar.SECOND,0);
+        calendar.set(Calendar.SECOND, 0);
         //将毫秒至0
         calendar.set(Calendar.MILLISECOND, 0);
         date = calendar.getTime();
@@ -47,4 +51,31 @@ public class DateUtils {
         return format.parse(result);
     }
 
+    public static Date getFirstDayOfMonth(int year, int month) throws ParseException {
+        Calendar cal = Calendar.getInstance();
+        //设置年份
+        cal.set(Calendar.YEAR, year);
+        //设置月份
+        cal.set(Calendar.MONTH, month - 1);
+        //获取某月最小天数
+        int firstDay = cal.getActualMinimum(Calendar.DAY_OF_MONTH);
+        //设置日历中月份的最小天数
+        cal.set(Calendar.DAY_OF_MONTH, firstDay);
+
+        String firstDayOfMonth = sdf.format(cal.getTime());
+        return sdf.parse(firstDayOfMonth);
+    }
+
+    public static Date formatDate(Date date){
+        try {
+            return sdf.parse(sdf.format(date));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+//    public static void main(String[] args) throws ParseException {
+//        DateUtils.getFirstDayOfMonth(2018,13);
+//    }
 }

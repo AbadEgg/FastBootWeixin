@@ -329,6 +329,7 @@ public class UsrSession extends Session {
                     pushDataMap.put(PushDataType.BP_INFO,mpDeviceSession.getBpInfo());
                     pushDataMap.put(PushDataType.SPO_INFO,mpDeviceSession.getSpoInfo());
                     pushDataMap.put(PushDataType.TEMP_INFO,mpDeviceSession.getTempInfo());
+                    pushDataMap.put(PushDataType.CO2_INFO,mpDeviceSession.getCo2Info());
 
                     packet = new PushPacket();
                     packet.getBody().setPushSerialType(serialType);
