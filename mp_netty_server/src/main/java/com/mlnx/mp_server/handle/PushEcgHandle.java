@@ -128,7 +128,7 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
             if (ecgData.getEcgHeart() != null){
                 topics.add(new Topic(TopicType.U_ECG_HEART_TOPIC, deviceId));
             }
-            if (ecgData.getSuccessionData() != null){
+            if (ecgData.getFilterData() != null){
                 topics.add(new Topic(TopicType.U_ECG_TOPIC, deviceId));
             }
 
