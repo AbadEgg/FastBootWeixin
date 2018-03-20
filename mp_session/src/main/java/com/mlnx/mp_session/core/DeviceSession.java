@@ -2,7 +2,7 @@ package com.mlnx.mp_session.core;
 
 
 import com.mlnx.mp_session.listenner.BroadCast;
-import com.mlnx.mp_session.listenner.adapter.UsrEcgAdapter;
+import com.mlnx.mp_session.listenner.adapter.UserEcgAdapter;
 import com.mlnx.mp_session.listenner.ecg.EcgListener;
 
 public class DeviceSession extends Session {
@@ -39,7 +39,7 @@ public class DeviceSession extends Session {
     }
 
 
-    class EcgLis extends UsrEcgAdapter {
+    class EcgLis extends UserEcgAdapter {
 
     }
 

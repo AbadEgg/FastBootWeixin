@@ -113,8 +113,9 @@ public class SessionManager {
         sessionMap.remove(channel);
         session.removeLis();
 
-        if(session instanceof DeviceSession){
+        if(session instanceof DeviceSession ||session instanceof MpDeviceSession){
             deviceShare.deleteDevice(((DeviceSession) session).getDeviceId());
+            BroadCast.ecgBroadCast.deviceOfflien(new Topic(TopicType.U_DEVICE_ONLINE_TOPIC,((DeviceSession)session).getDeviceId()),((DeviceSession)session).getDeviceId(), session.getPatientId());
         }
 
         ecgSessions.remove(session);

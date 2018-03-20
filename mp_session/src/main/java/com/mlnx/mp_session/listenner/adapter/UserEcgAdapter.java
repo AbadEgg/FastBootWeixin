@@ -6,8 +6,7 @@ import com.mlnx.mptp.mptp.body.Topic;
 
 import java.util.List;
 
-public class UsrEcgAdapter implements EcgListener {
-
+public class UserEcgAdapter implements EcgListener {
 
 	@Override
 	public void deviceOnline(Topic topic, String deviceId, Integer patientId) {

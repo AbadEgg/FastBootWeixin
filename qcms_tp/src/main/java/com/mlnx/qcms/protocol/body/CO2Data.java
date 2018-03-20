@@ -1,10 +1,8 @@
 package com.mlnx.qcms.protocol.body;
 
 import com.mlnx.qcms.utils.ByteUtils;
-import sun.security.util.Length;
 
 import java.nio.ByteBuffer;
-import java.util.Arrays;
 
 /**
  * CO2参数
@@ -119,16 +117,16 @@ public class CO2Data extends DataHeader{
         fiCO2LimitHi = buf.getFloat();
         byte[] b2 = new byte[2];
         buf.get(b2);
-        awrrValue = ByteUtils.bytesToInt(b2,2);
+        awrrValue = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        awrrLimitHi = ByteUtils.bytesToInt(b2,2);
+        awrrLimitHi = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        awrrLimitLow = ByteUtils.bytesToInt(b2,2);
+        awrrLimitLow = ByteUtils.bytesToSignInt(b2,2);
         buf.get(b2);
-        waveSampleNum = ByteUtils.bytesToInt(b2,2);
+        waveSampleNum = ByteUtils.bytesToSignInt(b2,2);
         for (int i = 0; i < 256 ; i++) {
             buf.get(b2);
-            waveData[i] = ByteUtils.bytesToInt(b2,2);
+            waveData[i] = ByteUtils.bytesToSignInt(b2,2);
         }
     }
 }

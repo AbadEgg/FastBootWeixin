@@ -15,7 +15,7 @@ import java.util.List;
 
 public class BroadCast {
 
-    private static List<EcgListener> ecgListeners = new ArrayList<EcgListener>();
+    private static List<EcgListener> ecgListeners = new ArrayList<>();
     private static List<SpoListener> spoListeners = new ArrayList<>();
     private static List<BpListener> bpListeners = new ArrayList<>();
     private static List<TempListener> tempListeners = new ArrayList<>();

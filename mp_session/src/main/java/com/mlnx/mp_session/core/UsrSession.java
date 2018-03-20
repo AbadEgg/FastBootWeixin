@@ -8,7 +8,7 @@ import com.mlnx.mp_session.listenner.BroadCast;
 import com.mlnx.mp_session.listenner.adapter.UserBpAdapter;
 import com.mlnx.mp_session.listenner.adapter.UserSpoAdapter;
 import com.mlnx.mp_session.listenner.adapter.UserTempAdapter;
-import com.mlnx.mp_session.listenner.adapter.UsrEcgAdapter;
+import com.mlnx.mp_session.listenner.adapter.UserEcgAdapter;
 import com.mlnx.mp_session.listenner.bp.BpListener;
 import com.mlnx.mp_session.listenner.ecg.EcgListener;
 import com.mlnx.mp_session.listenner.spo.SpoListener;
@@ -92,7 +92,7 @@ public class UsrSession extends Session {
         return tempLis;
     }
 
-    class EcgLis extends UsrEcgAdapter {
+    class EcgLis extends UserEcgAdapter {
 
         @Override
         public void reciveEcgInfo(List<Topic> topics, EcgInfo ecgInfo) {
