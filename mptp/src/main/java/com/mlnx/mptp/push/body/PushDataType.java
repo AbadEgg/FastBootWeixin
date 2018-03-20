@@ -9,6 +9,7 @@ public enum  PushDataType {
     SPO_INFO("血氧数据"),
     BP_INFO("血压数据"),
     TEMP_INFO("体温数据"),
+    CO2_INFO("CO2数据"),
 
     ASK_DEVICE_INFO("询问设备信息"),
     ;

@@ -4,10 +4,7 @@ package com.mlnx;
 import com.alibaba.fastjson.JSON;
 import com.mlnx.listener.BroadCast;
 import com.mlnx.listener.MsgListener;
-import com.mlnx.mp_session.domain.BpInfo;
-import com.mlnx.mp_session.domain.EcgInfo;
-import com.mlnx.mp_session.domain.SpoInfo;
-import com.mlnx.mp_session.domain.TempInfo;
+import com.mlnx.mp_session.domain.*;
 import com.mlnx.mptp.push.body.PushDataType;
 
 import java.util.ArrayList;
@@ -33,22 +30,27 @@ public class TestClient {
     public void lis(){
         BroadCast.getInstance().addMsgListener(new MsgListener() {
             @Override
-            public void reciveEcgInfo(EcgInfo ecgInfo) {
+            public void receiveEcgInfo(EcgInfo ecgInfo) {
 
             }
 
             @Override
-            public void reciveBpInfo(BpInfo bpInfo) {
+            public void receiveBpInfo(BpInfo bpInfo) {
 
             }
 
             @Override
-            public void reciveSpoInfo(SpoInfo spoInfo) {
+            public void receiveSpoInfo(SpoInfo spoInfo) {
 
             }
 
             @Override
             public void receiveTempInfo(TempInfo tempInfo) {
+
+            }
+
+            @Override
+            public void receiveCO2Info(CO2Info co2Info) {
 
             }
         });
@@ -62,7 +64,8 @@ public class TestClient {
                 .lisHeart("cms0001")
                 .lisSpo("cms0001")
                 .lisBp("cms0001")
-                .lisTemp("cms0001");
+                .lisTemp("cms0001")
+                .lisCO2("cms0001");
 
         testUsr.sub(JSON.toJSONString(topicManager.getTopics()));
     }

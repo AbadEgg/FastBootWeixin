@@ -1,9 +1,6 @@
 package com.mlnx.listener;
 
-import com.mlnx.mp_session.domain.BpInfo;
-import com.mlnx.mp_session.domain.EcgInfo;
-import com.mlnx.mp_session.domain.SpoInfo;
-import com.mlnx.mp_session.domain.TempInfo;
+import com.mlnx.mp_session.domain.*;
 import com.mlnx.mptp.utils.MptpLogUtils;
 
 import java.util.ArrayList;
@@ -51,28 +48,28 @@ public class BroadCast implements MsgListener{
 
 
     @Override
-    public void reciveEcgInfo(EcgInfo ecgInfo) {
+    public void receiveEcgInfo(EcgInfo ecgInfo) {
         synchronized (msgListeners) {
             for (MsgListener msgListener : msgListeners) {
-                msgListener.reciveEcgInfo(ecgInfo);
+                msgListener.receiveEcgInfo(ecgInfo);
             }
         }
     }
 
     @Override
-    public void reciveBpInfo(BpInfo bpInfo) {
+    public void receiveBpInfo(BpInfo bpInfo) {
         synchronized (msgListeners) {
             for (MsgListener msgListener : msgListeners) {
-                msgListener.reciveBpInfo(bpInfo);
+                msgListener.receiveBpInfo(bpInfo);
             }
         }
     }
 
     @Override
-    public void reciveSpoInfo(SpoInfo spoInfo) {
+    public void receiveSpoInfo(SpoInfo spoInfo) {
         synchronized (msgListeners) {
             for (MsgListener msgListener : msgListeners) {
-                msgListener.reciveSpoInfo(spoInfo);
+                msgListener.receiveSpoInfo(spoInfo);
             }
         }
     }
@@ -82,6 +79,15 @@ public class BroadCast implements MsgListener{
         synchronized (msgListeners) {
             for (MsgListener msgListener : msgListeners) {
                 msgListener.receiveTempInfo(tempInfo);
+            }
+        }
+    }
+
+    @Override
+    public void receiveCO2Info(CO2Info co2Info) {
+        synchronized (msgListeners) {
+            for (MsgListener msgListener : msgListeners) {
+                msgListener.receiveCO2Info(co2Info);
             }
         }
     }

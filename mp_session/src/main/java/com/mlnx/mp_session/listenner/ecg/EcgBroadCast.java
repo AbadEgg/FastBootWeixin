@@ -27,11 +27,11 @@ public class EcgBroadCast implements EcgListener {
     }
 
     @Override
-    public void deviceOfflien(Topic topic, String deviceId, Integer patientId) {
+    public void deviceOffline(Topic topic, String deviceId, Integer patientId) {
 
         synchronized (ecgListeners) {
             for (EcgListener ecgListener : ecgListeners) {
-                ecgListener.deviceOfflien(topic, deviceId,patientId);
+                ecgListener.deviceOffline(topic, deviceId,patientId);
             }
         }
 

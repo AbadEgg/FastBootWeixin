@@ -120,12 +120,12 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
             }
 
             if(dataPacket.getBody().getCo2Data()!=null){
-                TempMessage tempMessage = new TempMessage();
-                message = tempMessage;
+                CO2Message co2Message = new CO2Message();
+                message = co2Message;
 
-                tempMessage.setDeviceId(deviceId);
-                tempMessage.setPatientId(session.getPatientId());
-                tempMessage.setPacketTime(System.currentTimeMillis());
+                co2Message.setDeviceId(deviceId);
+                co2Message.setPatientId(session.getPatientId());
+                co2Message.setPacketTime(System.currentTimeMillis());
                 message.setDeviceType(com.mlnx.mptp.DeviceType.MP_DEVICE);
                 ctx.fireChannelRead(message);
             }

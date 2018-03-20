@@ -1,7 +1,6 @@
 package com.mlnx.mp_session.listenner.temp;
 
 import com.mlnx.mp_session.domain.TempInfo;
-import com.mlnx.mp_session.listenner.ecg.EcgListener;
 import com.mlnx.mp_session.utils.ThreadUtil;
 import com.mlnx.mptp.mptp.body.Topic;
 
@@ -37,19 +36,11 @@ public class TempBroadCast implements TempListener {
 
     @Override
     public void deviceOnline(Topic topic, String deviceId, Integer patientId) {
-        synchronized (tempListeners) {
-            for (TempListener tempListener : tempListeners) {
-                tempListener.deviceOnline(topic, deviceId,patientId);
-            }
-        }
+
     }
 
     @Override
-    public void deviceOfflien(Topic topic, String deviceId, Integer patientId) {
-        synchronized (tempListeners) {
-            for (TempListener tempListener : tempListeners) {
-                tempListener.deviceOfflien(topic, deviceId,patientId);
-            }
-        }
+    public void deviceOffline(Topic topic, String deviceId, Integer patientId) {
+
     }
 }

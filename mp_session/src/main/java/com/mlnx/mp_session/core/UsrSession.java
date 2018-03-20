@@ -1,15 +1,10 @@
 package com.mlnx.mp_session.core;
 
-import com.mlnx.mp_session.domain.BpInfo;
-import com.mlnx.mp_session.domain.EcgInfo;
-import com.mlnx.mp_session.domain.SpoInfo;
-import com.mlnx.mp_session.domain.TempInfo;
+import com.mlnx.mp_session.domain.*;
 import com.mlnx.mp_session.listenner.BroadCast;
-import com.mlnx.mp_session.listenner.adapter.UserBpAdapter;
-import com.mlnx.mp_session.listenner.adapter.UserSpoAdapter;
-import com.mlnx.mp_session.listenner.adapter.UserTempAdapter;
-import com.mlnx.mp_session.listenner.adapter.UserEcgAdapter;
+import com.mlnx.mp_session.listenner.adapter.*;
 import com.mlnx.mp_session.listenner.bp.BpListener;
+import com.mlnx.mp_session.listenner.co2.CO2Listener;
 import com.mlnx.mp_session.listenner.ecg.EcgListener;
 import com.mlnx.mp_session.listenner.spo.SpoListener;
 import com.mlnx.mptp.DeviceType;
@@ -39,6 +34,7 @@ public class UsrSession extends Session {
     private SpoLis spoLis = new SpoLis();
     private BpLis bpLis = new BpLis();
     private TempLis tempLis = new TempLis();
+    private CO2Lis co2Lis = new CO2Lis();
 
     public String getUserName() {
         return userName;
@@ -70,6 +66,7 @@ public class UsrSession extends Session {
         BroadCast.removeBpListener(bpLis);
         BroadCast.removeSpoListener(spoLis);
         BroadCast.removeTempListener(tempLis);
+        BroadCast.removeCO2Listener(co2Lis);
     }
 
     @Override
@@ -90,6 +87,11 @@ public class UsrSession extends Session {
     @Override
     public TempLis getTempListener() {
         return tempLis;
+    }
+
+    @Override
+    public CO2Listener getCO2Listener() {
+        return co2Lis;
     }
 
     class EcgLis extends UserEcgAdapter {
@@ -260,6 +262,39 @@ public class UsrSession extends Session {
                 PushPacket packet = new PushPacket();
                 packet.getBody().setPushSerialType(serialType);
                 packet.push(DeviceType.SERVER, tempInfo.getDeivceId(), pushDataMap);
+                channel.writeAndFlush(packet);
+            }
+        }
+    }
+
+    class CO2Lis extends UserCO2Adapter{
+
+        @Override
+        public void receiveCO2(List<Topic> topics, CO2Info co2Info) {
+            super.receiveCO2(topics, co2Info);
+
+            boolean isExist = false;
+            for (Topic topic : topics) {
+                if (TopicUtils.contain(getTopics(), topic)) {
+                    isExist = true;
+                    switch (topic.getTopicType()) {
+                        case U_CO2_TOPIC:
+
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            }
+
+            if (isExist) {
+
+                Map<PushDataType, Object> pushDataMap = new HashMap<>();
+                pushDataMap.put(PushDataType.CO2_INFO, co2Info);
+
+                PushPacket packet = new PushPacket();
+                packet.getBody().setPushSerialType(serialType);
+                packet.push(DeviceType.SERVER, co2Info.getDeivceId(), pushDataMap);
                 channel.writeAndFlush(packet);
             }
         }

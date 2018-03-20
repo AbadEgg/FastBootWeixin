@@ -2,6 +2,8 @@ package com.mlnx.mp_session.listenner;
 
 import com.mlnx.mp_session.listenner.bp.BpBroadCast;
 import com.mlnx.mp_session.listenner.bp.BpListener;
+import com.mlnx.mp_session.listenner.co2.CO2BroadCast;
+import com.mlnx.mp_session.listenner.co2.CO2Listener;
 import com.mlnx.mp_session.listenner.ecg.EcgBroadCast;
 import com.mlnx.mp_session.listenner.ecg.EcgListener;
 import com.mlnx.mp_session.listenner.spo.SpoBroadCast;
@@ -19,6 +21,7 @@ public class BroadCast {
     private static List<SpoListener> spoListeners = new ArrayList<>();
     private static List<BpListener> bpListeners = new ArrayList<>();
     private static List<TempListener> tempListeners = new ArrayList<>();
+    private static List<CO2Listener> co2Listeners = new ArrayList<>();
 
 
     public static void addEcgListenner(EcgListener ecgListener) {
@@ -105,9 +108,31 @@ public class BroadCast {
         }
     }
 
+    public static void addCO2Listener(CO2Listener co2Listener) {
+
+        if (co2Listener == null) {
+            return;
+        }
+        synchronized (co2Listeners) {
+            if (!co2Listeners.contains(co2Listener)) {
+                co2Listeners.add(co2Listener);
+            } else {
+                MptpLogUtils.w("不能重复监听体温设备");
+            }
+        }
+    }
+
+    public static void removeCO2Listener(CO2Listener co2Listener) {
+
+        synchronized (co2Listeners) {
+            co2Listeners.remove(co2Listener);
+        }
+    }
+
     public static EcgBroadCast ecgBroadCast = new EcgBroadCast(ecgListeners);
     public static SpoBroadCast spoBroadCast = new SpoBroadCast(spoListeners);
     public static BpBroadCast bpBroadCast = new BpBroadCast(bpListeners);
     public static TempBroadCast tempBroadCast = new TempBroadCast(tempListeners);
+    public static CO2BroadCast co2BroadCast = new CO2BroadCast(co2Listeners);
 
 }

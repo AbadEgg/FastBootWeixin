@@ -1,20 +1,19 @@
 package com.mlnx.listener;
 
-import com.mlnx.mp_session.domain.BpInfo;
-import com.mlnx.mp_session.domain.EcgInfo;
-import com.mlnx.mp_session.domain.SpoInfo;
-import com.mlnx.mp_session.domain.TempInfo;
+import com.mlnx.mp_session.domain.*;
 
 /**
  * Created by amanda.shan on 2018/3/2.
  */
 public interface MsgListener {
 
-    void reciveEcgInfo(EcgInfo ecgInfo);
+    void receiveEcgInfo(EcgInfo ecgInfo);
 
-    void reciveBpInfo(BpInfo bpInfo);
+    void receiveBpInfo(BpInfo bpInfo);
 
-    void reciveSpoInfo(SpoInfo spoInfo);
+    void receiveSpoInfo(SpoInfo spoInfo);
 
     void receiveTempInfo(TempInfo tempInfo);
+    
+    void receiveCO2Info(CO2Info co2Info);
 }

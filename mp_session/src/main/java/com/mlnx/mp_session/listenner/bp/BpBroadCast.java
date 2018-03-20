@@ -22,7 +22,7 @@ public class BpBroadCast implements BpListener {
     }
 
     @Override
-    public void deviceOfflien(Topic topic, String deviceId, Integer patientId) {
+    public void deviceOffline(Topic topic, String deviceId, Integer patientId) {
 
     }
 

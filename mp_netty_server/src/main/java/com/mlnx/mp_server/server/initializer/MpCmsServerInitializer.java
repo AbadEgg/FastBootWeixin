@@ -23,5 +23,6 @@ public class MpCmsServerInitializer extends CmsServerInitializer {
         ch.pipeline().addLast(new PushBpHandle());
         ch.pipeline().addLast(new PushSpoHandle());
         ch.pipeline().addLast(new PushTempHandle());
+        ch.pipeline().addLast(new PushCO2Handle());
     }
 }

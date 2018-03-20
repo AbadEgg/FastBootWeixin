@@ -112,7 +112,7 @@ public class EcgService {
         }
 
         @Override
-        public void deviceOfflien(Topic topic, String deviceId, Integer patientId) {
+        public void deviceOffline(Topic topic, String deviceId, Integer patientId) {
             DeviceOnlineRecord record = new DeviceOnlineRecord();
             record.setDate(new Date());
             record.setDeviceId(deviceId);

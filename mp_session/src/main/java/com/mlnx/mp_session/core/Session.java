@@ -2,6 +2,7 @@ package com.mlnx.mp_session.core;
 
 import com.mlnx.mp_session.listenner.BroadCast;
 import com.mlnx.mp_session.listenner.bp.BpListener;
+import com.mlnx.mp_session.listenner.co2.CO2Listener;
 import com.mlnx.mp_session.listenner.ecg.EcgListener;
 import com.mlnx.mp_session.listenner.spo.SpoListener;
 import com.mlnx.mp_session.listenner.temp.TempListener;
@@ -130,6 +131,9 @@ public abstract class Session implements Serializable {
         if (getTempListener() != null && set.contains(7)){
             BroadCast.addTempListener(getTempListener());
         }
+        if (getCO2Listener() != null && set.contains(8)){
+            BroadCast.addCO2Listener(getCO2Listener());
+        }
     }
 
     public abstract void removeLis();
@@ -149,6 +153,11 @@ public abstract class Session implements Serializable {
     public TempListener getTempListener(){
         return null;
     }
+
+    public CO2Listener getCO2Listener(){
+        return null;
+    }
+
 
     @Override
     public String toString() {
