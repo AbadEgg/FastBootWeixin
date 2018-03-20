@@ -18,4 +18,6 @@ public interface EcgStore {
 
     List<Map<String, Object>> getEncryEcg(long startTime, long endTime, int patientId);
 
+    List<Map<String, Object>> getFilterEcg(long startTime, long endTime, int patientId);
+
 }

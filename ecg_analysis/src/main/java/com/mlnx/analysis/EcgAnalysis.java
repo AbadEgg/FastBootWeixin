@@ -70,12 +70,15 @@ public class EcgAnalysis {
             result.setTime(packetTime);
 
             byte[] ecgData = new byte[encryptionEcgDatas.length];
+            byte[] filterEcgData = new byte[encryptionEcgDatas.length];
             result.setEcgData(ecgData);
+            result.setFilterEcgData(filterEcgData);
 
             while (encryptionEcgDatas.length - encryptionIndex >= 24) {
 
                 byte[] iEcgdata = new byte[24];
                 byte[] gu32EncryptEcgOutData = new byte[24];
+                int[] filterData = new int[8];
 
                 for (int i = 0; i < 24; i++, encryptionIndex++) {
                     iEcgdata[i] = encryptionEcgDatas[encryptionIndex];
@@ -83,6 +86,8 @@ public class EcgAnalysis {
 
                 // 读取一行并解析数据
                 analysisLib.GetProcData(iEcgdata, gpu8AcId, gu32EncryptEcgOutData);
+
+                analysisLib.GetFilterData(filterData);
 
                 // 判断是否可分析标志
                 byte monitorFlag = analysisLib.CheckMonitorAnalysisStartFlag();
@@ -132,8 +137,17 @@ public class EcgAnalysis {
                     analysisLib.ClearEcgAnalysisFlag();
                 }
 
+                byte[] bytes = new byte[24];
+                int j = 0;
+                for (int i = 0; i < filterData.length; i++) {
+                    bytes[j++] = (byte) (filterData[i]>>16);
+                    bytes[j++] = (byte) (filterData[i]>>8);
+                    bytes[j++] = (byte) (filterData[i]);
+                }
+
                 for (int i = 0; i < gu32EncryptEcgOutData.length; i++, index++) {
                     ecgData[index] = gu32EncryptEcgOutData[i];
+                    filterEcgData[index] = bytes[i];
                 }
             }
         }

@@ -13,6 +13,8 @@ public class ECGData {
 
 	private byte[] successionData;	//	未加密心电数据
 
+	private byte[] filterData;	//	未加密心电数据
+
 	public Integer getEcgHeart() {
 		return ecgHeart;
 	}
@@ -51,6 +53,14 @@ public class ECGData {
 
 	public void setSuccessionData(byte[] successionData) {
 		this.successionData = successionData;
+	}
+
+	public byte[] getFilterData() {
+		return filterData;
+	}
+
+	public void setFilterData(byte[] filterData) {
+		this.filterData = filterData;
 	}
 
 	@Override

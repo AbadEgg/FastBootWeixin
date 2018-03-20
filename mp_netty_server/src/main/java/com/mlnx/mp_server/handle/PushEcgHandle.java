@@ -13,11 +13,12 @@ import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
 import com.mlnx.mptp.mptp.body.Topic;
 import com.mlnx.mptp.mptp.body.TopicType;
 import com.mlnx.mptp.utils.MptpLogUtils;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
 
 /**
  * Created by amanda.shan on 2018/2/12.
@@ -77,6 +78,7 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
 
                     ecgData.setEcgHeart(result.getHeart());
                     ecgData.setSuccessionData(result.getEcgData());
+                    ecgData.setFilterData(result.getFilterEcgData());
                     topics.add(new Topic(TopicType.U_ECG_ENCRYPTION_TOPIC, deviceId));
 
                     result.setEcgData(null);

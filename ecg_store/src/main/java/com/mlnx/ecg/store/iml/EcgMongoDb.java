@@ -90,6 +90,11 @@ public class EcgMongoDb implements EcgStore {
         return getEcgData(startTime, endTime, patientId, "encryData");
     }
 
+    @Override
+    public List<Map<String, Object>> getFilterEcg(long startTime, long endTime, int patientId) {
+        return getEcgData(startTime, endTime, patientId, "filterData");
+    }
+
     private List<Map<String, Object>> getEcgData(long startTime, long endTime, int patientId, String ecgDataKey){
         MongoQuery query = new MongoQuery();
         query.use(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
