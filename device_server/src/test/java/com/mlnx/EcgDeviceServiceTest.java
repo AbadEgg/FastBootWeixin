@@ -6,7 +6,6 @@ import com.mlnx.device_server.DeviceServerApplication;
 import com.mlnx.device_server.mybatis.mapper.TDeviceMapper;
 import com.mlnx.device_server.task.BpTask;
 import com.mlnx.local.data.domain.BpAvg;
-import com.mlnx.local.data.domain.DeviceOnlineRecord;
 import com.mlnx.local.data.store.bp.BpAvgStore;
 import com.mlnx.local.data.store.device.DeviceStore;
 import com.mlnx.local.data.utils.DateUtils;
@@ -19,8 +18,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * Created by amanda.shan on 2017/12/23.
@@ -90,7 +91,9 @@ public class EcgDeviceServiceTest {
 
     @Test
     public void getDeviceOnlineRecords() throws Exception {
-        List<DeviceOnlineRecord> list = deviceStore.get(DateUtils.getPastDate(3),DateUtils.getPastDate(-1),3);
-        System.out.println(list.size());
+//        List<DeviceOnlineRecord> list = deviceStore.get(DateUtils.getPastDate(3),DateUtils.getPastDate(-1),3);
+//        System.out.println(list.size());
+        Set<Date> data = deviceStore.get(2018,3,7);
+        System.out.println(data.size());
     }
 }

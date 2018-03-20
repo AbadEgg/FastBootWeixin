@@ -1,9 +1,6 @@
 package com.mlnx.mp_session.core;
 
-import com.mlnx.mp_session.domain.BpInfo;
-import com.mlnx.mp_session.domain.EcgInfo;
-import com.mlnx.mp_session.domain.SpoInfo;
-import com.mlnx.mp_session.domain.TempInfo;
+import com.mlnx.mp_session.domain.*;
 import com.mlnx.mptp.model.ECGData;
 
 /**
@@ -15,6 +12,7 @@ public class MpDeviceSession extends DeviceSession {
     private BpInfo bpInfo;
     private EcgInfo ecgInfo;
     private TempInfo tempInfo;
+    private CO2Info co2Info;
 
     public MpDeviceSession(String deviceId) {
         super(deviceId);
@@ -23,11 +21,13 @@ public class MpDeviceSession extends DeviceSession {
         bpInfo = new BpInfo();
         ecgInfo = new EcgInfo();
         tempInfo = new TempInfo();
+        co2Info = new CO2Info();
 
         spoInfo.setDeivceId(deviceId);
         bpInfo.setDeivceId(deviceId);
         ecgInfo.setDeivceId(deviceId);
         tempInfo.setDeivceId(deviceId);
+        co2Info.setDeivceId(deviceId);
 
         ecgInfo.setEcgData(new ECGData());
     }
@@ -63,6 +63,10 @@ public class MpDeviceSession extends DeviceSession {
         tempInfo.setTemp(tempData.getTemp());
     }
 
+    public void setCo2Info(CO2Info co2Info) {
+        co2Info.setCo2Value(co2Info.getCo2Value());
+    }
+
     public SpoInfo getSpoInfo() {
         return spoInfo;
     }
@@ -77,5 +81,9 @@ public class MpDeviceSession extends DeviceSession {
 
     public TempInfo getTempInfo() {
         return tempInfo;
+    }
+
+    public CO2Info getCo2Info() {
+        return co2Info;
     }
 }
