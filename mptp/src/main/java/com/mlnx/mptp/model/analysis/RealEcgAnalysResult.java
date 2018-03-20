@@ -10,6 +10,7 @@ public class RealEcgAnalysResult {
     private long time;
 
     private byte[] ecgData; // 解析出来的心电数据
+    private byte[] filterEcgData; // 滤波后的的心电数据
 
     private Integer heart;
     private Integer pbNumb; // 早搏个数
@@ -31,6 +32,14 @@ public class RealEcgAnalysResult {
 
     public void setEcgData(byte[] ecgData) {
         this.ecgData = ecgData;
+    }
+
+    public byte[] getFilterEcgData() {
+        return filterEcgData;
+    }
+
+    public void setFilterEcgData(byte[] filterEcgData) {
+        this.filterEcgData = filterEcgData;
     }
 
     public Integer getHeart() {

@@ -137,7 +137,8 @@ public class PushPacket {
         return this;
     }
 
-    public PushPacket push(DeviceType deviceType, String topic, Map<PushDataType, Object> pushDataMap) {
+    public PushPacket push(DeviceType deviceType, String topic, Map<PushDataType, Object>
+            pushDataMap) {
 
 //		PushLogUtils.i("发布消息");
         header.setPacketType(PacketType.PUBLISH);

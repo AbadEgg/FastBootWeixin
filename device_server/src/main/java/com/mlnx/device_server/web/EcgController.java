@@ -47,4 +47,15 @@ public class EcgController extends BaseController {
         return response;
     }
 
+    @RequestMapping(value = "/getFilterEcg", method = {RequestMethod.GET, RequestMethod.POST})
+    public Response getFilterEcg(Integer patientId, Long startTime, Long endTime) {
+
+        Response response;
+        if (patientId == null || startTime == null || endTime == null)
+            response = result(ExceptionMsg.ParamError);
+        else
+            response = new ResponseData(ecgService.getFilterEcg(patientId, startTime, endTime));
+        return response;
+    }
+
 }

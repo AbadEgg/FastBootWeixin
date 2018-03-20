@@ -34,6 +34,8 @@ public class Ecg {
 
     private byte[] encryData;    // 加密数据
 
+    private byte[] filterData;    // 滤波原始数据
+
     public Integer getPatientId() {
 
         return patientId;
@@ -164,5 +166,13 @@ public class Ecg {
 
     public void setEncryData(byte[] encryData) {
         this.encryData = encryData;
+    }
+
+    public byte[] getFilterData() {
+        return filterData;
+    }
+
+    public void setFilterData(byte[] filterData) {
+        this.filterData = filterData;
     }
 }
