@@ -7,6 +7,7 @@ import com.mlnx.listener.MsgListener;
 import com.mlnx.mp_session.domain.BpInfo;
 import com.mlnx.mp_session.domain.EcgInfo;
 import com.mlnx.mp_session.domain.SpoInfo;
+import com.mlnx.mp_session.domain.TempInfo;
 import com.mlnx.mptp.push.body.PushDataType;
 
 import java.util.ArrayList;
@@ -45,6 +46,11 @@ public class TestClient {
             public void reciveSpoInfo(SpoInfo spoInfo) {
 
             }
+
+            @Override
+            public void receiveTempInfo(TempInfo tempInfo) {
+
+            }
         });
     }
 
@@ -55,7 +61,8 @@ public class TestClient {
                 .lisRealAnaly("cms0001")
                 .lisHeart("cms0001")
                 .lisSpo("cms0001")
-                .lisBp("cms0001");
+                .lisBp("cms0001")
+                .lisTemp("cms0001");
 
         testUsr.sub(JSON.toJSONString(topicManager.getTopics()));
     }

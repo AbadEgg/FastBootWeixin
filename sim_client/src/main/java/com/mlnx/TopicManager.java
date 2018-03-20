@@ -49,6 +49,11 @@ public class TopicManager {
         return this;
     }
 
+    public TopicManager lisTemp(String deviceId) {
+        addTopic(deviceId, TopicType.U_TEMP_TOPIC);
+        return this;
+    }
+
     public TopicManager addTopic(String deviceId, TopicType topicType) {
         List<TopicType> topicTypes = topicMap.get(deviceId);
         if (topicTypes == null) {

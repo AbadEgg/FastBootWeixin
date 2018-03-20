@@ -5,6 +5,7 @@ import com.mlnx.config.Config;
 import com.mlnx.mp_session.domain.BpInfo;
 import com.mlnx.mp_session.domain.EcgInfo;
 import com.mlnx.mp_session.domain.SpoInfo;
+import com.mlnx.mp_session.domain.TempInfo;
 import com.mlnx.mptp.DeviceType;
 import com.mlnx.mptp.push.PushPacket;
 import com.mlnx.mptp.push.body.Body;
@@ -134,6 +135,8 @@ public class PushClient implements WebSocketListenner {
                     case BP_INFO:
                         map.put(pushDataType, JSON.parseObject(map.get(pushDataType).toString(), BpInfo.class));
                         break;
+                    case TEMP_INFO:
+                        map.put(pushDataType,JSON.parseObject(map.get(pushDataType).toString(), TempInfo.class));
                     default:
                         break;
                 }
