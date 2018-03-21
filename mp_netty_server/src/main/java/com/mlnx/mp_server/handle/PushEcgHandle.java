@@ -61,6 +61,9 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
 
                 // 不需要分析的心电数据
                 if (ecgData.getSuccessionData() != null) {
+
+                    ecgData.setFilterData(ecgData.getSuccessionData());
+
                     topics.add(new Topic(TopicType.U_ECG_TOPIC, deviceId));
 
                     if (ecgData.getEcgHeart() != null && ecgData.getEcgHeart() != 0){
