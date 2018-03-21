@@ -51,6 +51,26 @@ public class DateUtils {
         return format.parse(result);
     }
 
+    /**
+     * 获取未来第几天的日期(- 操作) 或者 未来 第几天的日期( + 操作)
+     *
+     * @param future
+     * @return
+     */
+    public static Date getFutureDate(int future) throws ParseException {
+        return getFutureDate(new Date(),future);
+    }
+
+    public static Date getFutureDate(Date current,int future) throws ParseException {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(current);
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) + future);
+        Date today = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String result = format.format(today);
+        return format.parse(result);
+    }
+
     public static Date getFirstDayOfMonth(int year, int month) throws ParseException {
         Calendar cal = Calendar.getInstance();
         //设置年份
