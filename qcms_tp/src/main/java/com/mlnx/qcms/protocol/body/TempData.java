@@ -3,7 +3,6 @@ package com.mlnx.qcms.protocol.body;
 import com.mlnx.qcms.utils.ByteUtils;
 
 import java.nio.ByteBuffer;
-import java.nio.ByteOrder;
 
 /**
  * temp参数
@@ -106,14 +105,31 @@ public class TempData extends DataHeader{
 
     @Override
     public void decodeData(ByteBuffer buf) {
-        t1 = buf.getFloat();
-        t1HighLimt = buf.getFloat();
-        t1LowLimt = buf.getFloat();
-        t2 = buf.getFloat();
-        t2HighLimt = buf.getFloat();
-        t2LowLimt = buf.getFloat();
-        td = buf.getFloat();
-        tdHighLimt = buf.getFloat();
+        byte[] b4 = new byte[4];
+        buf.get(b4);
+        t1 = ByteUtils.getFloat(b4);
+        buf.get(b4);
+        t1HighLimt = validate(ByteUtils.getFloat(b4));
+        buf.get(b4);
+        t1LowLimt = validate(ByteUtils.getFloat(b4));
+        buf.get(b4);
+        t2 = validate(ByteUtils.getFloat(b4));
+        buf.get(b4);
+        t2HighLimt = validate(ByteUtils.getFloat(b4));
+        buf.get(b4);
+        t2LowLimt = validate(ByteUtils.getFloat(b4));
+        buf.get(b4);
+        td = validate(ByteUtils.getFloat(b4));
+        buf.get(b4);
+        tdHighLimt = validate(ByteUtils.getFloat(b4));
 //        System.out.println(this.toString());
+    }
+
+    public static float validate(float f){
+        int invalid = -100;
+        if(f != invalid){
+            f /= 10;
+        }
+        return f;
     }
 }

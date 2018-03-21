@@ -113,6 +113,7 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
                 TempMessage tempMessage = new TempMessage();
                 message = tempMessage;
 
+                tempMessage.setTemp(dataPacket.getBody().getTempData().getT1());
                 tempMessage.setDeviceId(deviceId);
                 tempMessage.setPatientId(session.getPatientId());
                 tempMessage.setPacketTime(System.currentTimeMillis());
@@ -124,6 +125,7 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
                 CO2Message co2Message = new CO2Message();
                 message = co2Message;
 
+                co2Message.setCo2Value(dataPacket.getBody().getCo2Data().getCo2Value());
                 co2Message.setDeviceId(deviceId);
                 co2Message.setPatientId(session.getPatientId());
                 co2Message.setPacketTime(System.currentTimeMillis());
