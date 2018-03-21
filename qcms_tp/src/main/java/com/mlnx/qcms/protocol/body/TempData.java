@@ -107,7 +107,7 @@ public class TempData extends DataHeader{
     public void decodeData(ByteBuffer buf) {
         byte[] b4 = new byte[4];
         buf.get(b4);
-        t1 = ByteUtils.getFloat(b4);
+        t1 = validate(ByteUtils.getFloat(b4));
         buf.get(b4);
         t1HighLimt = validate(ByteUtils.getFloat(b4));
         buf.get(b4);
