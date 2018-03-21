@@ -110,11 +110,17 @@ public class CO2Data extends DataHeader{
 
     @Override
     public void decodeData(ByteBuffer buf) {
-        co2Value = buf.getFloat();
-        co2LimitHi = buf.getFloat();
-        co2LimitLow = buf.getFloat();
-        fiCO2Value = buf.getFloat();
-        fiCO2LimitHi = buf.getFloat();
+        byte[] b4 = new byte[4];
+        buf.get(b4);
+        co2Value = ByteUtils.getFloat(b4);
+        buf.get(b4);
+        co2LimitHi = ByteUtils.getFloat(b4);
+        buf.get(b4);
+        co2LimitLow = ByteUtils.getFloat(b4);
+        buf.get(b4);
+        fiCO2Value = ByteUtils.getFloat(b4);
+        buf.get(b4);
+        fiCO2LimitHi = ByteUtils.getFloat(b4);
         byte[] b2 = new byte[2];
         buf.get(b2);
         awrrValue = ByteUtils.bytesToSignInt(b2,2);

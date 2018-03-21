@@ -73,7 +73,7 @@ public class EcgDeviceServiceTest {
         for (int i = 0; i < 20 ; i++) {
             BpAvg bpAvg = new BpAvg();
             bpAvg.setPatientId(8);
-            bpAvg.setDayTime(DateUtils.getPastDate(i));
+            bpAvg.setDayTime(DateUtils.getPastDate(i/2==0?0:1));
 
             bpAvg.setDiastolicAvg(60 + random.nextInt(30));
             bpAvg.setDiastolicDayAvg(60 + random.nextInt(30));

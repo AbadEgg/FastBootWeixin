@@ -172,6 +172,11 @@ public class EcgStoreTable implements EcgStore {
         return null;
     }
 
+    @Override
+    public List<Map<String, Object>> getFilterEcg(long startTime, long endTime, int patientId) {
+        return null;
+    }
+
     private Ecg changeToEcg(Row row) {
 
         Ecg ECGResponse = new Ecg();

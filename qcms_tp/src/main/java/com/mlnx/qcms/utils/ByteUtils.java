@@ -72,6 +72,16 @@ public class ByteUtils {
                 | (((long) src[1] & 0xff) << 8) | (((long) src[0] & 0xff) << 0));
     }
 
+    public static float getFloat(byte[] b) {
+        int accum = 0;
+        accum = accum|(b[0] & 0xff) << 0;
+        accum = accum|(b[1] & 0xff) << 8;
+        accum = accum|(b[2] & 0xff) << 16;
+        accum = accum|(b[3] & 0xff) << 24;
+        System.out.println(accum);
+        return Float.intBitsToFloat(accum);
+    }
+
 
     public static void main(String[] args) {
         byte[] bytes = {(byte) 0xf0,0x01,0x02,0x03};
