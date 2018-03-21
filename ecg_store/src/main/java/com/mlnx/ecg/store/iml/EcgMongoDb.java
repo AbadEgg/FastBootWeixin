@@ -114,6 +114,7 @@ public class EcgMongoDb implements EcgStore {
                 if (ecgObject != null) {
                     jsonObject.put("data", ecgObject.getJSONArray("data"));
                 }
+                jsonObject.remove(ecgDataKey);
                 maps.add(jsonObject);
             }
         }
@@ -135,15 +136,23 @@ public class EcgMongoDb implements EcgStore {
 //        ecgMongoDb.save(getSimEcgs());
 
 //
-        long startTime = 1521195967942l;
-        long endTime = 1521195969399l;
+        long startTime = System.currentTimeMillis()-5000;
+        long endTime = System.currentTimeMillis()-2000;
 
 
-        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcg(startTime, endTime, 7);
+        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcg(startTime, endTime, 3);
         System.out.println("ecgMongs.size:" + ecgMongs.size());
-//        for (int i = 0; i < ecgMongs.size(); i++) {
-//            System.out.println(ecgMongs.get(i).toString());
-//        }
+        System.out.println("原始数据");
+        for (int i = 0; i < 1; i++) {
+            System.out.println(ecgMongs.get(i).toString());
+        }
+
+        ecgMongs = ecgMongoDb.getFilterEcg(startTime, endTime, 3);
+        System.out.println("ecgMongs.size:" + ecgMongs.size());
+        System.out.println("滤波数据");
+        for (int i = 0; i < 1; i++) {
+            System.out.println(ecgMongs.get(i).toString());
+        }
 //
 //        ecgMongs = ecgMongoDb.getEncryEcg(startTime, endTime, 0);
 //        System.out.println("ecgMongs.size:" + ecgMongs.size());
