@@ -92,7 +92,7 @@ public class EcgDeviceServiceTest {
     public void getDeviceOnlineRecords() throws Exception {
         for (int i = 0; i < 10; i++) {
             long start = System.currentTimeMillis();
-            List<DeviceOnlineRecord> list = deviceStore.group(deviceStore.get(DateUtils.getPastDate(20),DateUtils.getPastDate(-1),3));
+            List<DeviceOnlineRecord> list = deviceStore.group(deviceStore.get(DateUtils.getPastDate(20),DateUtils.getPastDate(-1),3),DateUtils.getPastDate(20),DateUtils.getPastDate(-1));
             long end = System.currentTimeMillis();
             System.out.println("花了:"+(end-start)+"ms");
         }
