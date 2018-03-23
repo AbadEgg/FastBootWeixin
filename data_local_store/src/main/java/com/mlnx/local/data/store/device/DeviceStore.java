@@ -41,6 +41,10 @@ public class DeviceStore {
         try {
             Date startTime = DateUtils.getFirstDayOfMonth(year,month);
             Date endTime = DateUtils.getFirstDayOfMonth(year,month+1);
+            Date current = new Date();
+            if(endTime.after(current)){
+                endTime = current;
+            }
             List<DeviceOnlineRecord> resultDatas = group(get(startTime,endTime,patientId),startTime,endTime);
             for (int i = 0; i < resultDatas.size()/2 ; i++) {
                 Date onlineDate = resultDatas.get(2*i).getDate();

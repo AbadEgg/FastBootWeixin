@@ -13,12 +13,13 @@ import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
 import com.mlnx.mptp.mptp.body.Topic;
 import com.mlnx.mptp.mptp.body.TopicType;
 import com.mlnx.mptp.utils.MptpLogUtils;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Created by amanda.shan on 2018/2/12.
@@ -34,6 +35,8 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
         if (session instanceof EcgDeviceSession) {
 
             ECGData ecgData = msg.getEcgData();
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            MptpLogUtils.d("设备"+msg.getDeviceId()+" 时间:"+sdf.format(new Date(msg.getPacketTime())));
 
             // 更新设备信息session
             ECGDeviceInfo ecgDeviceInfo = msg.getEcgDeviceInfo();
