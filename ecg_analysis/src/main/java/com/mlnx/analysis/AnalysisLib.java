@@ -14,6 +14,9 @@ public interface AnalysisLib extends Library {
 
     void InitECGFilter();
 
+    // 设置滤波参数
+    void SetFilter(byte LowPass, byte HighPass, byte enstop);
+
     // 数据解析
     void GetProcData(byte[] iEcgdata, byte[] gpu8AcId,
                      byte[] gu32EncryptEcgOutData);

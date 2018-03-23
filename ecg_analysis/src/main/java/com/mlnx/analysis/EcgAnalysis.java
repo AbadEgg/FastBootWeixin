@@ -1,5 +1,6 @@
 package com.mlnx.analysis;
 
+import com.mlnx.analysis.filter.EcgFilter;
 import com.mlnx.analysis.utils.FileUtils;
 import com.mlnx.mptp.model.analysis.HeartResult;
 import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
@@ -52,10 +53,15 @@ public class EcgAnalysis {
         initAnalysis();
     }
 
-    private void initAnalysis(){
+    private void initAnalysis() {
         // 算法初始化
         analysisLib.InitEcgAna();
         analysisLib.InitECGFilter();
+    }
+
+    public void setEcgFilter(EcgFilter ecgFilter) {
+        analysisLib.SetFilter(ecgFilter.getLowpassFilterList().getCode(), ecgFilter.getHighpassFilterList().getCode()
+                , ecgFilter.getEcgStopFilterList().getCode());
     }
 
     public RealEcgAnalysResult realAnalysis(byte[] encryptionEcgDatas, long packetTime) {
@@ -140,8 +146,8 @@ public class EcgAnalysis {
                 byte[] bytes = new byte[24];
                 int j = 0;
                 for (int i = 0; i < filterData.length; i++) {
-                    bytes[j++] = (byte) (filterData[i]>>16);
-                    bytes[j++] = (byte) (filterData[i]>>8);
+                    bytes[j++] = (byte) (filterData[i] >> 16);
+                    bytes[j++] = (byte) (filterData[i] >> 8);
                     bytes[j++] = (byte) (filterData[i]);
                 }
 
@@ -160,7 +166,6 @@ public class EcgAnalysis {
         analysisLib.GetFilterData(filterData);
         return filterData;
     }
-
 
 
     private static String getCopiedDllPath(String dllPath, String deviceId) throws IOException {

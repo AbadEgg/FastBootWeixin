@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -114,7 +115,9 @@ public class EcgMongoDb implements EcgStore {
                 if (ecgObject != null) {
                     jsonObject.put("data", ecgObject.getJSONArray("data"));
                 }
-                jsonObject.remove(ecgDataKey);
+                if (!ecgDataKey.equals("data")){
+                    jsonObject.remove(ecgDataKey);
+                }
                 maps.add(jsonObject);
             }
         }
@@ -127,6 +130,7 @@ public class EcgMongoDb implements EcgStore {
     }
 
     public static void main(String[] args) {
+
         EcgMongoDb ecgMongoDb = new EcgMongoDb();
         ecgMongoDb.init();
 //
@@ -136,23 +140,27 @@ public class EcgMongoDb implements EcgStore {
 //        ecgMongoDb.save(getSimEcgs());
 
 //
-        long startTime = System.currentTimeMillis()-5000;
-        long endTime = System.currentTimeMillis()-2000;
+        long startTime = System.currentTimeMillis()-5*1000;
+        long endTime = System.currentTimeMillis()-3*1000;
 
 
-        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcg(startTime, endTime, 3);
+        List<Map<String, Object>> ecgMongs = ecgMongoDb.getFilterEcg(startTime, endTime, 3);
         System.out.println("ecgMongs.size:" + ecgMongs.size());
         System.out.println("原始数据");
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < ecgMongs.size(); i++) {
             System.out.println(ecgMongs.get(i).toString());
         }
 
-        ecgMongs = ecgMongoDb.getFilterEcg(startTime, endTime, 3);
-        System.out.println("ecgMongs.size:" + ecgMongs.size());
-        System.out.println("滤波数据");
-        for (int i = 0; i < 1; i++) {
-            System.out.println(ecgMongs.get(i).toString());
-        }
+        System.out.println(new Date(endTime));
+        System.out.println(new Date(1521701715317l));
+
+
+//        ecgMongs = ecgMongoDb.getFilterEcg(startTime, endTime, 3);
+//        System.out.println("ecgMongs.size:" + ecgMongs.size());
+//        System.out.println("滤波数据");
+//        for (int i = 0; i < 1; i++) {
+//            System.out.println(ecgMongs.get(i).toString());
+//        }
 //
 //        ecgMongs = ecgMongoDb.getEncryEcg(startTime, endTime, 0);
 //        System.out.println("ecgMongs.size:" + ecgMongs.size());
