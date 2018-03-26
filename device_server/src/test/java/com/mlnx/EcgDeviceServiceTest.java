@@ -19,8 +19,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.text.ParseException;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 /**
  * Created by amanda.shan on 2017/12/23.
@@ -98,5 +100,11 @@ public class EcgDeviceServiceTest {
         }
 //        Set<Date> data = deviceStore.get(2018,3,7);
 //        System.out.println(data.size());
+    }
+
+    @Test
+    public void getMonth(){
+        Set<Date> set = deviceStore.get(2018,3,3);
+        System.out.println(set.size());
     }
 }
