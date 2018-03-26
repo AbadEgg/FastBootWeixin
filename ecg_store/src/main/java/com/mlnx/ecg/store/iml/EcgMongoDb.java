@@ -100,8 +100,8 @@ public class EcgMongoDb implements EcgStore {
         MongoQuery query = new MongoQuery();
         query.use(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
         query.eq("patientId", patientId);
-        query.gt("startTime", startTime);
-        query.lt("startTime", endTime);
+        query.gte("startTime", startTime);
+        query.lte("startTime", endTime);
         query.ascending("startTime");
         query.projection(ecgDataKey, "startTime", "patientId", "deivceId","deviceType");
 
