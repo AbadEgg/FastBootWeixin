@@ -24,7 +24,7 @@ public class LocalStore {
         mongoPlugin.setDebug(false);
         mongoPlugin.add(MlnxDataMongoConfig.HOST, MlnxDataMongoConfig.PORT);
         mongoPlugin.setDatabase(MlnxDataMongoConfig.DATABASE);
-        mongoPlugin.auth(MlnxDataMongoConfig.USER, MlnxDataMongoConfig.PWD);
+//        mongoPlugin.auth(MlnxDataMongoConfig.USER, MlnxDataMongoConfig.PWD);
         MongoClient client = mongoPlugin.getMongoClient();
         MongoKit.INSTANCE.init(client, mongoPlugin.getDatabase());
 

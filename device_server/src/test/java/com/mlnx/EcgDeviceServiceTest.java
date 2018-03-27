@@ -107,4 +107,10 @@ public class EcgDeviceServiceTest {
         Set<Date> set = deviceStore.get(2018,3,3);
         System.out.println(set.size());
     }
+
+    @Test
+    public void getOnlineDevices() throws Exception {
+        List<DeviceOnlineRecord> list = deviceStore.get(DateUtils.getPastDate(2),DateUtils.getPastDate(-1),3);
+        System.out.println(list.size());
+    }
 }

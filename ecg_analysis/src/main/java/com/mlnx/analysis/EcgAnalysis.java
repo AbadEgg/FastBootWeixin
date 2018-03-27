@@ -7,7 +7,6 @@ import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
 import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 import com.sun.jna.ptr.ShortByReference;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,6 +56,8 @@ public class EcgAnalysis {
         // 算法初始化
         analysisLib.InitEcgAna();
         analysisLib.InitECGFilter();
+
+//        setEcgFilter(FilterManager.getSsportEcgFilter());
     }
 
     public void setEcgFilter(EcgFilter ecgFilter) {
