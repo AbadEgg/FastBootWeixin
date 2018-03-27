@@ -18,6 +18,8 @@ import org.bson.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,12 +41,12 @@ public class EcgMongoDb implements EcgStore {
         mongoPlugin.setDebug(false);
         mongoPlugin.add(MlnxDataMongoConfig.HOST, MlnxDataMongoConfig.PORT);
         mongoPlugin.setDatabase(MlnxDataMongoConfig.DATABASE);
-        mongoPlugin.auth(MlnxDataMongoConfig.USER, MlnxDataMongoConfig.PWD);
+//        mongoPlugin.auth(MlnxDataMongoConfig.USER, MlnxDataMongoConfig.PWD);
         MongoClient client = mongoPlugin.getMongoClient();
         MongoKit.INSTANCE.init(client, mongoPlugin.getDatabase());
 
         MongoIndex index = new MongoIndex(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
-        index.add(new MongoIndex().ascending("patientId", "startTime").setUnique(true)).compound(); // 组合索引
+//        index.add(new MongoIndex().ascending("patientId", "startTime").setUnique(true)).compound(); // 组合索引
 //        index.deleteAll();        // 删除所有索引
 //        index.ascending("patientId").save();  // 保存索引
 
@@ -96,14 +98,14 @@ public class EcgMongoDb implements EcgStore {
         return getEcgData(startTime, endTime, patientId, "filterData");
     }
 
-    private List<Map<String, Object>> getEcgData(long startTime, long endTime, int patientId, String ecgDataKey){
+    private List<Map<String, Object>> getEcgData(long startTime, long endTime, int patientId, String ecgDataKey) {
         MongoQuery query = new MongoQuery();
         query.use(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
         query.eq("patientId", patientId);
         query.gte("startTime", startTime);
         query.lte("startTime", endTime);
         query.ascending("startTime");
-        query.projection(ecgDataKey, "startTime", "patientId", "deivceId","deviceType");
+        query.projection(ecgDataKey, "startTime", "patientId", "deivceId", "deviceType");
 
         List<JSONObject> jsonObjects = query.find();
         List<Map<String, Object>> maps = new ArrayList<>();
@@ -115,7 +117,7 @@ public class EcgMongoDb implements EcgStore {
                 if (ecgObject != null) {
                     jsonObject.put("data", ecgObject.getJSONArray("data"));
                 }
-                if (!ecgDataKey.equals("data")){
+                if (!ecgDataKey.equals("data")) {
                     jsonObject.remove(ecgDataKey);
                 }
                 maps.add(jsonObject);
@@ -124,12 +126,41 @@ public class EcgMongoDb implements EcgStore {
         return maps;
     }
 
+    private List<Map<String, Object>> getEcgData(long time, int limit, int patientId, String ecgDataKey) {
+        MongoQuery query = new MongoQuery();
+        query.use(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
+        query.eq("patientId", patientId);
+        query.gte("startTime", time);
+        query.limit(limit);
+        query.ascending("startTime");
+        query.projection(ecgDataKey, "startTime", "patientId", "deivceId", "deviceType");
+
+        List<JSONObject> jsonObjects = query.find();
+        List<Map<String, Object>> maps = new ArrayList<>();
+
+        if (jsonObjects != null) {
+            for (JSONObject jsonObject : jsonObjects) {
+
+                JSONObject ecgObject = jsonObject.getJSONObject(ecgDataKey);
+                if (ecgObject != null) {
+                    jsonObject.put("data", ecgObject.getJSONArray("data"));
+                }
+                if (!ecgDataKey.equals("data")) {
+                    jsonObject.remove(ecgDataKey);
+                }
+                maps.add(jsonObject);
+            }
+        }
+        return maps;
+    }
+
+
     public long count() {
         MongoQuery query = new MongoQuery();
         return query.use(MlnxDataMongoConfig.ECG_COLLECTIONNAME).count();
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ParseException {
 
         EcgMongoDb ecgMongoDb = new EcgMongoDb();
         ecgMongoDb.init();
@@ -139,20 +170,25 @@ public class EcgMongoDb implements EcgStore {
 
 //        ecgMongoDb.save(getSimEcgs());
 
+        SimpleDateFormat format = new SimpleDateFormat("yyyy MM dd HH mm ss");
 //
-        long startTime = System.currentTimeMillis()-5*1000;
-        long endTime = System.currentTimeMillis()-3*1000;
+//        long startTime = format.parse("2018 03 27 12 38 56").getTime();
+//        long endTime = startTime + 60 * 1000;
+
+        long startTime = new Date().getTime() - 10 * 1000;
+        long endTime = startTime;
 
 
-        List<Map<String, Object>> ecgMongs = ecgMongoDb.getFilterEcg(startTime, endTime, 3);
+//        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcgData(startTime, 1, 3, "filterData");
+        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcgData(startTime, endTime, 3, "filterData");
         System.out.println("ecgMongs.size:" + ecgMongs.size());
-        System.out.println("原始数据");
-        for (int i = 0; i < ecgMongs.size(); i++) {
-            System.out.println(ecgMongs.get(i).toString());
-        }
+        System.out.println("滤波数据");
 
-        System.out.println(new Date(endTime));
-        System.out.println(new Date(1521701715317l));
+        System.out.println("startTime:" + new Date(startTime));
+        System.out.println("endTime:" + new Date(endTime));
+        for (int i = 0; i < ecgMongs.size(); i++) {
+            System.out.println(new Date(Long.valueOf(ecgMongs.get(i).get("startTime").toString())));
+        }
 
 
 //        ecgMongs = ecgMongoDb.getFilterEcg(startTime, endTime, 3);

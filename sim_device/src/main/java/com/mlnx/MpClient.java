@@ -6,11 +6,6 @@ import com.mlnx.config.Config;
 import com.mlnx.mp_server.utils.ThreadUtil;
 import com.mlnx.mptp.DeviceType;
 import com.mlnx.mptp.mptp.MpPacket;
-import com.mlnx.mptp.mptp.body.Body;
-import com.mlnx.mptp.mptp.body.ecg.EcgBody;
-import com.mlnx.mptp.push.body.PushDataType;
-
-import java.util.Map;
 
 /**
  * @author fzh
@@ -96,32 +91,12 @@ public class MpClient {
         mpClientBootstrap.socketChannel.close();
     }
 
-    public void push(final Map<PushDataType, Object> pushDataMap) {
-        ThreadUtil.execute(new Runnable() {
-            @Override
-            public void run() {
-
-                MpPacket mpPacket = new MpPacket();
-                Body body = new Body();
-                for (PushDataType pushDataType:pushDataMap.keySet()) {
-                    switch (pushDataType){
-                        case ECG_INFO:
-                            EcgBody ecgBody = (EcgBody) pushDataMap.get(pushDataType);
-                            body.setEcgBody(ecgBody);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-
-                mpPacket.push(DeviceType.ECG_DEVICE, body);
-                try {
-                    mpClientBootstrap.send(mpPacket);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    mpClientLis.sendError();
-                }
-            }
-        });
+    public void push(MpPacket packet) {
+        try {
+            mpClientBootstrap.send(packet);
+        } catch (Exception e) {
+            e.printStackTrace();
+            mpClientLis.sendError();
+        }
     }
 }

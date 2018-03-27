@@ -13,6 +13,7 @@ import com.mlnx.mptp.mptp.MpPacket;
 import com.mlnx.mptp.mptp.body.Body;
 import com.mlnx.mptp.mptp.body.Topic;
 import com.mlnx.mptp.mptp.head.Header;
+import com.mlnx.mptp.utils.MptpLogUtils;
 import com.mlnx.mptp.utils.TopicUtils;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -32,7 +33,7 @@ public class MpServerHandle extends SimpleChannelInboundHandler<MpPacket> {
         Session session = SessionManager.get(ctx.channel());
 
 
-//        MptpLogUtils.d("PacketType:" + mpPacket.getHeader().getPacketType());
+        MptpLogUtils.d("PacketType:" + mpPacket.getHeader().getPacketType());
 
         switch (mpPacket.getHeader().getPacketType()) {
             case REGISTER:

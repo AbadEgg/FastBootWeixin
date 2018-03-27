@@ -1,9 +1,12 @@
 package com.mlnx;
 
 
-import com.alibaba.fastjson.JSON;
 import com.mlnx.listener.BroadCast;
-import com.mlnx.mp_session.domain.*;
+import com.mlnx.mp_session.domain.BpInfo;
+import com.mlnx.mp_session.domain.CO2Info;
+import com.mlnx.mp_session.domain.EcgInfo;
+import com.mlnx.mp_session.domain.SpoInfo;
+import com.mlnx.mp_session.domain.TempInfo;
 import com.mlnx.mptp.ResponseCode;
 import com.mlnx.mptp.push.PushPacket;
 import com.mlnx.mptp.push.body.PushDataType;
@@ -137,31 +140,31 @@ public class PushService implements PushClient.LifeUsrClientLis {
 
                             EcgInfo ecgInfo = (EcgInfo) map.get(pushDataType);
                             BroadCast.getInstance().receiveEcgInfo(ecgInfo);
-                            MptpLogUtils.i(ecgInfo.getDeivceId() + " 收到推送心电:" + JSON.toJSONString(ecgInfo));
+//                            MptpLogUtils.i(ecgInfo.getDeivceId() + " 收到推送心电:" + JSON.toJSONString(ecgInfo));
                             break;
                         case BP_INFO:
 
                             BpInfo bpInfo = (BpInfo) map.get(pushDataType);
                             BroadCast.getInstance().receiveBpInfo(bpInfo);
-                            MptpLogUtils.i(bpInfo.getDeivceId() + " 收到推送血压:" + JSON.toJSONString(bpInfo));
+//                            MptpLogUtils.i(bpInfo.getDeivceId() + " 收到推送血压:" + JSON.toJSONString(bpInfo));
                             break;
                         case SPO_INFO:
 
                             SpoInfo spoInfo = (SpoInfo) map.get(pushDataType);
                             BroadCast.getInstance().receiveSpoInfo(spoInfo);
-                            MptpLogUtils.i(spoInfo.getDeivceId() + " 收到推送spo:" + JSON.toJSONString(spoInfo));
+//                            MptpLogUtils.i(spoInfo.getDeivceId() + " 收到推送spo:" + JSON.toJSONString(spoInfo));
                             break;
                         case TEMP_INFO:
 
                             TempInfo tempInfo = (TempInfo) map.get(pushDataType);
                             BroadCast.getInstance().receiveTempInfo(tempInfo);
-                            MptpLogUtils.i(tempInfo.getDeivceId() + " 收到推送temp:" + JSON.toJSONString(tempInfo));
+//                            MptpLogUtils.i(tempInfo.getDeivceId() + " 收到推送temp:" + JSON.toJSONString(tempInfo));
                             break;
                         case CO2_INFO:
 
                             CO2Info co2Info = (CO2Info) map.get(pushDataType);
                             BroadCast.getInstance().receiveCO2Info(co2Info);
-                            MptpLogUtils.i(co2Info.getDeivceId() + " 收到推送co2:" + JSON.toJSONString(co2Info));
+//                            MptpLogUtils.i(co2Info.getDeivceId() + " 收到推送co2:" + JSON.toJSONString(co2Info));
                             break;
 
                         default:

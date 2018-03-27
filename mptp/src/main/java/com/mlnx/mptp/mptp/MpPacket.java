@@ -100,6 +100,7 @@ public class MpPacket implements Codec {
 
         header.setDeviceType(deviceType);
         body.setDeviceId(deviceId);
+        body.init();
 
         return this;
     }

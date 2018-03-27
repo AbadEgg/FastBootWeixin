@@ -1,11 +1,15 @@
 package com.mlnx;
 
 
+import com.mlnx.mptp.DeviceType;
 import com.mlnx.mptp.model.ECGDeviceInfo;
+import com.mlnx.mptp.mptp.MpPacket;
+import com.mlnx.mptp.mptp.body.Body;
 import com.mlnx.mptp.mptp.body.ecg.EcgBody;
-import com.mlnx.mptp.push.body.PushDataType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 
 
 public class TestClient {
@@ -34,16 +38,26 @@ public class TestClient {
             @Override
             public void run() {
                 while (true){
+
                     EcgBody ecgBody = new EcgBody();
+                    ecgBody.init();
                     ECGDeviceInfo ecgDeviceInfo = new ECGDeviceInfo();
                     ecgDeviceInfo.setBatteryLevel(random.nextInt(10));
                     ecgDeviceInfo.setSignalStrength(random.nextInt(10));
                     ecgBody.setEcgDeviceInfo(ecgDeviceInfo);
-                    Map<PushDataType, Object> pushDataMap = new HashMap<>();
-                    pushDataMap.put(PushDataType.ECG_INFO, ecgBody);
-                    testClient.testUsr.push(pushDataMap);
+
+                    Body body = new Body();
+                    body.init();
+                    body.setDeviceId("SIMECG0001");
+                    body.setPacketTime(System.currentTimeMillis());
+                    body.setEcgBody(ecgBody);
+
+                    MpPacket packet = new MpPacket().push(DeviceType.ECG_DEVICE, body);
+
+                    testClient.testUsr.push(packet);
+
                     try {
-                        Thread.sleep(5000);
+                        Thread.sleep(1000);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }

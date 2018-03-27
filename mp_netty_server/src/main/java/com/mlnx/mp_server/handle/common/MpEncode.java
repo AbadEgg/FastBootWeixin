@@ -14,10 +14,14 @@ public class MpEncode extends MessageToByteEncoder<MpPacket> {
 	@Override
 	protected void encode(ChannelHandlerContext arg0, MpPacket arg1,
 			ByteBuf arg2) throws Exception {
-		
-		byte[] bs = arg1.encode();
-		arg2.writeBytes(bs);
-		MptpLogUtils.mpFrame("send  frame:" + ByteBufUtil.hexDump(bs));
+
+		try {
+			byte[] bs = arg1.encode();
+			arg2.writeBytes(bs);
+			MptpLogUtils.mpFrame("send  frame:" + ByteBufUtil.hexDump(bs));
+		}catch (Exception e){
+			e.printStackTrace();
+		}
 	}
 
 }

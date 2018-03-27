@@ -5,7 +5,7 @@ package com.mlnx.ecg.store.config;
  */
 public class MlnxDataMongoConfig {
 
-    public static String HOST = "192.168.1.167";
+    public static String HOST = "192.168.1.223";
     public static int PORT = 27017;
 
     public static String DATABASE = "mlnx_data";

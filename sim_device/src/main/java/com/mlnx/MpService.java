@@ -3,12 +3,10 @@ package com.mlnx;
 import com.mlnx.client.MpClientLis;
 import com.mlnx.mptp.ResponseCode;
 import com.mlnx.mptp.mptp.MpPacket;
-import com.mlnx.mptp.push.body.PushDataType;
 import com.mlnx.mptp.utils.MptpLogUtils;
 import com.mlnx.support.ListenManager;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author fzh
@@ -20,7 +18,6 @@ public class MpService implements MpClientLis {
 
     private boolean isRegister;
 
-    private Map<PushDataType, Object> pushDataMap;
 
     private List<String> deviceIds;
 
@@ -44,16 +41,10 @@ public class MpService implements MpClientLis {
     }
 
 
-    public void push(Map<PushDataType, Object> pushDataMap) {
-        this.pushDataMap = pushDataMap;
-        push();
-    }
-
-    private void push() {
-
+    public void push(MpPacket packet) {
         if (isRegister) {
 
-            mpClient.push(pushDataMap);
+            mpClient.push(packet);
             MptpLogUtils.i("发送push包");
         } else {
 //            register();
