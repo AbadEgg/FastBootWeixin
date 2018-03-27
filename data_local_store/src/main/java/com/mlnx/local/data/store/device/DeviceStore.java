@@ -50,7 +50,7 @@ public class DeviceStore {
                 Date onlineDate = resultDatas.get(2*i).getDate();
                 Date offlineDate = resultDatas.get(2*i+1).getDate();
                 records.add(DateUtils.formatDate(onlineDate));
-                if(DateUtils.getFutureDate(onlineDate,1).before(offlineDate)){
+                while (DateUtils.getFutureDate(onlineDate,1).before(offlineDate)){
                     records.add(DateUtils.getFutureDate(onlineDate,1));
                 }
             }
