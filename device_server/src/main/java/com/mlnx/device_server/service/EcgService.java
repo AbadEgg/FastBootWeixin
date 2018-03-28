@@ -129,7 +129,7 @@ public class EcgService {
                 Ecg ecg = new Ecg();
 
                 ecg.setPatientId(ecgInfo.getPatientId());
-                ecg.setDeivceId(ecgInfo.getDeivceId());
+                ecg.setDeviceId(ecgInfo.getDeivceId());
                 ecg.setDeviceType(ecgInfo.getDeviceType() + "");
                 ecg.setStartTime(ecgInfo.getPacketTime());
 

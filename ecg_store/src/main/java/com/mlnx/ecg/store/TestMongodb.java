@@ -3,7 +3,13 @@ package com.mlnx.ecg.store;
 import com.alibaba.fastjson.JSON;
 import com.mlnx.ecg.store.iml.EcgMongoDb;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +18,7 @@ import java.util.Map;
  */
 public class TestMongodb {
 
-    static class  Date{
+    static class Data {
         byte[] data;
 
         public byte[] getData() {
@@ -25,25 +31,69 @@ public class TestMongodb {
 
         @Override
         public String toString() {
-            return "Date{" +
+            return "Data{" +
                     "data=" + Arrays.toString(data) +
                     '}';
         }
     }
 
-    public static void main(String[] args) {
+    public static byte[] addBytes(byte[] data1, byte[] data2) {
+        byte[] data3 = new byte[data1.length + data2.length];
+        System.arraycopy(data1, 0, data3, 0, data1.length);
+        System.arraycopy(data2, 0, data3, data1.length, data2.length);
+        return data3;
+
+    }
+
+    public static void main(String[] args) throws ParseException {
         EcgMongoDb ecgMongoDb = new EcgMongoDb();
         ecgMongoDb.init();
 
-        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcg(1518060990000L, 1518061005000L, 0);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date sTime = sdf.parse("2018-3-28 10:30:00");
+        Date eTime = sdf.parse("2018-3-28 10:31:00");
+        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcg(sTime.getTime() ,eTime.getTime(), 3);
 
         System.out.println("ecgMongs.size:" + ecgMongs.size());
+        byte[] datas = new byte[0];
         for (int i = 0; i < ecgMongs.size(); i++) {
+            Data data =  JSON.parseObject(ecgMongs.get(i).toString(), Data.class);
+            datas = addBytes(datas,data.getData());
+//            System.out.println(JSON.toJSONString(ecgMongs.get(i)));
+        }
+        save2Txt(datas);
+    }
 
-//            System.out.println(ecgMongs.get(i).toString());
+    public static void save2Txt(byte[] datas){
+        FileOutputStream fop = null;
+        File file;
 
-            Date date =  JSON.parseObject(ecgMongs.get(i).toString(), Date.class);
-            System.out.println(date.toString());
+        try {
+
+            file = new File("U:/ecgData.txt");
+            fop = new FileOutputStream(file);
+
+            // if file doesnt exists, then create it
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            // get the content in bytes
+            byte[] in = Arrays.toString(datas).getBytes();
+            fop.write(in);
+            fop.flush();
+            fop.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (fop != null) {
+                    fop.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

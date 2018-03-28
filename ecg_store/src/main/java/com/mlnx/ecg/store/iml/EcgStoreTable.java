@@ -89,7 +89,7 @@ public class EcgStoreTable implements EcgStore {
 
                 // 加入属性列，消息内容
                 rowChange.addColumn("device_id", ColumnValue
-                        .fromString(ecg.getDeivceId()));
+                        .fromString(ecg.getDeviceId()));
 //                rowChange.addColumn("channel_num", ColumnValue
 //                        .fromString(ecg.getNumChannels() + ""));
                 rowChange.addColumn("sampling_rate", ColumnValue
@@ -190,7 +190,7 @@ public class EcgStoreTable implements EcgStore {
                     ECGResponse.setStartTime(columnValue.asLong());
                     break;
                 case "device_id":
-                    ECGResponse.setDeivceId(columnValue.asString());
+                    ECGResponse.setDeviceId(columnValue.asString());
                     break;
 //                case "channel_num":
 //                    ECGResponse.setNumChannels(valueOf(columnValue.asString()));

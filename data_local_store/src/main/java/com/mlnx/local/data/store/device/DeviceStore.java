@@ -52,6 +52,7 @@ public class DeviceStore {
                 records.add(DateUtils.formatDate(onlineDate));
                 while (DateUtils.getFutureDate(onlineDate,1).before(offlineDate)){
                     records.add(DateUtils.getFutureDate(onlineDate,1));
+                    onlineDate = DateUtils.getFutureDate(onlineDate,1);
                 }
             }
         } catch (ParseException e) {
@@ -73,106 +74,103 @@ public class DeviceStore {
         DeviceOnlineRecord deviceOnlineRecord=new DeviceOnlineRecord();
 
         try {
-            SimpleDateFormat time=new SimpleDateFormat("yyyy MM dd HH mm ss");
-            for (DeviceOnlineRecord dor :list){
-                if(dor.getDeviceState().equals("DEVICE_ONLINE")){
-                    listOn.add(dor);
+                for (DeviceOnlineRecord dor :list){
 
-                }else{
-                    listOff.add(dor);
+                    if(dor.getDeviceState().equals("DEVICE_ONLINE")){
+                        listOn.add(dor);
+
+                    }else{
+                        listOff.add(dor);
+                    }
                 }
-            }
-            if(listOff.size()==0 && listOn.size()!=0){
-                onDor=listOn.get(0);
-                deviceOnlineRecord.setDate(endTime);
-                deviceOnlineRecord.setDeviceState("DEVICE_OFFLINE");
-                deviceOnlineRecord.setDeviceId(onDor.getDeviceId());
-                deviceOnlineRecord.setPatientId(onDor.getPatientId());
-                listAll.add(onDor);
-                listAll.add(deviceOnlineRecord);
+                if(listOff.size()==0 && listOn.size()!=0){
+                    onDor=listOn.get(0);
+                    deviceOnlineRecord.setDate(endTime);
+                    deviceOnlineRecord.setDeviceState("DEVICE_OFFLINE");
+                    deviceOnlineRecord.setDeviceId(onDor.getDeviceId());
+                    deviceOnlineRecord.setPatientId(onDor.getPatientId());
+                    listAll.add(onDor);
+                    listAll.add(deviceOnlineRecord);
+                }else if(listOn.size()==0 && listOff.size()!=0){
+                    offDor=listOff.get(0);
+                    deviceOnlineRecord.setDate(startTime);
+                    deviceOnlineRecord.setDeviceState("DEVICE_ONLINE");
+                    deviceOnlineRecord.setDeviceId(offDor.getDeviceId());
+                    deviceOnlineRecord.setPatientId(offDor.getPatientId());
+                    listAll.add(offDor);
+                    listAll.add(deviceOnlineRecord);
+                }else if(listOn.size()==0 && listOff.size()==0){
+                }else{
+                    for(int i=0 ;i<listOn.size();i++){
+                        if(i==0){
+                            if(listOn.get(i).getDate().getTime()<(listOff.get(i).getDate().getTime())){
+                                onDor=listOn.get(i);
+                                offDor = listOff.get(i);
+                                listAll.add(onDor);
+                                listAll.add(offDor);
+                            }else{
+                                onDor=listOn.get(i);
+                                deviceOnlineRecord.setDeviceId(listOn.get(i).getDeviceId());
+                                deviceOnlineRecord.setPatientId(listOn.get(i).getPatientId());
+                                deviceOnlineRecord.setDeviceState(listOn.get(i).getDeviceState());
+                                deviceOnlineRecord.setDate(startTime);
+                                offDor = listOff.get(i);
+                                listAll.add(deviceOnlineRecord);
+                                listAll.add(offDor);
+                                for(int j=0;j<listOff.size();j++){
+                                    if(listOff.get(j).getDate().getTime()>=(onDor.getDate().getTime())){
+                                        offDor = listOff.get(j);
+                                        listAll.add(onDor);
+                                        listAll.add(offDor);
+                                        break;
+                                    }
+                                }
 
-            }else if(listOn.size()==0 && listOff.size()!=0){
-                offDor=listOff.get(0);
-                deviceOnlineRecord.setDate(startTime);
-                deviceOnlineRecord.setDeviceState("DEVICE_ONLINE");
-                deviceOnlineRecord.setDeviceId(offDor.getDeviceId());
-                deviceOnlineRecord.setPatientId(offDor.getPatientId());
-                listAll.add(offDor);
-                listAll.add(deviceOnlineRecord);
-            }else if(listOn.size()==0 && listOff.size()==0){
-            }else{
-                for(int i=0 ;i<listOn.size();i++){
-                    if(i==0){
-                        if(listOn.get(i).getDate().getTime()<(listOff.get(i).getDate().getTime())){
+                            }
+
+                        }
+                        if(listOn.get(i).getDate().getTime()>=(offDor.getDate().getTime())){
                             onDor=listOn.get(i);
-                            offDor = listOff.get(i);
-                            listAll.add(onDor);
-                            listAll.add(offDor);
-                        }else{
-                            onDor=listOn.get(i);
-                            deviceOnlineRecord.setDeviceId(listOn.get(i).getDeviceId());
-                            deviceOnlineRecord.setPatientId(listOn.get(i).getPatientId());
-                            deviceOnlineRecord.setDeviceState(listOn.get(i).getDeviceState());
-                            deviceOnlineRecord.setDate(startTime);
-                            offDor = listOff.get(i);
-                            listAll.add(deviceOnlineRecord);
-                            listAll.add(offDor);
                             for(int j=0;j<listOff.size();j++){
-                                if(listOff.get(j).getDate().getTime()>=(onDor.getDate().getTime())){
+                                if(listOff.get(j).getDate().getTime()>(onDor.getDate().getTime())){
                                     offDor = listOff.get(j);
                                     listAll.add(onDor);
                                     listAll.add(offDor);
                                     break;
                                 }
                             }
-
                         }
-
                     }
-                    if(listOn.get(i).getDate().getTime()>=(offDor.getDate().getTime())){
-                        onDor=listOn.get(i);
+                    for(int m=0;m<listOn.size();m++){//最后是上线设备没有下线
+                        if(listOn.get(m).getDate().getTime()>=listAll.get(listAll.size()-1).getDate().getTime()){
+                            onDor=listOn.get(m);
+                            DeviceOnlineRecord dr=new DeviceOnlineRecord();
+                            dr.setDate(endTime);
+                            dr.setDeviceId(listOn.get(m).getDeviceId());
+                            dr.setDeviceState("DEVICE_OFFLINE");
+                            dr.setPatientId(listOn.get(m).getPatientId());
+                            listAll.add(onDor);
+                            listAll.add(dr);
+                            break;
+                        }
+                    }
+                }
+
+                if(listAll.size()==2){//只有一组上下线数据取下线设备的最后时间
+                    offDor = listOff.get(listOff.size()-1);
+
+                    listAll.set(1, offDor);
+                }else{
+                    for(int k=0;k<listAll.size();k=k+2){//取下线设备的最后时间
+                        offDor= listAll.get(k+1);
                         for(int j=0;j<listOff.size();j++){
-                            if(listOff.get(j).getDate().getTime()>(onDor.getDate().getTime())){
+                            if(listOff.get(j).getDate().after(offDor.getDate()) && listOff.get(j).getDate().before(listAll.get(k+2).getDate())){
                                 offDor = listOff.get(j);
-                                listAll.add(onDor);
-                                listAll.add(offDor);
-                                break;
                             }
                         }
-                    }
-
-
-                }
-                for(int m=0;m<listOn.size();m++){//最后是上线设备没有下线
-                    if(listOn.get(m).getDate().getTime()>=listAll.get(listAll.size()-1).getDate().getTime()){
-                        onDor=listOn.get(m);
-                        offDor =listOff.get(0);
-                        offDor.setDate(endTime);
-                        listAll.add(onDor);
-                        listAll.add(offDor);
-                        break;
+                        listAll.set(k+1, offDor);
                     }
                 }
-            }
-            if(listAll.size()==2){//只有一组上下线数据取下线设备的最后时间
-                offDor= listAll.get(1);
-                for(int j=0;j<listOff.size();j++){
-                    if(listOff.get(j).getDate().after(offDor.getDate()) && listOff.get(j).getDate().before(startTime)){
-                        offDor = listOff.get(j);
-                    }
-                }
-                listAll.set(1, offDor);
-            }
-            for(int k=0;k<listAll.size();k=k+2){//取下线设备的最后时间
-                offDor= listAll.get(k+1);
-                for(int j=0;j<listOff.size();j++){
-                    if(listOff.get(j).getDate().after(offDor.getDate()) && listOff.get(j).getDate().before(listAll.get(k+2).getDate())){
-                        offDor = listOff.get(j);
-                    }
-                }
-                listAll.set(k+1, offDor);
-            }
-
 
         } catch (Exception e) {
             e.printStackTrace();

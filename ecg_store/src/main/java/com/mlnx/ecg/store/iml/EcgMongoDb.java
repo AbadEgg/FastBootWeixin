@@ -105,7 +105,7 @@ public class EcgMongoDb implements EcgStore {
         query.gte("startTime", startTime);
         query.lte("startTime", endTime);
         query.ascending("startTime");
-        query.projection(ecgDataKey, "startTime", "patientId", "deivceId", "deviceType");
+        query.projection(ecgDataKey, "startTime", "patientId", "deviceId", "deviceType");
 
         List<JSONObject> jsonObjects = query.find();
         List<Map<String, Object>> maps = new ArrayList<>();
@@ -133,7 +133,7 @@ public class EcgMongoDb implements EcgStore {
         query.gte("startTime", time);
         query.limit(limit);
         query.ascending("startTime");
-        query.projection(ecgDataKey, "startTime", "patientId", "deivceId", "deviceType");
+        query.projection(ecgDataKey, "startTime", "patientId", "deviceId", "deviceType");
 
         List<JSONObject> jsonObjects = query.find();
         List<Map<String, Object>> maps = new ArrayList<>();
@@ -175,12 +175,12 @@ public class EcgMongoDb implements EcgStore {
 //        long startTime = format.parse("2018 03 27 12 38 56").getTime();
 //        long endTime = startTime + 60 * 1000;
 
-        long startTime = new Date().getTime() - 10 * 1000;
+        long startTime = new Date().getTime() - 6 * 1000;
         long endTime = startTime;
 
 
 //        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcgData(startTime, 1, 3, "filterData");
-        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcgData(startTime, endTime, 3, "filterData");
+        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcgData(startTime, endTime, 10, "filterData");
         System.out.println("ecgMongs.size:" + ecgMongs.size());
         System.out.println("滤波数据");
 
@@ -250,7 +250,7 @@ public class EcgMongoDb implements EcgStore {
                 Ecg ecg = new Ecg();
 
                 ecg.setPatientId(patientId);
-                ecg.setDeivceId("hek07bb123456");
+                ecg.setDeviceId("hek07bb123456");
                 ecg.setStartTime(System.currentTimeMillis() - 1000 * i);
 //                ecg.setStartTime(100000L);
                 ecg.setEcgChannelType(ECGChannelType.CHAN_8);

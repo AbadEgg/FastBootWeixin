@@ -7,14 +7,13 @@ import com.mlnx.mptp.mptp.head.Header;
 import com.mlnx.mptp.utils.ByteUtils;
 import com.mlnx.mptp.utils.MpLogLevelInfo;
 import com.mlnx.mptp.utils.MptpLogUtils;
-
-import java.util.List;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.util.ReferenceCountUtil;
+
+import java.util.List;
 
 public class MpDecode extends ByteToMessageDecoder {
 
@@ -81,7 +80,6 @@ public class MpDecode extends ByteToMessageDecoder {
                             MptpLogUtils.mpFrame("recive  contant:" + ByteBufUtil.hexDump(frame));
                         }
                         mpPacket.decode(frame.nioBuffer());
-
                         out.add(mpPacket);
                     } catch (InvalidPacketException e) {
                         e.printStackTrace();

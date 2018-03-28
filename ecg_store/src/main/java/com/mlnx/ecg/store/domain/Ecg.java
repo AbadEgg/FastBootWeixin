@@ -6,7 +6,7 @@ public class Ecg {
 
     private Integer patientId;
 
-    private String deivceId;
+    private String deviceId;
 
     private String deviceType;
 
@@ -46,12 +46,12 @@ public class Ecg {
         this.patientId = patientId;
     }
 
-    public String getDeivceId() {
-        return deivceId;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public void setDeivceId(String deivceId) {
-        this.deivceId = deivceId;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public String getDeviceType() {
