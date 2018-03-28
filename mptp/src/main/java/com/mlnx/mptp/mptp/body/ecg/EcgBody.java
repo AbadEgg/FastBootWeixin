@@ -381,6 +381,14 @@ public class EcgBody {
             buffer.put(ecgData.getBreath().byteValue());
         }
 
+        if (ecgData.getEncrySuccessionData() != null) {
+            buffer.put(GroupType.ENCRY_SUCCESSION_DATA.getEncodes());
+            buffer.put(new String("OW").getBytes());
+            byte[] bs = ecgData.getEncrySuccessionData();
+            buffer.put(ByteUtils.intToBytes(bs.length, 2));
+            buffer.put(bs);
+        }
+
         if (ecgData.getSuccessionData() != null) {
             buffer.put(GroupType.SUCCESSION_DATA.getEncodes());
             buffer.put(new String("OW").getBytes());
