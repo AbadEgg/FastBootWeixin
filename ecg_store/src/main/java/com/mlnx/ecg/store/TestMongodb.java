@@ -52,16 +52,17 @@ public class TestMongodb {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         Date sTime = sdf.parse("2018-3-28 10:30:00");
         Date eTime = sdf.parse("2018-3-28 10:31:00");
-        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcg(sTime.getTime() ,eTime.getTime(), 3);
-
+//        List<Map<String, Object>> ecgMongs = ecgMongoDb.getFilterEcg(sTime.getTime() ,eTime.getTime(), 3);
+        List<Map<String, Object>> ecgMongs = ecgMongoDb.getFilterEcg(System.currentTimeMillis()-600000 ,System.currentTimeMillis(), 4);
         System.out.println("ecgMongs.size:" + ecgMongs.size());
         byte[] datas = new byte[0];
         for (int i = 0; i < ecgMongs.size(); i++) {
             Data data =  JSON.parseObject(ecgMongs.get(i).toString(), Data.class);
-            datas = addBytes(datas,data.getData());
-//            System.out.println(JSON.toJSONString(ecgMongs.get(i)));
+            datas = addBytes(datas,Arrays.copyOfRange(data.getData(),0,data.getData().length-4));
+//            System.out.println(JSON.toJSONString(ecgMongs.get(0)));
         }
         save2Txt(datas);
+
     }
 
     public static void save2Txt(byte[] datas){

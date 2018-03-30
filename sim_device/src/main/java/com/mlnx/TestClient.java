@@ -50,7 +50,8 @@ public class TestClient {
                 while((text = bufferedReader.readLine()) != null){
                     sb.append(text);
                 }
-                String result = sb.toString().substring(1,sb.toString().length()-1);
+                String string = sb.toString().replaceAll(" ","");
+                String result = string.substring(1,string.length()-1);
                 String[] array = result.split(",");
                 for (int i = 0; i < array.length/24 ; i++) {
                     byte[] data = new byte[24];
@@ -81,13 +82,13 @@ public class TestClient {
         testClient.testUsr.register();
 
         final Random random = new Random();
+        final List<byte[]> list = readFile(new File("U:/ecgData.txt"),null);
         Thread.sleep(2000);
         for (int i = 0; i < 1; i++) {
             final int j = i;
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    List<byte[]> list = readFile(new File("U:/ecgData.txt"),null);
                     long sTime = 0L;
                     long eTime = 0L;
                     long diff = 500L;
