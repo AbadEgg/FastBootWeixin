@@ -39,7 +39,7 @@ public class ReadMongodb {
 
 
 //        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcgData(startTime, 1, 3, "filterData");
-        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcgData(startTime, endTime, 4, "filterData");
+        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcgData(startTime, endTime, 4, "encryData");
         System.out.println("ecgMongs.size:" + ecgMongs.size());
         System.out.println("滤波数据");
 

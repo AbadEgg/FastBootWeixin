@@ -155,7 +155,7 @@ public class TestClient {
                         }
                     }
 
-                    ecgData.setSuccessionData(bs);
+                    ecgData.setEncrySuccessionData(bs);
                     ecgBody.setEcgData(ecgData);
 
                     MpPacket packet = new MpPacket().push(DeviceType.ECG_DEVICE, body);
