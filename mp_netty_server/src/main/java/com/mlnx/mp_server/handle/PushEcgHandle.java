@@ -13,18 +13,21 @@ import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
 import com.mlnx.mptp.mptp.body.Topic;
 import com.mlnx.mptp.mptp.body.TopicType;
 import com.mlnx.mptp.utils.MptpLogUtils;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.SimpleChannelInboundHandler;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.SimpleChannelInboundHandler;
+
 /**
  * Created by amanda.shan on 2018/2/12.
  */
 public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
+
+    private long recordTime = System.currentTimeMillis();
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, EcgMessage msg) throws Exception {
@@ -35,8 +38,13 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
         if (session instanceof EcgDeviceSession) {
 
             ECGData ecgData = msg.getEcgData();
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            MptpLogUtils.d("设备"+msg.getDeviceId()+" 时间:"+sdf.format(new Date(msg.getPacketTime())));
+
+            if ((System.currentTimeMillis() - recordTime) > 30 * 1000) {
+                recordTime = System.currentTimeMillis();
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                MptpLogUtils.i("设备" + msg.getDeviceId() + "病人ID：" + ((EcgDeviceSession) session).getPatientId() + " " +
+                        "时间:" + sdf.format(new Date(msg.getPacketTime())));
+            }
 
             // 更新设备信息session
             ECGDeviceInfo ecgDeviceInfo = msg.getEcgDeviceInfo();
@@ -53,7 +61,7 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
             List<Topic> topics = new ArrayList<>();
 
             // 推送设备信息
-            if (ecgDeviceInfo != null && msg.isDeviceInfoUpdate()){
+            if (ecgDeviceInfo != null && msg.isDeviceInfoUpdate()) {
                 ecgInfo.setEcgDeviceInfo(ecgDeviceInfo);
                 topics.add(new Topic(TopicType.U_ECG_DEVICE_TOPIC, deviceId));
             }
@@ -69,7 +77,7 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
 
                     topics.add(new Topic(TopicType.U_ECG_TOPIC, deviceId));
 
-                    if (ecgData.getEcgHeart() != null && ecgData.getEcgHeart() != 0){
+                    if (ecgData.getEcgHeart() != null && ecgData.getEcgHeart() != 0) {
                         topics.add(new Topic(TopicType.U_ECG_HEART_TOPIC, deviceId));
                     }
 
@@ -114,10 +122,10 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
 
             }
 
-            if (topics.size() > 0){
+            if (topics.size() > 0) {
                 BroadCast.ecgBroadCast.reciveEcgInfo(topics, ecgInfo);
             }
-        } else if (session instanceof MpDeviceSession){
+        } else if (session instanceof MpDeviceSession) {
             ECGData ecgData = msg.getEcgData();
 
             MpDeviceSession mpDeviceSession = (MpDeviceSession) session;
@@ -131,19 +139,19 @@ public class PushEcgHandle extends SimpleChannelInboundHandler<EcgMessage> {
             List<Topic> topics = new ArrayList<>();
 
             ecgInfo.setEcgData(ecgData);
-            if (ecgData.getEcgHeart() != null){
+            if (ecgData.getEcgHeart() != null) {
                 topics.add(new Topic(TopicType.U_ECG_HEART_TOPIC, deviceId));
             }
-            if (ecgData.getFilterData() != null){
+            if (ecgData.getFilterData() != null) {
                 topics.add(new Topic(TopicType.U_ECG_TOPIC, deviceId));
             }
 
             mpDeviceSession.setECGData(ecgData);
 
-            if (topics.size() > 0){
+            if (topics.size() > 0) {
                 BroadCast.ecgBroadCast.reciveEcgInfo(topics, ecgInfo);
             }
-        }else{
+        } else {
             MptpLogUtils.e("非法sesson类型");
         }
     }

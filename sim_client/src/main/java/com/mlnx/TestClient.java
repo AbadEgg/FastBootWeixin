@@ -4,7 +4,11 @@ package com.mlnx;
 import com.alibaba.fastjson.JSON;
 import com.mlnx.listener.BroadCast;
 import com.mlnx.listener.MsgListener;
-import com.mlnx.mp_session.domain.*;
+import com.mlnx.mp_session.domain.BpInfo;
+import com.mlnx.mp_session.domain.CO2Info;
+import com.mlnx.mp_session.domain.EcgInfo;
+import com.mlnx.mp_session.domain.SpoInfo;
+import com.mlnx.mp_session.domain.TempInfo;
 import com.mlnx.mptp.push.body.PushDataType;
 
 import java.util.ArrayList;
@@ -59,13 +63,7 @@ public class TestClient {
     public void sub(){
 
         TopicManager topicManager = new TopicManager();
-        topicManager.lisEcgDevice("cms0001")
-                .lisRealAnaly("cms0001")
-                .lisHeart("cms0001")
-                .lisSpo("cms0001")
-                .lisBp("cms0001")
-                .lisTemp("cms0001")
-                .lisCO2("cms0001");
+        topicManager.lisEcgDevice("cms0001");
 
         testUsr.sub(JSON.toJSONString(topicManager.getTopics()));
     }
@@ -73,12 +71,12 @@ public class TestClient {
     public static void main(String[] args) throws InterruptedException {
         final TestClient testClient = new TestClient();
 
-        testClient.testUsr.register();
+//        testClient.testUsr.register();
         testClient.lis();
         testClient.sub();
 
 
-        Thread.sleep(2000);
+//        Thread.sleep(2000);
         new Thread(new Runnable() {
             @Override
             public void run() {

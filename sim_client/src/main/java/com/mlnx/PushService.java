@@ -89,22 +89,11 @@ public class PushService implements PushClient.LifeUsrClientLis {
         }
     }
 
-    public void push(String topic, final Map<PushDataType, Object> pushDataMap) {
-        this.topic = topic;
+    public void push(String pushTopic, final Map<PushDataType, Object> pushDataMap) {
         this.pushDataMap = pushDataMap;
 
-        push();
-    }
-
-    private void push() {
-
-//        if (isListerDevice) {
-
-            pushClient.push(topic, pushDataMap);
-            MptpLogUtils.i("发送push包");
-//        } else {
-//            sub();
-//        }
+        pushClient.push(pushTopic, pushDataMap);
+        MptpLogUtils.i("发送push包");
     }
 
     @Override
