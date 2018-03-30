@@ -1,5 +1,6 @@
 package com.mlnx.ecg.store.iml;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.cybermkd.mongo.kit.MongoKit;
 import com.cybermkd.mongo.kit.MongoQuery;
@@ -10,6 +11,7 @@ import com.mlnx.ecg.store.EcgStore;
 import com.mlnx.ecg.store.config.MlnxDataMongoConfig;
 import com.mlnx.ecg.store.domain.Ecg;
 import com.mlnx.ecg.store.utils.BeanUtils;
+import com.mlnx.ecg.store.utils.ZipUtil;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -56,11 +58,16 @@ public class EcgMongoDb implements EcgStore {
     @Override
     public boolean save(List<Ecg> ecgs) {
 
+
+//        byte[] zips = ZipUtil.zip(ecgs.get(0).getFilterData());
+//        logger.info(String.format("原始数据:%d  压缩数据:%d", ecgs.get(0).getFilterData().length, zips.length));
+
         MongoQuery query = new MongoQuery();
         query.use(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
         List<Ecg> failEcgs = new ArrayList<Ecg>();
         for (int i = 0; i < ecgs.size(); i++) {
             try {
+                zipEcg(ecgs.get(i));
                 boolean sucess = saveEcg(ecgs.get(i));
                 if (!sucess)
                     failEcgs.add(ecgs.get(i));
@@ -77,7 +84,7 @@ public class EcgMongoDb implements EcgStore {
         return true;
     }
 
-    public void delete(Integer patientId){
+    public void delete(Integer patientId) {
         MongoQuery query = new MongoQuery();
         query.use(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
         query.set("patientId", patientId);
@@ -165,6 +172,39 @@ public class EcgMongoDb implements EcgStore {
     public long count() {
         MongoQuery query = new MongoQuery();
         return query.use(MlnxDataMongoConfig.ECG_COLLECTIONNAME).count();
+    }
+
+    /**
+     * 压缩心电数据
+     * @param ecg
+     */
+    private void zipEcg(Ecg ecg) {
+
+        if (ecg.getData() != null) {
+            ecg.setData(ZipUtil.zip(ecg.getData()));
+        }
+
+        if (ecg.getEncryData() != null) {
+            ecg.setEncryData(ZipUtil.zip(ecg.getEncryData()));
+        }
+
+        if (ecg.getFilterData() != null) {
+            ecg.setFilterData(ZipUtil.zip(ecg.getFilterData()));
+        }
+    }
+
+    /**
+     * 解压缩压缩心电数据
+     */
+    private JSONObject unZipEcg(JSONObject jsonObject) {
+
+        Ecg ecg = JSON.parseObject(jsonObject.toString(), Ecg.class);
+
+        if (ecg.getData() != null) {
+            ecg.setData(ZipUtil.unGZip(ecg.getData()));
+        }
+
+        return null;
     }
 
     public static void main(String[] args) throws ParseException {
