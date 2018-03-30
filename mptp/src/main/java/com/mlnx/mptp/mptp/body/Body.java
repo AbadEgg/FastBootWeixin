@@ -329,7 +329,7 @@ public class Body implements Codec {
             buffer.put(GroupType.DEVICE_TIME.getEncodes());
             buffer.put(new String("DT").getBytes());
 
-            SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmss");
+            SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHmmssSSS");
             byte[] bs = format.format(packetTime).getBytes();
             buffer.put((byte) bs.length);
             buffer.put(bs);

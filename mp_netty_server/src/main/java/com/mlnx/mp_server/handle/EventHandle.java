@@ -19,7 +19,7 @@ public class EventHandle extends ChannelInboundHandlerAdapter {
 		Session session = SessionManager.get(ctx.channel());
 		if (session == null)
 			return;
-		MptpLogUtils.d("设备掉线移除：" + session.toString());
+		MptpLogUtils.i("设备掉线移除：" + session.toString());
 		SessionManager.remove(ctx.channel());
 
 	}

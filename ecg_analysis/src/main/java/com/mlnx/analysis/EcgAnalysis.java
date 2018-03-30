@@ -139,7 +139,7 @@ public class EcgAnalysis {
                                 + "--last_time:" + last_time.getValue()
                                 + "--currentPos:" + currentPos.getValue());
 
-                        logger.info("出结果:" + builder.toString());
+                        logger.debug("出结果:" + builder.toString());
                     }
                     analysisLib.ClearEcgAnalysisFlag();
                 }

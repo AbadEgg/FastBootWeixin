@@ -53,8 +53,11 @@ public class EcgController extends BaseController {
         Response response;
         if (patientId == null || startTime == null || endTime == null)
             response = result(ExceptionMsg.ParamError);
-        else
+        else {
+            long time = System.currentTimeMillis();
             response = new ResponseData(ecgService.getFilterEcg(patientId, startTime, endTime));
+//            logger.debug((System.currentTimeMillis() - time) + "");
+        }
         return response;
     }
 

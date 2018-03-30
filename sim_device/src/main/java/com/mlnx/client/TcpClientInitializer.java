@@ -14,6 +14,12 @@ import io.netty.handler.timeout.IdleStateHandler;
  */
 public class TcpClientInitializer extends ChannelInitializer<SocketChannel> {
 
+    private MpClientLis mpClientLis;
+
+    public TcpClientInitializer(MpClientLis mpClientLis) {
+        this.mpClientLis = mpClientLis;
+    }
+
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
         ch.pipeline().addLast("idleStateHandler",
@@ -21,6 +27,6 @@ public class TcpClientInitializer extends ChannelInitializer<SocketChannel> {
 
         ch.pipeline().addLast(new MpDecode());
         ch.pipeline().addLast(new MpEncode());
-        ch.pipeline().addLast(new MpClientHandle());
+        ch.pipeline().addLast(new MpClientHandle(mpClientLis));
     }
 }

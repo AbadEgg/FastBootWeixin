@@ -46,7 +46,7 @@ public class EcgMongoDb implements EcgStore {
         MongoKit.INSTANCE.init(client, mongoPlugin.getDatabase());
 
         MongoIndex index = new MongoIndex(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
-//        index.add(new MongoIndex().ascending("patientId", "startTime").setUnique(true)).compound(); // 组合索引
+//        index.add(new MongoIndex().ascending("patientId", "startTime").setUnique(false)).compound(); // 组合索引
 //        index.deleteAll();        // 删除所有索引
 //        index.ascending("patientId").save();  // 保存索引
 
@@ -77,6 +77,13 @@ public class EcgMongoDb implements EcgStore {
         return true;
     }
 
+    public void delete(Integer patientId){
+        MongoQuery query = new MongoQuery();
+        query.use(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
+        query.set("patientId", patientId);
+        query.delete();
+    }
+
     public boolean saveEcg(Ecg ecg) {
         MongoQuery query = new MongoQuery();
         query.use(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
@@ -98,7 +105,7 @@ public class EcgMongoDb implements EcgStore {
         return getEcgData(startTime, endTime, patientId, "filterData");
     }
 
-    private List<Map<String, Object>> getEcgData(long startTime, long endTime, int patientId, String ecgDataKey) {
+    public List<Map<String, Object>> getEcgData(long startTime, long endTime, int patientId, String ecgDataKey) {
         MongoQuery query = new MongoQuery();
         query.use(MlnxDataMongoConfig.ECG_COLLECTIONNAME);
         query.eq("patientId", patientId);
@@ -175,12 +182,12 @@ public class EcgMongoDb implements EcgStore {
 //        long startTime = format.parse("2018 03 27 12 38 56").getTime();
 //        long endTime = startTime + 60 * 1000;
 
-        long startTime = new Date().getTime() - 6 * 1000;
+        long startTime = new Date().getTime() - 10 * 1000;
         long endTime = startTime;
 
 
 //        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcgData(startTime, 1, 3, "filterData");
-        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcgData(startTime, endTime, 10, "filterData");
+        List<Map<String, Object>> ecgMongs = ecgMongoDb.getEcgData(startTime, endTime, 4, "filterData");
         System.out.println("ecgMongs.size:" + ecgMongs.size());
         System.out.println("滤波数据");
 

@@ -23,9 +23,12 @@ public class MpClientBootstrap {
     public SocketChannel socketChannel;
     private static final EventExecutorGroup group = new DefaultEventExecutorGroup(20);
 
-    public MpClientBootstrap(int port, String host) {
+    private MpClientLis mpClientLis;
+
+    public MpClientBootstrap(int port, String host, MpClientLis mpClientLis) {
         this.port = port;
         this.host = host;
+        this.mpClientLis = mpClientLis;
         start();
     }
     private void start(){
@@ -37,7 +40,7 @@ public class MpClientBootstrap {
             bootstrap.option(ChannelOption.SO_KEEPALIVE,true);
             bootstrap.group(eventLoopGroup);
             bootstrap.remoteAddress(host,port);
-            bootstrap.handler(new TcpClientInitializer());
+            bootstrap.handler(new TcpClientInitializer(mpClientLis));
             future =bootstrap.connect(host,port).sync();
             if (future.isSuccess()) {
                 socketChannel = (SocketChannel)future.channel();

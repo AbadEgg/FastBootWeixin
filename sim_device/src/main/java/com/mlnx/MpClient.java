@@ -18,7 +18,7 @@ public class MpClient {
 
     public MpClient(MpClientLis mpClientLis) {
         this.mpClientLis = mpClientLis;
-        this.mpClientBootstrap = new MpClientBootstrap(Config.MP_DEVICE_PORT,Config.HOST);
+        this.mpClientBootstrap = new MpClientBootstrap(Config.MP_DEVICE_PORT,Config.HOST, mpClientLis);
     }
 
     public void register(final String deviceId) {

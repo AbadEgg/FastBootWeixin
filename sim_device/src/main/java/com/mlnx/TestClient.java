@@ -1,72 +1,73 @@
 package com.mlnx;
 
 
+import com.alibaba.fastjson.JSON;
 import com.mlnx.mptp.DeviceType;
 import com.mlnx.mptp.model.ECGData;
 import com.mlnx.mptp.model.ECGDeviceInfo;
 import com.mlnx.mptp.mptp.MpPacket;
 import com.mlnx.mptp.mptp.body.Body;
 import com.mlnx.mptp.mptp.body.ecg.EcgBody;
+import com.mlnx.utils.DateUtils;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 public class TestClient {
 
-    private MpService testUsr;
+    static class Ecg {
+        private byte[] data;    // 原始数据
 
-    public TestClient() {
-        testUsr = new MpService();
-        List<String> deviceIds = new ArrayList<>();
-        for (int i = 1; i <= 1; i++) {
-            String deviceId = "SIMECG000"+i;
-            deviceIds.add(deviceId);
+        public byte[] getData() {
+            return data;
         }
-        testUsr.setDeviceIds(deviceIds);
+
+        public void setData(byte[] data) {
+            this.data = data;
+        }
     }
 
-
-    public static List<byte[]> readFile(File file, String charset){
-        List<byte[]> list = new ArrayList<>();
-        //设置默认编码
-        if(charset == null){
-            charset = "UTF-8";
+    public static List<byte[]> readFile(File file) throws IOException {
+        Reader reader = new FileReader(file);
+        StringBuffer buffer = new StringBuffer();
+        char[] chars = new char[1000];
+        int len = 0;
+        while ((len = reader.read(chars)) != -1) {
+            buffer.append(chars, 0, len);
         }
 
-        if(file.isFile() && file.exists()){
-            try {
-                FileInputStream fileInputStream = new FileInputStream(file);
-                InputStreamReader inputStreamReader = new InputStreamReader(fileInputStream, charset);
-                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+        List<Ecg> ecgs = JSON.parseArray(buffer.toString(), Ecg.class);
 
-                StringBuilder sb = new StringBuilder();
-                String text = null;
-                while((text = bufferedReader.readLine()) != null){
-                    sb.append(text);
-                }
-                String string = sb.toString().replaceAll(" ","");
-                String result = string.substring(1,string.length()-1);
-                String[] array = result.split(",");
-                for (int i = 0; i < array.length/24 ; i++) {
-                    byte[] data = new byte[24];
-                    for (int j = 0; j < 24; j++) {
-                        data[j] = Byte.parseByte(array[i*24+j]);
+        List<byte[]> bytes = new ArrayList<>();
+        for (Ecg ecg : ecgs) {
+            int index = 0;
+            while (true) {
+                if (ecg.getData().length >= index + 24) {
+                    byte[] bytes1 = new byte[24];
+                    for (int j = 0; j < bytes1.length; j++) {
+                        bytes1[j] = ecg.getData()[index++];
                     }
-                    list.add(data);
+                    bytes.add(bytes1);
+                } else {
+                    System.out.println("多余：" + (ecg.getData().length - index));
+                    break;
                 }
-                return list;
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
-        return null;
+
+        return bytes;
     }
+
 
     public static byte[] addBytes(byte[] data1, byte[] data2) {
         byte[] data3 = new byte[data1.length + data2.length];
@@ -76,67 +77,102 @@ public class TestClient {
 
     }
 
-    public static void main(String[] args) throws InterruptedException {
-        final TestClient testClient = new TestClient();
+    public static void copyBytes(byte[] data1, byte[] data2, int index1) {
+        for (int i = 0; i < data2.length; i++) {
+            data1[index1++] = data2[i];
+        }
+    }
 
-        testClient.testUsr.register();
+    static class PushEcgTimerTask extends TimerTask {
 
-        final Random random = new Random();
-        final List<byte[]> list = readFile(new File("U:/ecgData.txt"),null);
-        Thread.sleep(2000);
-        for (int i = 0; i < 1; i++) {
-            final int j = i;
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    long sTime = 0L;
-                    long eTime = 0L;
-                    long diff = 500L;
-                    int hasRead = 0;
-                    int read = 0;
-                    while (true){
-                        sTime = System.currentTimeMillis();
-                        EcgBody ecgBody = new EcgBody();
+        private String deviceId;
+        private MpService testUsr;
 
-                        ECGDeviceInfo ecgDeviceInfo = new ECGDeviceInfo();
-                        ecgDeviceInfo.setBatteryLevel(random.nextInt(10));
-                        ecgDeviceInfo.setSignalStrength(random.nextInt(10));
-                        ecgBody.setEcgDeviceInfo(ecgDeviceInfo);
+        private List<byte[]> list;
+        Random random = new Random();
 
-                        ECGData ecgData = new ECGData();
-                        read = (int) (diff*500L/1000L);
-                        byte[] bs = new byte[0];
+        private int registerDelayCount = 10;
+        private Long sendTime = null;
+        private int hasRead = 0;
 
-                        for (int k = 0; k < read; k++) {
-                            bs = addBytes(bs,list.get(hasRead++));
-                            if (hasRead >= list.size()){
-                                hasRead = 0;
-                            }
-                        }
+        private ByteBuffer buffer = ByteBuffer.allocate(20000);
 
-                        ecgData.setSuccessionData(bs);
-                        ecgBody.setEcgData(ecgData);
+        public PushEcgTimerTask(String deviceId, List<byte[]> list) {
+            this.deviceId = deviceId;
+            this.list = list;
+            testUsr = new MpService();
+            testUsr.setDeviceId(deviceId);
+        }
 
-                        Body body = new Body();
-                        body.init();
-                        body.setDeviceId("SIMECG000"+(j+1));
-                        body.setPacketTime(System.currentTimeMillis());
-                        body.setEcgBody(ecgBody);
+        @Override
+        public void run() {
 
-                        MpPacket packet = new MpPacket().push(DeviceType.ECG_DEVICE, body);
+            int read = 0;
 
-                        testClient.testUsr.push(packet);
-
-                        try {
-                            Thread.sleep(500);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        eTime = System.currentTimeMillis();
-                        diff = eTime - sTime;
-                    }
+            if (!testUsr.isRegister()) {
+                registerDelayCount++;
+                if (registerDelayCount >= 10) {
+                    testUsr.register();
+                    registerDelayCount = 0;
+                    System.out.println(String.format("%s %s 发送心电注册包", new Date(), deviceId));
                 }
-            }).start();
+            } else {
+                registerDelayCount = 0;
+                if (sendTime == null) {
+                    sendTime = System.currentTimeMillis();
+                } else {
+                    long diff = System.currentTimeMillis() - sendTime;
+                    sendTime = System.currentTimeMillis();
+
+                    EcgBody ecgBody = new EcgBody();
+                    Body body = new Body();
+                    body.init();
+                    body.setDeviceId(deviceId);
+                    body.setPacketTime(System.currentTimeMillis());
+                    body.setEcgBody(ecgBody);
+
+                    ECGDeviceInfo ecgDeviceInfo = new ECGDeviceInfo();
+                    ecgDeviceInfo.setBatteryLevel(random.nextInt(10));
+                    ecgDeviceInfo.setSignalStrength(random.nextInt(10));
+                    ecgBody.setEcgDeviceInfo(ecgDeviceInfo);
+
+                    ECGData ecgData = new ECGData();
+                    read = (int) (diff * 500L / 1000L);
+                    byte[] bs = new byte[read * 24];
+                    int index = 0;
+
+                    for (int k = 0; k < read; k++) {
+
+//                        for (int i = 0; i < 8; i++) {
+//                            bs[index++] = 0;
+//                            bs[index++] = 8;
+//                            bs[index++] = 0;
+//                        }
+                        copyBytes(bs, list.get(hasRead++), index);
+                        index += 24;
+                        if (hasRead >= list.size()) {
+                            hasRead = 0;
+                        }
+                    }
+
+                    ecgData.setEncrySuccessionData(bs);
+                    ecgBody.setEcgData(ecgData);
+
+                    MpPacket packet = new MpPacket().push(DeviceType.ECG_DEVICE, body);
+
+                    testUsr.push(packet);
+
+                    System.out.println(String.format("%s %s 发送心电数据量:%d", DateUtils.format(System.currentTimeMillis(), "HH:mm:ss:SSS"), deviceId, read));
+                }
+            }
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException, IOException {
+        List<byte[]> list = readFile(new File("U:/ecgData.txt"));
+
+        for (int i = 1; i < 10; i++) {
+            new Timer().schedule(new PushEcgTimerTask("SIMECG000" + i, list), 0, 500);
         }
 
     }

@@ -4,9 +4,6 @@ import com.mlnx.client.MpClientLis;
 import com.mlnx.mptp.ResponseCode;
 import com.mlnx.mptp.mptp.MpPacket;
 import com.mlnx.mptp.utils.MptpLogUtils;
-import com.mlnx.support.ListenManager;
-
-import java.util.List;
 
 /**
  * @author fzh
@@ -19,27 +16,27 @@ public class MpService implements MpClientLis {
     private boolean isRegister;
 
 
-    private List<String> deviceIds;
+    private String deviceId;
 
-    public List<String> getDeviceIds() {
-        return deviceIds;
+    public String getDeviceId() {
+        return deviceId;
     }
 
-    public void setDeviceIds(List<String> deviceIds) {
-        this.deviceIds = deviceIds;
+    public void setDeviceId(String deviceId) {
+        this.deviceId = deviceId;
     }
 
     public MpService() {
         mpClient = new MpClient(this);
-        ListenManager.getInstance().setMpClientLis(this);
     }
 
     public void register(){
-        for (String deviceId:deviceIds) {
-            mpClient.register(deviceId);
-        }
+        mpClient.register(deviceId);
     }
 
+    public boolean isRegister() {
+        return isRegister;
+    }
 
     public void push(MpPacket packet) {
         if (isRegister) {
@@ -47,7 +44,7 @@ public class MpService implements MpClientLis {
             mpClient.push(packet);
             MptpLogUtils.i("发送push包");
         } else {
-//            register();
+            register();
         }
     }
 
