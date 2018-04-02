@@ -102,7 +102,7 @@ public class EcgAnalysis {
                 if (monitorFlag == 1) {
                     // 调用分析函数
                     analysisLib.AlielseEcgAnalysis();
-                    logger.info("分析完成");
+                    logger.debug("分析完成");
 
                     StringBuilder builder = new StringBuilder();
 
