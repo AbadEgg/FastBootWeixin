@@ -1,6 +1,7 @@
 package com.mlnx;
 
 import com.mlnx.decode.MpDecode;
+import com.mlnx.domain.AnalysisDetail;
 import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
 import com.mlnx.utils.ReadFileUtils;
 import com.mlnx.utils.StatisticUtils;
@@ -15,7 +16,7 @@ import java.util.List;
 public class App 
 {
     public static void main( String[] args ) throws Exception {
-        String fileDictionary = "U:\\03230924";
+        String fileDictionary = "U:\\04031202";
         List<String> files = new ArrayList<>();
         List<RealEcgAnalysResult> realEcgAnalysResults = new ArrayList<>();
         ReadFileUtils.readAllFile(files,fileDictionary);
@@ -24,6 +25,7 @@ public class App
             List<RealEcgAnalysResult> list = mpDecode.decode(file);
             realEcgAnalysResults.addAll(list);
         }
-        StatisticUtils.ecgStatistic(realEcgAnalysResults);
+        AnalysisDetail analysisDetail = StatisticUtils.ecgStatistic(realEcgAnalysResults);
+        System.out.println(analysisDetail.toString());
     }
 }

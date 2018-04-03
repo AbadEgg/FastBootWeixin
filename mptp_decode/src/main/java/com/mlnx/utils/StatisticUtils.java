@@ -18,9 +18,10 @@ import java.util.List;
  */
 public class StatisticUtils {
 
-    public static AnalysisDetail ecgStatistic(List<RealEcgAnalysResult> realEcgAnalysResults){
+    public static AnalysisDetail ecgStatistic(List<RealEcgAnalysResult> realEcgAnalysResults) {
         //心率统计
         int sumHeart = 0;
+        int sumCount = 0;
         int daySumHeart = 0;
         int dayCount = 0;
         int nightSumHeart = 0;
@@ -44,73 +45,78 @@ public class StatisticUtils {
         int twollCount = 0;
         int threellCount = 0;
 
-        for (RealEcgAnalysResult realEcgAnalysResult:realEcgAnalysResults) {
-            sumHeart += realEcgAnalysResult.getHeart();
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTime(new Date(realEcgAnalysResult.getTime()));
-            if (calendar.get(Calendar.HOUR_OF_DAY) > 7 && calendar.get(Calendar.HOUR_OF_DAY) < 22) {
-                daySumHeart += realEcgAnalysResult.getHeart();
-                dayCount++;
-            } else {
-                nightSumHeart += realEcgAnalysResult.getHeart();
-                nightCount++;
+        for (RealEcgAnalysResult realEcgAnalysResult : realEcgAnalysResults) {
+            if (realEcgAnalysResult.getHeart() != null) {
+                sumHeart += realEcgAnalysResult.getHeart();
+                sumCount++;
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(new Date(realEcgAnalysResult.getTime()));
+                if (calendar.get(Calendar.HOUR_OF_DAY) > 7 && calendar.get(Calendar.HOUR_OF_DAY) < 22) {
+                    daySumHeart += realEcgAnalysResult.getHeart();
+                    dayCount++;
+                } else {
+                    nightSumHeart += realEcgAnalysResult.getHeart();
+                    nightCount++;
+                }
+                if (realEcgAnalysResult.getHeart() > maxHeart) {
+                    maxHeart = realEcgAnalysResult.getHeart();
+                    maxOccurTime = realEcgAnalysResult.getTime();
+                }
+                if (realEcgAnalysResult.getHeart() < minHeart) {
+                    minHeart = realEcgAnalysResult.getHeart();
+                    minOccurTime = realEcgAnalysResult.getTime();
+                }
             }
-            if(realEcgAnalysResult.getHeart() > maxHeart){
-                maxHeart = realEcgAnalysResult.getHeart();
-                maxOccurTime = realEcgAnalysResult.getTime();
-            }
-            if(realEcgAnalysResult.getHeart() < minHeart){
-                minHeart = realEcgAnalysResult.getHeart();
-                minOccurTime = realEcgAnalysResult.getTime();
-            }
-            switch (realEcgAnalysResult.getHeartResult()){
-                case HEART_0:
-                    stopHeartCount++;
-                    break;
-                case HEART_1:
-                    vfCount++;
-                    break;
-                case HEART_2:
-                    sxfastCount++;
-                    break;
-                case HEART_3:
-                    rontCount++;
-                    break;
-                case HEART_4:
-                    mostPbCount++;
-                    break;
-                case HEART_5:
-                    break;
-                case HEART_6:
-                    twoPbCount++;
-                    break;
-                case HEART_7:
-                    accidentalPbCount++;
-                    break;
-                case HEART_8:
-                    twollCount++;
-                    break;
-                case HEART_9:
-                    threellCount++;
-                    break;
-                case HEART_10:
-                    fastHeartCount++;
-                    break;
-                case HEART_11:
-                    slowHeartCount++;
-                    break;
-                case HEART_12:
-                    pvcCount++;
-                    break;
-                default:
-                    break;
+            if (realEcgAnalysResult.getHeartResult() != null) {
+                switch (realEcgAnalysResult.getHeartResult()) {
+                    case HEART_0:
+                        stopHeartCount++;
+                        break;
+                    case HEART_1:
+                        vfCount++;
+                        break;
+                    case HEART_2:
+                        sxfastCount++;
+                        break;
+                    case HEART_3:
+                        rontCount++;
+                        break;
+                    case HEART_4:
+                        mostPbCount++;
+                        break;
+                    case HEART_5:
+                        break;
+                    case HEART_6:
+                        twoPbCount++;
+                        break;
+                    case HEART_7:
+                        accidentalPbCount++;
+                        break;
+                    case HEART_8:
+                        twollCount++;
+                        break;
+                    case HEART_9:
+                        threellCount++;
+                        break;
+                    case HEART_10:
+                        fastHeartCount++;
+                        break;
+                    case HEART_11:
+                        slowHeartCount++;
+                        break;
+                    case HEART_12:
+                        pvcCount++;
+                        break;
+                    default:
+                        break;
+                }
             }
         }
 
         HeartStatistic heartStatistic = new HeartStatistic();
-        heartStatistic.setAvgHeart(sumHeart/realEcgAnalysResults.size());
-        heartStatistic.setAvgDayHeart(daySumHeart/dayCount);
-        heartStatistic.setAvgNightHeart(nightSumHeart/nightCount);
+        heartStatistic.setAvgHeart(sumCount == 0?0:sumHeart / sumCount);
+        heartStatistic.setAvgDayHeart(dayCount == 0?0:daySumHeart / dayCount);
+        heartStatistic.setAvgNightHeart(nightCount == 0?0:nightSumHeart / nightCount);
         heartStatistic.setMaxHeart(maxHeart);
         heartStatistic.setMaxOccurTime(maxOccurTime);
         heartStatistic.setMinHeart(minHeart);
