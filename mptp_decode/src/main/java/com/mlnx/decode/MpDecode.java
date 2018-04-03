@@ -1,6 +1,7 @@
 package com.mlnx.decode;
 
 import com.mlnx.analysis.EcgAnalysis;
+import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
 import com.mlnx.mptp.mptp.InvalidPacketException;
 import com.mlnx.mptp.mptp.MpPacket;
 import com.mlnx.mptp.mptp.VersionManager;
@@ -14,6 +15,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author fzh
@@ -31,7 +34,10 @@ public class MpDecode {
     private int matchHeadIndex;
     private int length;
 
-    public void decode(String fileName) throws Exception {
+    public List<RealEcgAnalysResult> decode(String fileName) throws Exception {
+
+        List<RealEcgAnalysResult> results = new ArrayList<>();
+
         FileInputStream fis = new FileInputStream(fileName);
 
         FileChannel channel = fis.getChannel();
@@ -87,7 +93,8 @@ public class MpDecode {
                         ByteBuffUtils.addBytes(bf, bytes);
                         try {
                             mpPacket.decode(bf);
-                            ecgAnalysis.realAnalysis(mpPacket.getBody().getEcgBody().getEcgData().getEncrySuccessionData(),mpPacket.getBody().getPacketTime());
+                            RealEcgAnalysResult realEcgAnalysResult = ecgAnalysis.realAnalysis(mpPacket.getBody().getEcgBody().getEcgData().getEncrySuccessionData(),mpPacket.getBody().getPacketTime());
+                            results.add(realEcgAnalysResult);
                         } catch (InvalidPacketException e) {
                             e.printStackTrace();
                         } finally {
@@ -101,6 +108,7 @@ public class MpDecode {
                 default:
             }
         }
+        return results;
     }
 
     private boolean matchHead(ByteBuffer buf) {
