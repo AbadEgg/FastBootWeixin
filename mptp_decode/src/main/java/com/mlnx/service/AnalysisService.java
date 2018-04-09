@@ -64,12 +64,14 @@ public class AnalysisService {
                                 }
                             }
                             Collections.sort(txtfiles);
-                            mpDecode.decode(dataFile+"\\"+txtfiles.get(0));
-                            dataTime.setStartTime(mpDecode.getDataTime().getStartTime());
+                            DataTime dataTime1 = mpDecode.getDataTime(dataFile+"\\"+txtfiles.get(0));
+                            dataTime.setStartTime(dataTime1.getStartTime());
                             if(txts.length!=1){
-                                mpDecode.decode(dataFile+"\\"+txtfiles.get(txtfiles.size()-1));
+                                DataTime dataTime2 = mpDecode.getDataTime(dataFile+"\\"+txtfiles.get(txtfiles.size()-1));
+                                dataTime.setEndTime(dataTime2.getEndTime());
+                            }else {
+                                dataTime.setEndTime(dataTime1.getEndTime());
                             }
-                            dataTime.setEndTime(mpDecode.getDataTime().getEndTime());
                         }else {
                             logger.info("该数据文件下无txt文件");
                         }

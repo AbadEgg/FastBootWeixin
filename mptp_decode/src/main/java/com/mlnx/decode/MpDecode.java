@@ -35,8 +35,6 @@ public class MpDecode {
     private int matchHeadIndex;
     private int length;
 
-    private DataTime dataTime;
-
     public List<RealEcgAnalysResult> decode(String fileName) throws Exception {
 
         List<RealEcgAnalysResult> results = new ArrayList<>();
@@ -112,9 +110,88 @@ public class MpDecode {
                 default:
             }
         }
-        this.dataTime.setStartTime(results.get(0).getTime());
-        this.dataTime.setEndTime(results.get(results.size()-1).getTime());
         return results;
+    }
+
+    public DataTime getDataTime(String fileName) throws Exception {
+        DataTime dataTime = new DataTime();
+
+        FileInputStream fis = new FileInputStream(fileName);
+
+        FileChannel channel = fis.getChannel();
+
+        MappedByteBuffer byteBuffer = channel.map(FileChannel.MapMode.READ_ONLY, 0, channel.size());
+
+        byte[] bytes = null;
+        MpPacket mpPacket = new MpPacket();
+
+        while (byteBuffer.hasRemaining()) {
+            switch (state) {
+                case HEAD:
+                    if (matchHead(byteBuffer)) {
+                        state = State.VERSION;
+                    } else {
+                        break;
+                    }
+                case VERSION:
+
+                    if (byteBuffer.hasRemaining()) {
+                        byte code = byteBuffer.get();
+                        if (VersionManager.isSupport(code)) {
+                            state = State.LEN;
+                        } else {
+                            int mainCode = (code >> 4) & 0x0000000f;
+                            int subCode = code & 0x0f;
+
+                            MptpLogUtils.e(String
+                                    .format("不支持的协议版本%d.%d", mainCode, subCode));
+                            state = State.HEAD;
+                            break;
+                        }
+                    } else {
+                        break;
+                    }
+                case LEN:
+                    length = getPacketLength(byteBuffer);
+
+                    if (length > Header.MaxLength) {
+                        MptpLogUtils.w(String.format("数据包长度过长  实际包长度为%d", length));
+                        state = State.HEAD;
+                        break;
+                    } else if (length >= 0) {
+                        state = State.CONTANT;
+                        MptpLogUtils.mpFrame("frame len:" + length);
+                    } else {
+                        break;
+                    }
+                case CONTANT:
+                    if (byteBuffer.remaining() >= length) {
+                        bytes = new byte[length];
+                        byteBuffer.get(bytes);
+                        ByteBuffer bf = ByteBuffer.allocate(length);
+                        ByteBuffUtils.addBytes(bf, bytes);
+                        try {
+                            mpPacket.decode(bf);
+                            if(dataTime.getStartTime()==0){
+                                dataTime.setStartTime(mpPacket.getBody().getPacketTime());
+                            }
+                            if(byteBuffer.hasRemaining()){
+                                dataTime.setEndTime(mpPacket.getBody().getPacketTime());
+                            }
+                        } catch (InvalidPacketException e) {
+                            e.printStackTrace();
+                        } finally {
+                            channel.close();
+                            fis.close();
+                        }
+
+                        state = State.HEAD;
+                    }
+                    break;
+                default:
+            }
+        }
+        return dataTime;
     }
 
     private boolean matchHead(ByteBuffer buf) {
@@ -150,7 +227,6 @@ public class MpDecode {
 
     public MpDecode() {
         ecgAnalysis = new EcgAnalysis();
-        dataTime = new DataTime();
         try {
             ecgAnalysis.init();
         } catch (IOException e) {
@@ -158,7 +234,4 @@ public class MpDecode {
         }
     }
 
-    public DataTime getDataTime() {
-        return dataTime;
-    }
 }
