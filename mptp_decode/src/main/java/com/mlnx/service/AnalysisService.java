@@ -2,12 +2,16 @@ package com.mlnx.service;
 
 import com.mlnx.decode.MpDecode;
 import com.mlnx.domain.AnalysisDetail;
+import com.mlnx.domain.DataTime;
 import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
-import com.mlnx.utils.ReadFileUtils;
+import com.mlnx.support.ProgressBar;
 import com.mlnx.utils.StatisticUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.*;
 
 /**
  * @author fzh
@@ -15,21 +19,70 @@ import java.util.List;
  */
 public class AnalysisService {
 
+    private static Logger logger = LoggerFactory.getLogger(AnalysisService.class);
+
     private MpDecode mpDecode;
 
     public AnalysisService() {
         mpDecode = new MpDecode();
     }
 
-    public AnalysisDetail getAnalysisDetail(String fileDictionary) throws Exception {
-        List<String> files = new ArrayList<>();
+    public AnalysisDetail getAnalysisDetail(ProgressBar progressBar, String... fileNames) throws Exception {
         List<RealEcgAnalysResult> realEcgAnalysResults = new ArrayList<>();
-        ReadFileUtils.readAllFile(files,fileDictionary);
-        MpDecode mpDecode = new MpDecode();
-        for (String file:files) {
-            List<RealEcgAnalysResult> list = mpDecode.decode(file);
-            realEcgAnalysResults.addAll(list);
+        int i = 0;
+        for (String file:fileNames) {
+            String[] txts = new File(file).list();
+            for(String txt:txts){
+               if(!txt.contains("heartNum")){
+                   List<RealEcgAnalysResult> list = mpDecode.decode(file+"\\"+txt);
+                   realEcgAnalysResults.addAll(list);
+               }
+            }
+            progressBar.progress(new BigDecimal(Integer.toString(++i)).divide(new BigDecimal(Integer.toString(fileNames.length)),2,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100+"")).intValue());
         }
         return StatisticUtils.ecgStatistic(realEcgAnalysResults);
+    }
+
+    public Map<Integer,Map<String,Object>> getTimeAxis(String filePath) throws Exception {
+        Map<Integer, Map<String, Object>> map = new HashMap<>();
+        File file = new File(filePath);
+        String[] patientIds = file.list();
+        if (patientIds != null) {
+            for (String patientId : patientIds) {
+                Map<String, Object> m = new HashMap<>();
+                String[] datas = new File(filePath + "\\"+patientId).list();
+                if (datas != null) {
+                    for (String data : datas) {
+                        DataTime dataTime = new DataTime();
+                        String dataFile = filePath + "\\" + patientId + "\\" + data;
+                        String[] txts = new File(dataFile).list();
+                        if(txts!=null){
+                            List<String> txtfiles= new ArrayList<>();
+                            for (String txt:txts) {
+                                if(!txt.contains("heartNum")){
+                                    txtfiles.add(txt);
+                                }
+                            }
+                            Collections.sort(txtfiles);
+                            mpDecode.decode(dataFile+"\\"+txtfiles.get(0));
+                            dataTime.setStartTime(mpDecode.getDataTime().getStartTime());
+                            if(txts.length!=1){
+                                mpDecode.decode(dataFile+"\\"+txtfiles.get(txtfiles.size()-1));
+                            }
+                            dataTime.setEndTime(mpDecode.getDataTime().getEndTime());
+                        }else {
+                            logger.info("该数据文件下无txt文件");
+                        }
+                        m.put(dataFile, dataTime);
+                    }
+                } else {
+                    logger.info("该病人下无数据文件");
+                }
+                map.put(Integer.parseInt(patientId), m);
+            }
+        } else {
+            logger.info("该文件目录为空");
+        }
+        return map;
     }
 }

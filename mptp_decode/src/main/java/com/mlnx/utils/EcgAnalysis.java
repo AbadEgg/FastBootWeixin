@@ -1,5 +1,6 @@
-package com.mlnx.analysis;
+package com.mlnx.utils;
 
+import com.mlnx.analysis.AnalysisLib;
 import com.mlnx.analysis.filter.EcgFilter;
 import com.mlnx.analysis.utils.FileUtils;
 import com.mlnx.mptp.model.analysis.HeartResult;

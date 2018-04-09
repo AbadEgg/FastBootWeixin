@@ -1,13 +1,12 @@
 package com.mlnx;
 
-import com.mlnx.decode.MpDecode;
+import com.alibaba.fastjson.JSON;
 import com.mlnx.domain.AnalysisDetail;
-import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
-import com.mlnx.utils.ReadFileUtils;
-import com.mlnx.utils.StatisticUtils;
+import com.mlnx.service.AnalysisService;
+import com.mlnx.support.ProgressBar;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Hello world!
@@ -16,16 +15,21 @@ import java.util.List;
 public class App 
 {
     public static void main( String[] args ) throws Exception {
-        String fileDictionary = "U:\\04031202";
-        List<String> files = new ArrayList<>();
-        List<RealEcgAnalysResult> realEcgAnalysResults = new ArrayList<>();
-        ReadFileUtils.readAllFile(files,fileDictionary);
-        MpDecode mpDecode = new MpDecode();
-        for (String file:files) {
-            List<RealEcgAnalysResult> list = mpDecode.decode(file);
-            realEcgAnalysResults.addAll(list);
-        }
-        AnalysisDetail analysisDetail = StatisticUtils.ecgStatistic(realEcgAnalysResults);
-        System.out.println(analysisDetail.toString());
+        String fileDictionary = "U:\\data";
+        AnalysisService analysisService = new AnalysisService();
+        Map map = analysisService.getTimeAxis(fileDictionary);
+        System.out.println(JSON.toJSONString(map));
+
+        Map m = (Map) map.get(110);
+        Set<String> filenames = m.keySet();
+        AnalysisDetail analysisDetail = analysisService.getAnalysisDetail(new ProgressBar() {
+            @Override
+            public void progress(int percent) {
+                System.out.println(String.format("解析进度:%d",percent));
+            }
+        }, filenames.toArray(new String[filenames.size()]));
+        System.out.println("分析结果:"+JSON.toJSONString(analysisDetail));
+
+
     }
 }

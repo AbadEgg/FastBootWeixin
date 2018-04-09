@@ -1,6 +1,7 @@
 package com.mlnx.decode;
 
-import com.mlnx.analysis.EcgAnalysis;
+import com.mlnx.utils.EcgAnalysis;
+import com.mlnx.domain.DataTime;
 import com.mlnx.mptp.model.analysis.RealEcgAnalysResult;
 import com.mlnx.mptp.mptp.InvalidPacketException;
 import com.mlnx.mptp.mptp.MpPacket;
@@ -34,6 +35,8 @@ public class MpDecode {
     private int matchHeadIndex;
     private int length;
 
+    private DataTime dataTime;
+
     public List<RealEcgAnalysResult> decode(String fileName) throws Exception {
 
         List<RealEcgAnalysResult> results = new ArrayList<>();
@@ -46,6 +49,7 @@ public class MpDecode {
 
         byte[] bytes = null;
         MpPacket mpPacket = new MpPacket();
+
         while (byteBuffer.hasRemaining()) {
             switch (state) {
                 case HEAD:
@@ -108,6 +112,8 @@ public class MpDecode {
                 default:
             }
         }
+        this.dataTime.setStartTime(results.get(0).getTime());
+        this.dataTime.setEndTime(results.get(results.size()-1).getTime());
         return results;
     }
 
@@ -144,10 +150,15 @@ public class MpDecode {
 
     public MpDecode() {
         ecgAnalysis = new EcgAnalysis();
+        dataTime = new DataTime();
         try {
             ecgAnalysis.init();
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    public DataTime getDataTime() {
+        return dataTime;
     }
 }
