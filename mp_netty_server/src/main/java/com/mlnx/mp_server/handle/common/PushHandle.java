@@ -12,7 +12,6 @@ import com.mlnx.mptp.mptp.body.DeviceState;
 import com.mlnx.mptp.mptp.body.Topic;
 import com.mlnx.mptp.mptp.head.QoS;
 import com.mlnx.mptp.utils.MptpLogUtils;
-
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 
@@ -60,6 +59,8 @@ public class PushHandle extends SimpleChannelInboundHandler<PublishMessage> {
                 ecgMessage.setPacketTime(body.getPacketTime());
 
                 ctx.fireChannelRead(ecgMessage);
+                break;
+            default:
                 break;
         }
 

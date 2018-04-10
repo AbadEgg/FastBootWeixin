@@ -3,11 +3,10 @@ package com.mlnx.mp_server.handle;
 import com.mlnx.mp_server.protocol.RegisterMessage;
 import com.mlnx.mp_server.support.Action;
 import com.mlnx.mp_server.support.MpSupportManager;
-import com.mlnx.mptp.mptp.MpPacket;
-import com.mlnx.mptp.ResponseCode;
 import com.mlnx.mptp.DeviceType;
+import com.mlnx.mptp.ResponseCode;
+import com.mlnx.mptp.mptp.MpPacket;
 import com.mlnx.mptp.utils.MptpLogUtils;
-
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 

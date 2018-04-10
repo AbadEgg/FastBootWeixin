@@ -102,7 +102,6 @@ public class CmsServerHandle extends SimpleChannelInboundHandler<DataPacket> {
                 bpMessage.setPacketTime(System.currentTimeMillis());
                 bpMessage.setSbp(dataPacket.getBody().getNibpData().getSysPress());
                 bpMessage.setDbp(dataPacket.getBody().getNibpData().getDiaPress());
-                bpMessage.setHeart(dataPacket.getBody().getNibpData().getintervel());
 
                 message.setDeviceType(com.mlnx.mptp.DeviceType.MP_DEVICE);
                 ctx.fireChannelRead(message);

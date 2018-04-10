@@ -4,17 +4,7 @@ package com.mlnx;
 import com.alibaba.fastjson.JSON;
 import com.mlnx.listener.BroadCast;
 import com.mlnx.listener.MsgListener;
-import com.mlnx.mp_session.domain.BpInfo;
-import com.mlnx.mp_session.domain.CO2Info;
-import com.mlnx.mp_session.domain.EcgInfo;
-import com.mlnx.mp_session.domain.SpoInfo;
-import com.mlnx.mp_session.domain.TempInfo;
-import com.mlnx.mptp.push.body.PushDataType;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.mlnx.mp_session.domain.*;
 
 /**
  * Created by amanda.shan on 2017/10/23.
@@ -63,8 +53,9 @@ public class TestClient {
     public void sub(){
 
         TopicManager topicManager = new TopicManager();
-        topicManager.lisEcgDevice("cms0001");
+//        topicManager.lisEcgDevice("cms0001").lisBp("cms0001");
 
+        topicManager.lisBp("SIMECG00011");
         testUsr.sub(JSON.toJSONString(topicManager.getTopics()));
     }
 
@@ -77,25 +68,25 @@ public class TestClient {
 
 
 //        Thread.sleep(2000);
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true){
-                    List<String> deviceIds = new ArrayList<>();
-                    deviceIds.add("cms0001");
-
-                    Map<PushDataType, Object> pushDataMap = new HashMap<>();
-                    pushDataMap.put(PushDataType.ASK_DEVICE_INFO, JSON.toJSON(deviceIds));
-                    testClient.testUsr.push(null, pushDataMap);
-
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }).start();
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while (true){
+//                    List<String> deviceIds = new ArrayList<>();
+//                    deviceIds.add("cms0001");
+//
+//                    Map<PushDataType, Object> pushDataMap = new HashMap<>();
+//                    pushDataMap.put(PushDataType.ASK_DEVICE_INFO, JSON.toJSON(deviceIds));
+//                    testClient.testUsr.push(null, pushDataMap);
+//
+//                    try {
+//                        Thread.sleep(5000);
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }).start();
 
     }
 }

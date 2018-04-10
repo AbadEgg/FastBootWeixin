@@ -30,15 +30,24 @@ public class AnalysisService {
     public AnalysisDetail getAnalysisDetail(ProgressBar progressBar, String... fileNames) throws Exception {
         List<RealEcgAnalysResult> realEcgAnalysResults = new ArrayList<>();
         int i = 0;
+        int count = 0;
+        for (String file:fileNames){
+            String[] txts = new File(file).list();
+            for(String txt:txts) {
+                if (!txt.contains("heartNum")) {
+                    count++;
+                }
+            }
+        }
         for (String file:fileNames) {
             String[] txts = new File(file).list();
             for(String txt:txts){
                if(!txt.contains("heartNum")){
                    List<RealEcgAnalysResult> list = mpDecode.decode(file+"\\"+txt);
                    realEcgAnalysResults.addAll(list);
+                   progressBar.progress(new BigDecimal(Integer.toString(++i)).divide(new BigDecimal(Integer.toString(count)),2,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100+"")).intValue());
                }
             }
-            progressBar.progress(new BigDecimal(Integer.toString(++i)).divide(new BigDecimal(Integer.toString(fileNames.length)),2,BigDecimal.ROUND_HALF_UP).multiply(new BigDecimal(100+"")).intValue());
         }
         return StatisticUtils.ecgStatistic(realEcgAnalysResults);
     }

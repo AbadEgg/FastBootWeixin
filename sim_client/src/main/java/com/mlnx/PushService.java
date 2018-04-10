@@ -2,11 +2,7 @@ package com.mlnx;
 
 
 import com.mlnx.listener.BroadCast;
-import com.mlnx.mp_session.domain.BpInfo;
-import com.mlnx.mp_session.domain.CO2Info;
-import com.mlnx.mp_session.domain.EcgInfo;
-import com.mlnx.mp_session.domain.SpoInfo;
-import com.mlnx.mp_session.domain.TempInfo;
+import com.mlnx.mp_session.domain.*;
 import com.mlnx.mptp.ResponseCode;
 import com.mlnx.mptp.push.PushPacket;
 import com.mlnx.mptp.push.body.PushDataType;

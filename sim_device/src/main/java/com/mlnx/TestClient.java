@@ -15,12 +15,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 
 public class TestClient {
@@ -165,15 +160,42 @@ public class TestClient {
                     System.out.println(String.format("%s %s 发送心电数据量:%d", DateUtils.format(System.currentTimeMillis(), "HH:mm:ss:SSS"), deviceId, read));
                 }
             }
+//            while (true) {
+//                BpBody bpBody = new BpBody();
+//                bpBody.init();
+//                BpResult bpResult = new BpResult();
+//                bpResult.setResultDbp(120);
+//                bpResult.setResultSbp(80);
+//                bpResult.setResultHeart(60);
+//                bpBody.setBpResult(bpResult);
+//                Body body = new Body();
+//                body.init();
+//                body.setDeviceId(deviceId);
+//                body.setPacketTime(System.currentTimeMillis());
+//                body.setBpBody(bpBody);
+//                body.setPatientId(7);
+//                MpPacket packet = new MpPacket().push(DeviceType.ECG_DEVICE, body);
+//
+//                testUsr.push(packet);
+//
+//
+//                try {
+//                    Thread.sleep(5000);
+//                } catch (Exception e) {
+//
+//                }
+//            }
         }
     }
 
     public static void main(String[] args) throws InterruptedException, IOException {
         List<byte[]> list = readFile(new File("U:/ecgData.txt"));
 
-        for (int i = 1; i < 10; i++) {
+        for (int i = 11; i < 100; i++) {
             new Timer().schedule(new PushEcgTimerTask("SIMECG000" + i, list), 0, 500);
         }
+
+//        new Timer().schedule(new PushEcgTimerTask("SIMECG00011", null), 0, 500);
 
     }
 }
