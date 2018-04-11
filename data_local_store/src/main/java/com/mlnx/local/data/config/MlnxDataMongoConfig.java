@@ -10,8 +10,8 @@ public class MlnxDataMongoConfig {
 
     public static String DATABASE = "mlnx_data";
 
-    public static String USER = "mlnx";
-    public static String PWD = "medgen2011";
+//    public static String USER = "mlnx";
+//    public static String PWD = "medgen2011";
 
     public static String SPO_COLLECTIONNAME = "spo_collection";
     public static String BP_COLLECTIONNAME = "bp_collection";

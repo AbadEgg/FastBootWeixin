@@ -3,12 +3,10 @@ package com.mlnx;
 
 import com.alibaba.fastjson.JSON;
 import com.mlnx.mptp.DeviceType;
-import com.mlnx.mptp.model.ECGData;
-import com.mlnx.mptp.model.ECGDeviceInfo;
+import com.mlnx.mptp.model.BpResult;
 import com.mlnx.mptp.mptp.MpPacket;
 import com.mlnx.mptp.mptp.body.Body;
-import com.mlnx.mptp.mptp.body.ecg.EcgBody;
-import com.mlnx.utils.DateUtils;
+import com.mlnx.mptp.mptp.body.bp.BpBody;
 
 import java.io.File;
 import java.io.FileReader;
@@ -102,100 +100,100 @@ public class TestClient {
         @Override
         public void run() {
 
-            int read = 0;
-
-            if (!testUsr.isRegister()) {
-                registerDelayCount++;
-                if (registerDelayCount >= 10) {
-                    testUsr.register();
-                    registerDelayCount = 0;
-                    System.out.println(String.format("%s %s 发送心电注册包", new Date(), deviceId));
-                }
-            } else {
-                registerDelayCount = 0;
-                if (sendTime == null) {
-                    sendTime = System.currentTimeMillis();
-                } else {
-                    long diff = System.currentTimeMillis() - sendTime;
-                    sendTime = System.currentTimeMillis();
-
-                    EcgBody ecgBody = new EcgBody();
-                    Body body = new Body();
-                    body.init();
-                    body.setDeviceId(deviceId);
-                    body.setPacketTime(System.currentTimeMillis());
-                    body.setEcgBody(ecgBody);
-
-                    ECGDeviceInfo ecgDeviceInfo = new ECGDeviceInfo();
-                    ecgDeviceInfo.setBatteryLevel(random.nextInt(10));
-                    ecgDeviceInfo.setSignalStrength(random.nextInt(10));
-                    ecgBody.setEcgDeviceInfo(ecgDeviceInfo);
-
-                    ECGData ecgData = new ECGData();
-                    read = (int) (diff * 500L / 1000L);
-                    byte[] bs = new byte[read * 24];
-                    int index = 0;
-
-                    for (int k = 0; k < read; k++) {
-
-//                        for (int i = 0; i < 8; i++) {
-//                            bs[index++] = 0;
-//                            bs[index++] = 8;
-//                            bs[index++] = 0;
+//            int read = 0;
+//
+//            if (!testUsr.isRegister()) {
+//                registerDelayCount++;
+//                if (registerDelayCount >= 10) {
+//                    testUsr.register();
+//                    registerDelayCount = 0;
+//                    System.out.println(String.format("%s %s 发送心电注册包", new Date(), deviceId));
+//                }
+//            } else {
+//                registerDelayCount = 0;
+//                if (sendTime == null) {
+//                    sendTime = System.currentTimeMillis();
+//                } else {
+//                    long diff = System.currentTimeMillis() - sendTime;
+//                    sendTime = System.currentTimeMillis();
+//
+//                    EcgBody ecgBody = new EcgBody();
+//                    Body body = new Body();
+//                    body.init();
+//                    body.setDeviceId(deviceId);
+//                    body.setPacketTime(System.currentTimeMillis());
+//                    body.setEcgBody(ecgBody);
+//
+//                    ECGDeviceInfo ecgDeviceInfo = new ECGDeviceInfo();
+//                    ecgDeviceInfo.setBatteryLevel(random.nextInt(10));
+//                    ecgDeviceInfo.setSignalStrength(random.nextInt(10));
+//                    ecgBody.setEcgDeviceInfo(ecgDeviceInfo);
+//
+//                    ECGData ecgData = new ECGData();
+//                    read = (int) (diff * 500L / 1000L);
+//                    byte[] bs = new byte[read * 24];
+//                    int index = 0;
+//
+//                    for (int k = 0; k < read; k++) {
+//
+////                        for (int i = 0; i < 8; i++) {
+////                            bs[index++] = 0;
+////                            bs[index++] = 8;
+////                            bs[index++] = 0;
+////                        }
+//                        copyBytes(bs, list.get(hasRead++), index);
+//                        index += 24;
+//                        if (hasRead >= list.size()) {
+//                            hasRead = 0;
 //                        }
-                        copyBytes(bs, list.get(hasRead++), index);
-                        index += 24;
-                        if (hasRead >= list.size()) {
-                            hasRead = 0;
-                        }
-                    }
-
-                    ecgData.setEncrySuccessionData(bs);
-                    ecgBody.setEcgData(ecgData);
-
-                    MpPacket packet = new MpPacket().push(DeviceType.ECG_DEVICE, body);
-
-                    testUsr.push(packet);
-
-                    System.out.println(String.format("%s %s 发送心电数据量:%d", DateUtils.format(System.currentTimeMillis(), "HH:mm:ss:SSS"), deviceId, read));
-                }
-            }
-//            while (true) {
-//                BpBody bpBody = new BpBody();
-//                bpBody.init();
-//                BpResult bpResult = new BpResult();
-//                bpResult.setResultDbp(120);
-//                bpResult.setResultSbp(80);
-//                bpResult.setResultHeart(60);
-//                bpBody.setBpResult(bpResult);
-//                Body body = new Body();
-//                body.init();
-//                body.setDeviceId(deviceId);
-//                body.setPacketTime(System.currentTimeMillis());
-//                body.setBpBody(bpBody);
-//                body.setPatientId(7);
-//                MpPacket packet = new MpPacket().push(DeviceType.ECG_DEVICE, body);
+//                    }
 //
-//                testUsr.push(packet);
+//                    ecgData.setEncrySuccessionData(bs);
+//                    ecgBody.setEcgData(ecgData);
 //
+//                    MpPacket packet = new MpPacket().push(DeviceType.ECG_DEVICE, body);
 //
-//                try {
-//                    Thread.sleep(5000);
-//                } catch (Exception e) {
+//                    testUsr.push(packet);
 //
+//                    System.out.println(String.format("%s %s 发送心电数据量:%d", DateUtils.format(System.currentTimeMillis(), "HH:mm:ss:SSS"), deviceId, read));
 //                }
 //            }
+            while (true) {
+                BpBody bpBody = new BpBody();
+                bpBody.init();
+                BpResult bpResult = new BpResult();
+                bpResult.setResultDbp(120);
+                bpResult.setResultSbp(80);
+                bpResult.setResultHeart(60);
+                bpBody.setBpResult(bpResult);
+                Body body = new Body();
+                body.init();
+                body.setDeviceId(deviceId);
+                body.setPacketTime(System.currentTimeMillis());
+                body.setBpBody(bpBody);
+                body.setPatientId(7);
+                MpPacket packet = new MpPacket().push(DeviceType.ECG_DEVICE, body);
+
+                testUsr.push(packet);
+
+
+                try {
+                    Thread.sleep(5000);
+                } catch (Exception e) {
+
+                }
+            }
         }
     }
 
     public static void main(String[] args) throws InterruptedException, IOException {
-        List<byte[]> list = readFile(new File("U:/ecgData.txt"));
+//        List<byte[]> list = readFile(new File("U:/ecgData.txt"));
+//
+//        for (int i = 11; i < 100; i++) {
+//            new Timer().schedule(new PushEcgTimerTask("SIMECG000" + i, list), 0, 500);
+//        }
 
-        for (int i = 11; i < 100; i++) {
-            new Timer().schedule(new PushEcgTimerTask("SIMECG000" + i, list), 0, 500);
-        }
-
-//        new Timer().schedule(new PushEcgTimerTask("SIMECG00011", null), 0, 500);
+        new Timer().schedule(new PushEcgTimerTask("SIMECG00011", null), 0, 500);
 
     }
 }

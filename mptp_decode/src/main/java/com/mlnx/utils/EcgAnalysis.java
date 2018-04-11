@@ -106,7 +106,7 @@ public class EcgAnalysis {
                 if (monitorFlag == 1) {
                     // 调用分析函数
                     analysisLib.AlielseEcgAnalysis();
-                    logger.debug("分析完成");
+//                    logger.debug("分析完成");
 
                     StringBuilder builder = new StringBuilder();
 
@@ -143,7 +143,7 @@ public class EcgAnalysis {
                                 + "--last_time:" + last_time.getValue()
                                 + "--currentPos:" + currentPos.getValue());
 
-                        logger.debug("出结果:" + builder.toString());
+//                        logger.debug("出结果:" + builder.toString());
                     }
                     analysisLib.ClearEcgAnalysisFlag();
                 }
